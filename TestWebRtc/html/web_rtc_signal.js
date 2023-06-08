@@ -3,6 +3,7 @@ var gstrToId = "";
 var gstrSdp = "";
 var ws;
 
+btnRetreiveList.disabled = true;
 btnInvite.disabled = true;
 btnAccept.disabled = true;
 btnDecline.disabled = true;
@@ -51,6 +52,7 @@ function StartSession()
             if( arrData[2] == '200' )
             {
               btnRegister.disabled = true;
+              btnRetreiveList.disabled = false;
               btnInvite.disabled = false;
             }
             else

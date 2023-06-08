@@ -15,6 +15,7 @@ var localVideo = document.getElementById("localVideo");
 var remoteVideo = document.getElementById("remoteVideo");
 
 var btnRegister = document.getElementById("btnRegister");
+var btnRetreiveList = document.getElementById("btnRetreiveList");
 var btnInvite = document.getElementById("btnInvite");
 var btnAccept = document.getElementById("btnAccept");
 var btnDecline = document.getElementById("btnDecline");
