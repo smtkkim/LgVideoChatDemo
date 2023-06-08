@@ -1,5 +1,3 @@
 .vs
 LgVideoChatDemo/x64/
 x64/
-HttpParser/HttpParser.vcxproj.user
-TestWebRtc/TestWebRtc.vcxproj.user
