@@ -112,6 +112,7 @@ function StartSession()
             txtPeerId.value = gstrToId;
 
             Log("Invite event peer(" + gstrToId + ") sdp(" + arrData[3]+ ")" );
+            alert( 'You have a call from ' + gstrToId + '\r\nPlease press Accept or Decline!' );
             //createAnswer( clsData.sdp );
 
             btnInvite.disabled = true;
