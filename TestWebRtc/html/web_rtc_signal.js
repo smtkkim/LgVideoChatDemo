@@ -22,97 +22,98 @@ function StartSession()
   if( ws == null )
   {
   	if( window.location.protocol == "https:" )
-  	{
-  		ws = new WebSocket("wss://" + window.location.hostname );
-  	}
-  	else
-  	{
-  		ws = new WebSocket("ws://" + window.location.hostname + ":8080");
-  	}
-  	
-  	// websocket 서버에 연결되면 연결 메시지를 화면에 출력한다.
-		ws.onopen = function(e){
-			Send( "req|register|" + gstrUserId );
-		};
+    {
+      ws = new WebSocket("wss://" + window.location.hostname );
+    }
+    else
+    {
+      ws = new WebSocket("ws://" + window.location.hostname + ":8080");
+    }
 
-		// websocket 에서 수신한 메시지를 화면에 출력한다.
-		ws.onmessage = function(e){
+    // websocket 서버에 연결되면 연결 메시지를 화면에 출력한다.
+    ws.onopen = function(e){
+        Send( "req|register|" + gstrUserId );
+    };
+
+    // websocket 에서 수신한 메시지를 화면에 출력한다.
+    ws.onmessage = function(e){
+		
+    Log("Recv[" + e.data + "]");
 			
-			Log("Recv[" + e.data + "]");
-			
-			var arrData = e.data.split("|");
-			
-			switch( arrData[0] )
-			{
-			case "res":
-				switch( arrData[1] )
-				{
-				case "register":
-					if( arrData[2] == '200' )
-					{
-						btnRegister.disabled = true;
-						btnInvite.disabled = false;
-					}
-					else
-					{
-						
-					}
-					break;
-				case "invite":
-					if( arrData[2] == '200' )
-					{
-						setAnswer( arrData[3] );
-	
-	          btnInvite.disabled = true;
-	          btnAccept.disabled = true;
-	          btnDecline.disabled = true;
-	          btnBye.disabled = false;
-          }
-          else
-          {
-          	var iStatusCode = parseInt( arrData[2] );
+    var arrData = e.data.split("|");
+
+    switch( arrData[0] )
+    {
+      case "res":
+        switch( arrData[1] )
+        {
+          case "register":
+            if( arrData[2] == '200' )
+            {
+              btnRegister.disabled = true;
+              btnInvite.disabled = false;
+            }
+            else
+            {
+
+            }
+            break;
+          case "invite":
+            if( arrData[2] == '200' )
+            {
+              setAnswer( arrData[3] );
+
+              btnInvite.disabled = true;
+              btnAccept.disabled = true;
+              btnDecline.disabled = true;
+              btnBye.disabled = false;
+            }
+            else
+            {
+              var iStatusCode = parseInt( arrData[2] );
           	
-          	if( iStatusCode > 200 )
-          	{
-          		btnInvite.disabled = false;
-          	}
+              if( iStatusCode > 200 )
+              {
+                btnInvite.disabled = false;
+              }
+            }
+            break;
           }
-					break;
-				}
-				break;
-			case "req":
-				switch( arrData[1] )
-				{
-				case "invite":
-					gstrToId = arrData[2];
-					gstrSdp = arrData[3];
-          var txtPeerId = document.getElementById('peer_id');
-          txtPeerId.value = gstrToId;
-
-          Log("Invite event peer(" + gstrToId + ") sdp(" + arrData[3]+ ")" );
-          //createAnswer( clsData.sdp );
-
-          btnInvite.disabled = true;
-          btnAccept.disabled = false;
-          btnDecline.disabled = false;
-          btnBye.disabled = true;
-					break;
-				case "bye":
-					gstrToId = "";
-          stopPeer();
-          btnInvite.disabled = false;
-  				btnBye.disabled = true;
           break;
-				}
-			}
-		};
 
-		// websocket 세션이 종료되면 화면에 출력한다.
-		ws.onclose = function(e){
-			ws = null;
-			InitButton();
-			Log("WebSocket is closed");
-		}
+      case "req":
+        switch( arrData[1] )
+        {
+          case "invite":
+            gstrToId = arrData[2];
+            gstrSdp = arrData[3];
+            var txtPeerId = document.getElementById('peer_id');
+            txtPeerId.value = gstrToId;
+
+            Log("Invite event peer(" + gstrToId + ") sdp(" + arrData[3]+ ")" );
+            //createAnswer( clsData.sdp );
+
+            btnInvite.disabled = true;
+            btnAccept.disabled = false;
+            btnDecline.disabled = false;
+            btnBye.disabled = true;
+            break;
+          case "bye":
+            gstrToId = "";
+            stopPeer();
+            btnInvite.disabled = false;
+            btnBye.disabled = true;
+            break;
+        }
+      }
+    };
+
+    // websocket 세션이 종료되면 화면에 출력한다.
+    ws.onclose = function(e){
+    ws = null;
+    InitButton();
+    Log("WebSocket is closed");
+    }
   }
 }
 
