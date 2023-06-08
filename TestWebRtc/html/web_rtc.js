@@ -29,6 +29,7 @@ startLocal();
 
 function Log(strLog)
 {
+/*
   var clsDate = new Date();
   var strTime = "[" + clsDate.getHours() + ":" + clsDate.getMinutes() + ":" + clsDate.getSeconds() + "] ";
 
@@ -40,6 +41,22 @@ function Log(strLog)
   else
   {
     lyLog.innerHTML += strTime + strLog + "<br>";
+  }
+
+  ++iLogRowCount;
+*/
+  //console.log(strLog);
+}
+
+function Print(strLog)
+{
+  if( iLogRowCount == iLogMaxRowCount )
+  {
+    iLogRowCount = 0;
+  }
+  else
+  {
+    lyLog.innerHTML += strLog + "<br>";
   }
 
   ++iLogRowCount;

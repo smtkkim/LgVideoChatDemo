@@ -1,0 +1,25 @@
+1. register
+
+
+2. login
+
+
+3. invite
+A->S    req|invite|bob|sdp_alice		; client request invite with peer_id & sdp information
+S->B    req|invite|alice|sdp_alice
+S->A	res|invite|180
+
+에러코드)
+S->A    res|invite|403				; server respond (ip 와 port 로 검색이 안됨)
+S->A    res|invite|404				; server respond (id 로 user 가 검색이 안됨)
+S->A    res|invite|500				; ip, port 로도 검색이 안되고 id 로도 검색이 안되어서 user 등록을 시도함
+
+
+4. accept
+
+
+5. reject
+
+
+6. bye
+

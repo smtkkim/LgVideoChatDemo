@@ -71,15 +71,34 @@ function StartSession()
             else
             {
               var iStatusCode = parseInt( arrData[2] );
-          	
-              if( iStatusCode > 200 )
+
+              if( iStatusCode == 404 )
+              {
+                  alert("peer id is NOT log-in now!\r\nPlease press \"Retreive logined ID\" button");
+                  btnInvite.disabled = false;
+              }
+              else if( iStatusCode == 500 )
+              {
+                  alert("peer id is ALREADY in the another call\r\nYou can connect after previous call is finished!");
+                  btnInvite.disabled = false;
+              }
+              else if( iStatusCode > 200 )
               {
                 btnInvite.disabled = false;
               }
             }
             break;
-          }
-          break;
+          case "contact":
+            ClearLog()
+            Print("### Contact ID Logined ###")
+            var iContactCount = parseInt( arrData[2] );
+            for (var i = 0; i < iContactCount; i++)
+            {
+              Print(arrData[3+i])
+            }
+            break;
+        }
+        break;
 
       case "req":
         switch( arrData[1] )
@@ -115,6 +134,11 @@ function StartSession()
     Log("WebSocket is closed");
     }
   }
+}
+
+function ContactList()
+{
+  Send( "req|contact" );
 }
 
 function Send(data)

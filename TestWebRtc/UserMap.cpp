@@ -176,3 +176,42 @@ void CUserMap::GetKey( const char * pszIp, int iPort, std::string & strKey )
 	strKey.append( "_" );
 	strKey.append( szPort );
 }
+
+/**
+ * @ingroup TestWebRtc
+ * @brief 자료구조의 사이즈를 리턴한다.
+ */
+int CUserMap::GetSize()
+{
+	int size;
+
+	m_clsMutex.acquire();
+
+	size = (int)m_clsKeyMap.size();
+
+	m_clsMutex.release();
+
+	return size;
+}
+
+/**
+ * @ingroup TestWebRtc
+ * @brief 전체user id 를 반환한다
+ */
+bool CUserMap::GetAllUserId( std::string& id )
+{
+	m_clsMutex.acquire();
+
+	for (auto iter:m_clsKeyMap)
+	{
+		id += iter.second;	// contact list 를 보여줄 id
+		id += "|";
+	}
+	id.pop_back();
+
+	m_clsMutex.release();
+
+	return 0;
+}
+
+

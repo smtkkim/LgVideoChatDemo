@@ -54,6 +54,8 @@ public:
 	bool Select( const char * pszUserId, CUserInfo & clsUserInfo );
 	bool SelectUserId( const char * pszIp, int iPort, std::string & strUserId );
 	bool Delete( const char * pszIp, int iPort, std::string & strUserId );
+	int GetSize();
+	bool GetAllUserId( std::string& id );
 
 private:
 	USER_MAP			m_clsMap;

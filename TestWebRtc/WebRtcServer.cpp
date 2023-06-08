@@ -271,6 +271,18 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 			}
 		}
 	}
+	else if (!strcmp(pszCommand, "contact"))
+	{
+		// send all contact list
+		std::string strUserAllId;
+		std::string strContactList;
+		int iUserCount = gclsUserMap.GetSize();
+		int ret = gclsUserMap.GetAllUserId(strUserAllId);
+
+		strContactList = "res|contact|" + std::to_string(iUserCount) + "|" + strUserAllId;
+
+		Send(pszClientIp, iClientPort, strContactList.c_str());
+	}
 	else if( !strcmp( pszCommand, "bye" ) )
 	{
 		SendCall( pszClientIp, iClientPort, strData, strUserId );

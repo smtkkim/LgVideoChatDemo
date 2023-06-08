@@ -22,7 +22,7 @@
 
 std::string CJsonType::m_strNewLine = "\n";
 
-CJsonType::CJsonType()
+CJsonType::CJsonType() : m_cType(0)
 {
 }
 
