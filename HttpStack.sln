@@ -20,6 +20,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestWebRtc", "TestWebRtc\Te
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Http2Parser", "Http2Parser\Http2Parser.vcxproj", "{A977B675-C94D-4B57-A368-20FFB07DD660}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JsonParser", "JsonParser\JsonParser.vcxproj", "{F90ACA2E-E87F-457C-8F59-38EC95B956AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -84,6 +86,14 @@ Global
 		{A977B675-C94D-4B57-A368-20FFB07DD660}.Release|Win32.Build.0 = Release|Win32
 		{A977B675-C94D-4B57-A368-20FFB07DD660}.Release|x64.ActiveCfg = Release|x64
 		{A977B675-C94D-4B57-A368-20FFB07DD660}.Release|x64.Build.0 = Release|x64
+		{F90ACA2E-E87F-457C-8F59-38EC95B956AB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F90ACA2E-E87F-457C-8F59-38EC95B956AB}.Debug|Win32.Build.0 = Debug|Win32
+		{F90ACA2E-E87F-457C-8F59-38EC95B956AB}.Debug|x64.ActiveCfg = Debug|x64
+		{F90ACA2E-E87F-457C-8F59-38EC95B956AB}.Debug|x64.Build.0 = Debug|x64
+		{F90ACA2E-E87F-457C-8F59-38EC95B956AB}.Release|Win32.ActiveCfg = Release|Win32
+		{F90ACA2E-E87F-457C-8F59-38EC95B956AB}.Release|Win32.Build.0 = Release|Win32
+		{F90ACA2E-E87F-457C-8F59-38EC95B956AB}.Release|x64.ActiveCfg = Release|x64
+		{F90ACA2E-E87F-457C-8F59-38EC95B956AB}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
