@@ -10,18 +10,42 @@
   <h2>Sign Up </h2>
   <table class="type1">
     <tr>
-      <th>E-mail : </th>
-      <td><input id="email_id" type="text" name="email"
-        placeholder="ex)abc@naver.com" required></td>
+      <th>ID : </th>
+      <td>
+        <input id="userid_id" type="text" name="UserId_" placeholder="" required>
+        <button id="btnDuplicate" onclick="CheckDuplicateId()" >Duplicate</button>
+      </td>
     </tr>
     <tr>
       <th>Password : </th>
-      <td><input id="password_id" type="password" name="password"
-        placeholder="Enter password" required></td>
+      <td>
+        <input id="password_id" type="password" name="password" placeholder="" required>
+      </td>
+    </tr>
+    <tr>
+      <th>Name : </th>
+      <td><input id="name_id" type="text" name="Name" placeholder="" required>
+      </td>
+    </tr>
+    <tr>
+      <th>E-mail : </th>
+      <td><input id="email_id" type="text" name="email" placeholder="ex)abc@naver.com" required>
+      </td>
+    </tr>
+    <tr>
+      <th>Phone : </th>
+      <td><input id="phone_id" type="text" name="email" placeholder="ex)0123456789" required>
+      </td>
+    </tr>
+    <tr>
+      <th>Address : </th>
+      <td>
+        <input id="address_id" type="text" name="Address" placeholder="" required size="50">
+      </td>
     </tr>
   </table>
   <p>
-  <button id="btnSubmit" onclick="SendUserInfo()" >submit</button>
+    <button id="btnSubmit" onclick="SendUserInfo()" >submit</button>
   </p>
 
   <hr>

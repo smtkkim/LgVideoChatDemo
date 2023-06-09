@@ -9,10 +9,20 @@ btnAccept.disabled = true;
 btnDecline.disabled = true;
 btnBye.disabled = true;
 
+function CheckDuplicateId()
+{
+  Log("Check Duplicate ID");
+}
+
 function SendUserInfo()
 {
-  let UserEmail = document.getElementById('email_id');
+  let UserId = document.getElementById('userid_id');
   let UserPasswd = document.getElementById('password_id');
+  let UserName = document.getElementById('name_id');
+  let UserEmail = document.getElementById('email_id');
+  let UserPhone = document.getElementById('phone_id');
+  let UserAddress = document.getElementById('address_id');
+
   let emailRules = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
   let passwordRules = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{10,15}$/;
   let websocket = null;
@@ -39,10 +49,15 @@ function SendUserInfo()
     alert("The Password format is not valid.");
     return;
   }
-  var msg = {
+
+  let msg = {
     type: "userinfo",
-    email: UserEmail.value,
-    password: UserPasswd.value,
+    u_id: UserId.value,
+    u_pwd: UserPasswd.value,
+    u_name: UserName.value,
+    u_email: UserEmail.value,
+    u_phone: UserPhone.value,
+    u_address: UserAddress.value,
     date: Date.now()
   };
 
@@ -58,12 +73,12 @@ function SendUserInfo()
     }
 
     // Send the msg object as a JSON-formatted string.
-    var UseInfoJson =  JSON.stringify(msg)
+    var UseInfoJson =  JSON.stringify(msg);
+    Log("useJson [" + UseInfoJson + "]");
 
     websocket.onopen = function(e){
       websocket.send("req|register|" + UseInfoJson);
     };
-    Log("useJson [" + UseInfoJson + "]");
     // websocket 에서 수신한 메시지를 화면에 출력한다.
     websocket.onmessage = function(e){
     Log("Recv[" + e.data + "]");
@@ -74,9 +89,7 @@ function SendUserInfo()
     websocket = null;
     Log("WebSocket is closed");
     }
-
   }
-
 }
 
 function StartSession()
@@ -286,4 +299,3 @@ function SendBye()
   btnInvite.disabled = false;
   btnBye.disabled = true;
 }
-
