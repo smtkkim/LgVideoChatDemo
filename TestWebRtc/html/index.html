@@ -5,13 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
   <title>LgVideoChat</title>
 </head>
+
 <body>
+  <h2>Sign Up </h2>
+  <table class="type1">
+    <tr>
+      <th>E-mail : </th>
+      <td><input id="email_id" type="text" name="email"
+        placeholder="ex)abc@naver.com" required></td>
+    </tr>
+    <tr>
+      <th>Password : </th>
+      <td><input id="password_id" type="password" name="password"
+        placeholder="Enter password" required></td>
+    </tr>
+  </table>
+  <p>
+  <button id="btnSubmit" onclick="SendUserInfo()" >submit</button>
+  </p>
+
+  <hr>
+  <h2>Video Chat </h2>
   <div>
-    user id : <input id="user_id" type="text" >
-    <button id="btnRegister" onclick="StartSession()" >Login</button>
+    <p>user id : <input id="user_id" type="text" >
+    <button id="btnRegister" onclick="StartSession()" >login</button>
     <button id="btnRetreiveList" onclick="ContactList()" >Retreive logined ID</button>
+    </p>
   </div>
   <div>
+    <p>
     peer id : <input id="peer_id" type="text" >
     <button id="btnInvite" onclick="SendInvite()" >Call</button>
     <button id="btnAccept" onclick="SendAccept()" >Accept</button>
@@ -20,6 +42,7 @@
     <!--
     <button id="btnClear" onclick="ClearLog()" >Clear</button>
     -->
+    </p>
   </div>
 
   <table border="1">
@@ -40,6 +63,8 @@
       </td>
     </tr>
   </table>
+  <br>
+  <hr>
 
   <div id="log">
 

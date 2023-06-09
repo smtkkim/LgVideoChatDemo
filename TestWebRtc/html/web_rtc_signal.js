@@ -1,13 +1,83 @@
 var gstrUserId = "";
 var gstrToId = "";
 var gstrSdp = "";
-var ws;
+var ws = null;
 
 btnRetreiveList.disabled = true;
 btnInvite.disabled = true;
 btnAccept.disabled = true;
 btnDecline.disabled = true;
 btnBye.disabled = true;
+
+function SendUserInfo()
+{
+  let UserEmail = document.getElementById('email_id');
+  let UserPasswd = document.getElementById('password_id');
+  let emailRules = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+  let passwordRules = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{10,15}$/;
+  let websocket = null;
+
+  Log( "email info : "+ UserEmail.value );
+  Log( "password info : "+ UserPasswd.value );
+
+  if( UserEmail.value.length == 0 )
+  {
+    Log( "Email has not been entered" );
+    alert( "Email has not been entered" );
+    return;
+  }
+
+  if(emailRules.test(UserEmail.value)==false){
+    //이메일 형식이 알파벳+숫자@알파벳+숫자.알파벳+숫자 형식이 아닐경우
+    Log( "The email format is not valid.: "+ UserEmail.value );
+    alert("The email format is not valid.");
+    return;
+  }
+
+  if(passwordRules.test(UserPasswd.value)==false){
+    Log( "The Password format is not valid.: "+ UserPasswd.value );
+    alert("The Password format is not valid.");
+    return;
+  }
+  var msg = {
+    type: "userinfo",
+    email: UserEmail.value,
+    password: UserPasswd.value,
+    date: Date.now()
+  };
+
+  if( websocket == null )
+  {
+    if( window.location.protocol == "https:" )
+    {
+      websocket = new WebSocket("wss://" + window.location.hostname );
+    }
+    else
+    {
+      websocket = new WebSocket("ws://" + window.location.hostname + ":8080");
+    }
+
+    // Send the msg object as a JSON-formatted string.
+    var UseInfoJson =  JSON.stringify(msg)
+
+    websocket.onopen = function(e){
+      websocket.send("req|register|" + UseInfoJson);
+    };
+    Log("useJson [" + UseInfoJson + "]");
+    // websocket 에서 수신한 메시지를 화면에 출력한다.
+    websocket.onmessage = function(e){
+    Log("Recv[" + e.data + "]");
+    }
+
+    // websocket 세션이 종료되면 화면에 출력한다.
+    websocket.onclose = function(e){
+    websocket = null;
+    Log("WebSocket is closed");
+    }
+
+  }
+
+}
 
 function StartSession()
 {
