@@ -205,6 +205,10 @@ function StartSession()
             btnBye.disabled = true;
             break;
           case "bye":
+            if (btnAccept.disabled == false)
+                alert( 'You have a missedcall from ' + gstrToId);
+            else
+                alert( gstrToId + 'call ended');
             gstrToId = "";
             stopPeer();
             btnInvite.disabled = false;
