@@ -159,6 +159,7 @@ function StartSession()
                 btnInvite.disabled = false;
               }
             }
+            btnBye.disabled = false;
             break;
           case "contact":
             ClearLog()
@@ -194,6 +195,8 @@ function StartSession()
             gstrToId = "";
             stopPeer();
             btnInvite.disabled = false;
+            btnAccept.disabled = true;
+            btnDecline.disabled = true;
             btnBye.disabled = true;
             break;
         }
