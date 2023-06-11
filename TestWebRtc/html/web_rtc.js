@@ -14,7 +14,7 @@ var sdpConstraints = {};
 var localVideo = document.getElementById("localVideo");
 var remoteVideo = document.getElementById("remoteVideo");
 
-var btnRegister = document.getElementById("btnRegister");
+var btnLogin = document.getElementById("btnLogin");
 var btnRetreiveList = document.getElementById("btnRetreiveList");
 var btnInvite = document.getElementById("btnInvite");
 var btnAccept = document.getElementById("btnAccept");
@@ -72,7 +72,7 @@ function ClearLog()
 
 function InitButton()
 {
-	btnRegister.disabled = false;
+	btnLogin.disabled = false;
 	btnInvite.disabled = true;
 	btnAccept.disabled = true;
 	btnDecline.disabled = true;

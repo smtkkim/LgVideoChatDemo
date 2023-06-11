@@ -77,7 +77,7 @@ function SendUserInfo()
     Log("useJson [" + UseInfoJson + "]");
 
     websocket.onopen = function(e){
-      websocket.send("req|register|" + UseInfoJson);
+      websocket.send("req|login|" + UseInfoJson);
     };
     // websocket 에서 수신한 메시지를 화면에 출력한다.
     websocket.onmessage = function(e){
@@ -116,7 +116,7 @@ function StartSession()
 
     // websocket 서버에 연결되면 연결 메시지를 화면에 출력한다.
     ws.onopen = function(e){
-        Send( "req|register|" + gstrUserId );
+        Send( "req|login|" + gstrUserId );
     };
 
     // websocket 에서 수신한 메시지를 화면에 출력한다.
@@ -131,10 +131,10 @@ function StartSession()
       case "res":
         switch( arrData[1] )
         {
-          case "register":
+          case "login":
             if( arrData[2] == '200' )
             {
-              btnRegister.disabled = true;
+              btnLogin.disabled = true;
               btnRetreiveList.disabled = false;
               btnInvite.disabled = false;
             }

@@ -198,21 +198,21 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 	const char * pszCommand = clsList[1].c_str();
 	std::string strUserId;
 
-	if( !strcmp( pszCommand, "register" ) )
+	if( !strcmp( pszCommand, "login" ) )
 	{
 		if( iCount < 3 )
 		{
-			printf( "register request arg is not correct\n" );
+			printf( "login request arg is not correct\n" );
 			return false;
 		}
 
 		if( gclsUserMap.Insert( clsList[2].c_str(), pszClientIp, iClientPort ) == false )
 		{
-			Send( pszClientIp, iClientPort, "res|register|500" );
+			Send( pszClientIp, iClientPort, "res|login|500" );
 		}
 		else
 		{
-			Send( pszClientIp, iClientPort, "res|register|200" );
+			Send( pszClientIp, iClientPort, "res|login|200" );
 		}
 	}
 	else if( !strcmp( pszCommand, "invite" ) )
