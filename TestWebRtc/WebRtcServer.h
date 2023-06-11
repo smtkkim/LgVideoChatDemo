@@ -21,6 +21,7 @@
 
 #include "HttpStack.h"
 #include "StringUtility.h"
+#include "UserDB.h"
 
 /**
  * @ingroup TestWebRtc
@@ -40,6 +41,7 @@ public:
 
 	std::string m_strDocumentRoot;
 	bool m_bStop;
+	CUserDB *m_clsUserDB;
 
 private:
 	bool Send( const char * pszClientIp, int iClientPort, const char * fmt, ... );

@@ -29,10 +29,12 @@ extern CHttpStack gclsStack;
 
 CWebRtcServer::CWebRtcServer() : m_bStop(false)
 {
+	m_clsUserDB = new CUserDB();
 }
 
 CWebRtcServer::~CWebRtcServer()
 {
+	delete m_clsUserDB;
 }
 
 /**

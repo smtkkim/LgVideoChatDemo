@@ -22,6 +22,9 @@
     <ClCompile Include="UserMap.cpp">
       <Filter>자료구조</Filter>
     </ClCompile>
+    <ClCompile Include="UserDB.cpp">
+      <Filter>자료구조</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WebRtcServer.h">
@@ -31,6 +34,9 @@
       <Filter>자료구조</Filter>
     </ClInclude>
     <ClInclude Include="UserMap.h">
+      <Filter>자료구조</Filter>
+    </ClInclude>
+    <ClInclude Include="UserDB.h">
       <Filter>자료구조</Filter>
     </ClInclude>
   </ItemGroup>

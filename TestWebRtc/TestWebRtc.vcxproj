@@ -170,11 +170,13 @@
   <ItemGroup>
     <ClCompile Include="CallMap.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="UserDB.cpp" />
     <ClCompile Include="UserMap.cpp" />
     <ClCompile Include="WebRtcServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CallMap.h" />
+    <ClInclude Include="UserDB.h" />
     <ClInclude Include="UserMap.h" />
     <ClInclude Include="WebRtcServer.h" />
   </ItemGroup>
