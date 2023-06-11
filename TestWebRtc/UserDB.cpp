@@ -1,6 +1,13 @@
+
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <openssl/sha.h>
 #include "UserDB.h"
 
-#define DB_DEBUG  1
+#define DB_DEBUG			1
+#define DB_SHA256_PASSWD	1
+
 
 // make table named tbl_videochat
 #define SQL_CREATE_TBL		\
@@ -58,8 +65,12 @@ VALUES ('eve', 'lge1234', 'eve jeon', 'eve@lge.com', '01012345678', "Gangseo-gu 
 DELETE FROM tbl_videochat WHERE unique_id = 'test'
 */
 
+#define SQL_UPDATE_PASSWD	"UPDATE tbl_videochat SET passwd = ? WHERE unique_id = ?"
+/*
+UPDATE tbl_videochat SET passwd = '29e586cd7f3164b3b0448c2953eb7f052ea474bbcd771bbd8820872da9581d56' WHERE unique_id = 'robin'
+*/
 
-
+const std::string salt = "_cmu_videochat";
 
 CUserDB::CUserDB()
 {
@@ -89,6 +100,11 @@ CUserDB::CUserDB()
 	//GetUserPasswd(std::string("robin"), passwd);
 	//RegisterUserId(std::string("test"), std::string("lge1234"), std::string("test kim"), std::string("test@lge.com"), std::string("01012345678"), std::string("Seocho-gu Seoul"));
 	//DeleteUserId(std::string("test"));
+
+	// https://www.convertstring.com/ko/Hash/SHA256
+	//std::string sha256_passwd = sha256(std::string("lge1234") + salt);
+	//printf("sha256:%s\n", sha256_passwd.c_str());	// 29e586cd7f3164b3b0448c2953eb7f052ea474bbcd771bbd8820872da9581d56
+
 }
 
 CUserDB::~CUserDB()
@@ -148,11 +164,22 @@ int CUserDB::RegisterUserId(std::string& unique_id, std::string& passwd, std::st
 	sql::PreparedStatement* pstmt;
 	sql::ResultSet* res;
 
+#if DB_SHA256_PASSWD
+	std::string sha256_passwd = sha256(passwd + salt);
+#if DB_DEBUG
+	printf("%s:%s\n", passwd.c_str(), sha256_passwd.c_str());
+#endif
+#endif
+
 	try
 	{
 		pstmt = con->prepareStatement(SQL_INSERT_USER);
 		pstmt->setString(1, unique_id);
+#if DB_SHA256_PASSWD
+		pstmt->setString(2, sha256_passwd);
+#else
 		pstmt->setString(2, passwd);
+#endif
 		pstmt->setString(3, username);
 		pstmt->setString(4, email);
 		pstmt->setString(5, phone);
@@ -314,5 +341,24 @@ int CUserDB::GetUserPasswd(std::string& id, std::string& passwd)
 	return 0;
 }
 
+std::string CUserDB::saltStr(const std::string str)
+{
+	return str + salt;
+}
+
+std::string CUserDB::sha256(const std::string str)
+{
+	unsigned char hash[SHA256_DIGEST_LENGTH];
+	SHA256_CTX sha256;
+	SHA256_Init(&sha256);
+	SHA256_Update(&sha256, str.c_str(), str.size());
+	SHA256_Final(hash, &sha256);
+	std::stringstream ss;
+	for (int i = 0; i < SHA256_DIGEST_LENGTH; i++)
+	{
+		ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(hash[i]);
+	}
+	return ss.str();
+}
 
 

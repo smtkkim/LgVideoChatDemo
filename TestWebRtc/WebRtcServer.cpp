@@ -241,13 +241,15 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		}
 
 		// passwd check
-		std::string user_passwd;
+		std::string db_user_passwd;
 
 		if (m_clsUserDB->CountUserId(clsList[2]) == 1)	// check if id is registered
 		{
-			if (m_clsUserDB->GetUserPasswd(clsList[2], user_passwd) == 0)	// get the passwd
+			if (m_clsUserDB->GetUserPasswd(clsList[2], db_user_passwd) == 0)	// get the passwd
 			{
-				if (!strcmp(clsList[3].c_str(), user_passwd.c_str()))
+				std::string entered_passwd = m_clsUserDB->sha256( m_clsUserDB->saltStr(clsList[3]) );
+
+				if (!strcmp(entered_passwd.c_str(), db_user_passwd.c_str()))
 				{
 					// passwd OK
 					printf("password is correct");

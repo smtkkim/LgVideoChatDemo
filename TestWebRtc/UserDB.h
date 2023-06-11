@@ -7,8 +7,8 @@
 #include <cppconn/driver.h>
 #include <cppconn/exception.h>
 #include <cppconn/prepared_statement.h>
-
-
+#include <openssl/sha.h>
+#include <sstream>
 
 class CUserDB
 {
@@ -21,6 +21,9 @@ public:
 	int DeleteUserId(std::string& unique_id);
 	int CountUserId(std::string& id);
 	int GetUserPasswd(std::string& id, std::string& passwd);
+	std::string saltStr(const std::string str);
+	std::string sha256(const std::string str);
+
 
 private:
 	sql::Driver* driver;
