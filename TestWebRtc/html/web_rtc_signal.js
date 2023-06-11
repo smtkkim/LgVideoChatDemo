@@ -82,7 +82,36 @@ function SendUserInfo()
     };
     // websocket 에서 수신한 메시지를 화면에 출력한다.
     websocket.onmessage = function(e){
-    Log("Recv[" + e.data + "]");
+      Log("Recv[" + e.data + "]");
+	
+      var arrData = e.data.split("|");
+
+      switch( arrData[0] )
+      {
+        case "res":
+          switch( arrData[1] )
+          {
+            case "register":
+              if( arrData[2] == '200' )
+              {
+              }
+              else
+              {
+                var iStatusCode = parseInt( arrData[2] );
+
+                if (iStatusCode == 400)
+                {
+                  alert("user ID is alread registered\r\nPlease use another user ID");
+                }
+                else if (iStatusCode == 410)
+                {
+                  alert("can not INSERT the user info to mysql");
+                }
+              }
+              break;
+          }
+          break;
+      }
     };	
     // websocket 세션이 종료되면 화면에 출력한다.
     websocket.onclose = function(e){

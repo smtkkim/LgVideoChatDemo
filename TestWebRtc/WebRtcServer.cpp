@@ -198,7 +198,41 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 	const char * pszCommand = clsList[1].c_str();
 	std::string strUserId;
 
-	if( !strcmp( pszCommand, "login" ) )
+	if (!strcmp(pszCommand, "register"))
+	{
+		if (iCount < 8)
+		{
+			printf("register request arg is not correct\n");
+			return false;
+		}
+
+		std::string unique_id = clsList[2];
+		std::string passwd = clsList[3];
+		std::string username = clsList[4];
+		std::string email = clsList[5];
+		std::string phone = clsList[6];
+		std::string address = clsList[7];
+
+		if (m_clsUserDB->CountUserId(unique_id) >= 1)   // check if id is alread registered
+		{
+			printf("same unique_id is already exist\n");
+			Send(pszClientIp, iClientPort, "res|register|400");
+			return true;
+		}
+
+		if (m_clsUserDB->RegisterUserId(unique_id, passwd, username, email, phone, address) == 0)
+		{
+			printf("user is correctly registered");
+			Send(pszClientIp, iClientPort, "res|register|200");
+		}
+		else
+		{
+			printf("can not INSERT the user info to mysql");
+			Send(pszClientIp, iClientPort, "res|register|410");
+			return true;
+		}
+	}
+	else if( !strcmp( pszCommand, "login" ) )
 	{
 		if( iCount < 4 )
 		{
