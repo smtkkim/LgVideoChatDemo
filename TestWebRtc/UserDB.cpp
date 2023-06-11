@@ -1,5 +1,7 @@
 #include "UserDB.h"
 
+#define DB_DEBUG  1
+
 // make table named tbl_videochat
 #define SQL_CREATE_TBL		\
 	" CREATE TABLE IF NOT EXISTS tbl_videochat( \n \
@@ -97,7 +99,9 @@ CUserDB::~CUserDB()
 
 int CUserDB::CreateTable()
 {
-	//printf("+[%s]\n", __func__);
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
 
 	std::lock_guard<std::mutex> guard(mMutex);
 
@@ -126,14 +130,18 @@ int CUserDB::CreateTable()
 	delete res;
 	delete pstmt;
 
-	//printf("-[%s]\n", __func__);
+#if DB_DEBUG
+	printf("-[%s]\n", __func__);
+#endif
 
 	return 0;
 }
 
 int CUserDB::RegisterUserId(std::string& unique_id, std::string& passwd, std::string& username, std::string& email, std::string& phone, std::string& address)
 {
-	//printf("+[%s]\n", __func__);
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
 
 	std::lock_guard<std::mutex> guard(mMutex);
 
@@ -168,15 +176,18 @@ int CUserDB::RegisterUserId(std::string& unique_id, std::string& passwd, std::st
 	delete res;
 	delete pstmt;
 
-	//printf("-[%s]\n", __func__);
-
+#if DB_DEBUG
+	printf("-[%s]\n", __func__);
+#endif
 	return 0;
 }
 
 
 int CUserDB::DeleteUserId(std::string& unique_id)
 {
-	//printf("+[%s]\n", __func__);
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
 
 	std::lock_guard<std::mutex> guard(mMutex);
 
@@ -206,7 +217,9 @@ int CUserDB::DeleteUserId(std::string& unique_id)
 	delete res;
 	delete pstmt;
 
-	//printf("-[%s]\n", __func__);
+#if DB_DEBUG
+	printf("-[%s]\n", __func__);
+#endif
 
 	return 0;
 }
@@ -214,7 +227,9 @@ int CUserDB::DeleteUserId(std::string& unique_id)
 
 int CUserDB::CountUserId(std::string& id)
 {
-	//printf("+[%s]\n", __func__);
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
 
 	std::lock_guard<std::mutex> guard(mMutex);
 
@@ -246,8 +261,10 @@ int CUserDB::CountUserId(std::string& id)
 	delete res;
 	delete pstmt;
 
-	//printf("DB[CountUserId]:(%d)\n", count);
-	//printf("-[%s]\n", __func__);
+#if DB_DEBUG
+	printf("DB[CountUserId]:(%d)\n", count);
+	printf("-[%s]\n", __func__);
+#endif
 
 	return count;
 }
@@ -256,7 +273,9 @@ int CUserDB::CountUserId(std::string& id)
 
 int CUserDB::GetUserPasswd(std::string& id, std::string& passwd)
 {
-	//printf("+[%s]\n", __func__);
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
 
 	std::lock_guard<std::mutex> guard(mMutex);
 
@@ -287,8 +306,10 @@ int CUserDB::GetUserPasswd(std::string& id, std::string& passwd)
 	delete res;
 	delete pstmt;
 
-	//printf("DB[GetUserPasswd]:(%s)\n", passwd.c_str());
-	//printf("-[%s]\n", __func__);
+#if DB_DEBUG
+	printf("DB[GetUserPasswd]:(%s)\n", passwd.c_str());
+	printf("-[%s]\n", __func__);
+#endif
 
 	return 0;
 }

@@ -200,11 +200,45 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 
 	if( !strcmp( pszCommand, "login" ) )
 	{
-		if( iCount < 3 )
+		if( iCount < 4 )
 		{
 			printf( "login request arg is not correct\n" );
 			return false;
 		}
+
+		// passwd check
+		std::string user_passwd;
+
+		if (m_clsUserDB->CountUserId(clsList[2]) == 1)	// check if id is registered
+		{
+			if (m_clsUserDB->GetUserPasswd(clsList[2], user_passwd) == 0)	// get the passwd
+			{
+				if (!strcmp(clsList[3].c_str(), user_passwd.c_str()))
+				{
+					// passwd OK
+					printf("password is correct");
+				}
+				else
+				{
+					printf("password is wrong");
+					Send(pszClientIp, iClientPort, "res|login|400");
+					return true;
+				}
+			}
+			else
+			{
+				printf("can not get the passwd from mysql");
+				Send(pszClientIp, iClientPort, "res|login|410");
+				return true;
+			}
+		}
+		else
+		{
+			printf("Unregisterd user");
+			Send(pszClientIp, iClientPort, "res|login|300");
+			return true;
+		}
+
 
 		if( gclsUserMap.Insert( clsList[2].c_str(), pszClientIp, iClientPort ) == false )
 		{

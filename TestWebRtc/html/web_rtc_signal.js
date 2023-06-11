@@ -1,4 +1,5 @@
 var gstrUserId = "";
+var gstrUserPasswd = "";
 var gstrToId = "";
 var gstrSdp = "";
 var ws = null;
@@ -77,13 +78,12 @@ function SendUserInfo()
     Log("useJson [" + UseInfoJson + "]");
 
     websocket.onopen = function(e){
-      websocket.send("req|login|" + UseInfoJson);
+      websocket.send("req|register|" + UseInfoJson);
     };
     // websocket 에서 수신한 메시지를 화면에 출력한다.
     websocket.onmessage = function(e){
     Log("Recv[" + e.data + "]");
-    }
-
+    };	
     // websocket 세션이 종료되면 화면에 출력한다.
     websocket.onclose = function(e){
     websocket = null;
@@ -97,9 +97,17 @@ function StartSession()
   var txtUserId = document.getElementById('user_id');
   gstrUserId = txtUserId.value;
 
+  var txtUserPasswd = document.getElementById('user_passwd');
+  gstrUserPasswd = txtUserPasswd.value;
+  
   if( gstrUserId.length == 0 )
   {
     alert( "user id is not defined" );
+    return;
+  }
+  if( gstrUserPasswd.length == 0 )
+  {
+    alert( "password is not provided" );
     return;
   }
   
@@ -116,14 +124,14 @@ function StartSession()
 
     // websocket 서버에 연결되면 연결 메시지를 화면에 출력한다.
     ws.onopen = function(e){
-        Send( "req|login|" + gstrUserId );
+        Send( "req|login|" + gstrUserId + "|" + gstrUserPasswd );
     };
 
     // websocket 에서 수신한 메시지를 화면에 출력한다.
     ws.onmessage = function(e){
 		
     Log("Recv[" + e.data + "]");
-			
+
     var arrData = e.data.split("|");
 
     switch( arrData[0] )
@@ -140,7 +148,22 @@ function StartSession()
             }
             else
             {
+              var iStatusCode = parseInt( arrData[2] );
 
+              if (iStatusCode == 300)
+              {
+                  alert("Unregisterd user! \r\nPlease register to use VideoChat");
+              }
+              else if (iStatusCode == 400)
+              {
+                  alert("Password is WRONG!");
+              }
+              else if (iStatusCode == 410)
+              {
+                  alert("Password Database failed");
+              }
+              btnLogin.disabled = false;
+              btnInvite.disabled = true;
             }
             break;
           case "invite":
@@ -287,9 +310,9 @@ function SendAccept()
 /** INVITE 거절 응답을 전송한다. */
 function SendDecline()
 {
-	Send( "res|invite|603" );
+  Send( "res|invite|603" );
 	
-	btnInvite.disabled = false;
+  btnInvite.disabled = false;
   btnAccept.disabled = true;
   btnDecline.disabled = true;
 }
