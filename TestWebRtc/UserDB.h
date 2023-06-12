@@ -17,7 +17,7 @@ public:
 	~CUserDB();
 
 	int CreateTable();
-	int RegisterUserId(std::string& unique_id, std::string& passwd, std::string& username, std::string& email, std::string& phone, std::string& address);
+	int RegisterUserId(std::string& unique_id, std::string& passwd, std::string& username, std::string& email, std::string& phone, std::string& address, uint64_t utc);
 	int GetUserInfo(std::string& unique_id, std::string& username, std::string& email, std::string& phone, std::string& address);
 	int DeleteUserId(std::string& unique_id);
 	int CountUserId(std::string& id);

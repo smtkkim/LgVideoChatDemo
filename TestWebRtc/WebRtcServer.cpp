@@ -220,7 +220,10 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 			return true;
 		}
 
-		if (m_clsUserDB->RegisterUserId(unique_id, passwd, username, email, phone, address) == 0)
+		uint64_t utc_time;
+		getTimeUtc(&utc_time);
+
+		if (m_clsUserDB->RegisterUserId(unique_id, passwd, username, email, phone, address, utc_time) == 0)
 		{
 			printf("user is correctly registered");
 			Send(pszClientIp, iClientPort, "res|register|200");
@@ -444,3 +447,17 @@ bool CWebRtcServer::SendCall( const char * pszClientIp, int iClientPort, std::st
 
 	return Send( clsOtherInfo.m_strIp.c_str(), clsOtherInfo.m_iPort, "%s", strData.c_str() );
 }
+
+
+//https://www.epochconverter.com/
+int CWebRtcServer::getTimeUtc(uint64_t* time_utc)
+{
+	time_t _time;
+
+	_time = time(&_time);
+	*time_utc = (uint64_t)_time;
+
+	return 0;
+}
+
+

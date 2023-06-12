@@ -46,6 +46,7 @@ public:
 private:
 	bool Send( const char * pszClientIp, int iClientPort, const char * fmt, ... );
 	bool SendCall( const char * pszClientIp, int iClientPort, std::string & strData, std::string & strUserId );
+	int getTimeUtc(uint64_t* time_utc);
 };
 
 #endif

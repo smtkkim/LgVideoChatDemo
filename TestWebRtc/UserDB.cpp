@@ -18,7 +18,10 @@
 	username   TEXT    NOT NULL, \n \
 	email      TEXT    NOT NULL, \n \
 	phone      TEXT    NOT NULL, \n \
-	address    TEXT    NOT NULL \n \
+	address    TEXT    NOT NULL, \n \
+	passwd_update_utc INTEGER,   \n \
+	passwd_wrong_cnt  INTEGER DEFAULT 0,  \n \
+	passwd_lock_utc   INTEGER DEFAULT 0   \n \
 	);"
 /*
 CREATE TABLE IF NOT EXISTS tbl_videochat (
@@ -35,7 +38,7 @@ SELECT * FROM tbl_videochat;
 */
 
 // register user info
-#define SQL_INSERT_USER		"INSERT INTO tbl_videochat (unique_id, passwd, username, email, phone, address) VALUES (?, ?, ?, ?, ?, ?)"
+#define SQL_INSERT_USER		"INSERT INTO tbl_videochat (unique_id, passwd, username, email, phone, address, passwd_update_utc) VALUES (?, ?, ?, ?, ?, ?, ?)"
 /*
 INSERT INTO tbl_videochat (unique_id, passwd, username, email, phone, address)
 VALUES ('robin', 'lge1234', 'robin kim', 'robin.kim@lge.com', '01082916918', "Yangchun-gu Seoul")
@@ -158,7 +161,7 @@ int CUserDB::CreateTable()
 	return 0;
 }
 
-int CUserDB::RegisterUserId(std::string& unique_id, std::string& passwd, std::string& username, std::string& email, std::string& phone, std::string& address)
+int CUserDB::RegisterUserId(std::string& unique_id, std::string& passwd, std::string& username, std::string& email, std::string& phone, std::string& address, uint64_t utc)
 {
 #if DB_DEBUG
 	printf("+[%s]\n", __func__);
@@ -189,6 +192,8 @@ int CUserDB::RegisterUserId(std::string& unique_id, std::string& passwd, std::st
 		pstmt->setString(4, email);
 		pstmt->setString(5, phone);
 		pstmt->setString(6, address);
+		pstmt->setUInt64(7, utc);
+
 		res = pstmt->executeQuery();
 
 		if (res->next()) {
