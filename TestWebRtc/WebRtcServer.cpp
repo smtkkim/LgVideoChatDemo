@@ -252,25 +252,25 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 				if (!strcmp(entered_passwd.c_str(), db_user_passwd.c_str()))
 				{
 					// passwd OK
-					printf("password is correct");
+					printf("password is correct\n");
 				}
 				else
 				{
-					printf("password is wrong");
+					printf("password is wrong\n");
 					Send(pszClientIp, iClientPort, "res|login|400");
 					return true;
 				}
 			}
 			else
 			{
-				printf("can not get the passwd from mysql");
+				printf("can not get the passwd from mysql\n");
 				Send(pszClientIp, iClientPort, "res|login|410");
 				return true;
 			}
 		}
 		else
 		{
-			printf("Unregisterd user");
+			printf("Unregisterd user\n");
 			Send(pszClientIp, iClientPort, "res|login|300");
 			return true;
 		}

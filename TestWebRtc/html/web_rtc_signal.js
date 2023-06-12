@@ -28,9 +28,6 @@ function SendUserInfo()
   let passwordRules = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{10,15}$/;
   let websocket = null;
 
-  Log( "email info : "+ UserEmail.value );
-  Log( "password info : "+ UserPasswd.value );
-
   if( UserEmail.value.length == 0 )
   {
     Log( "Email has not been entered" );
@@ -51,17 +48,6 @@ function SendUserInfo()
     return;
   }
 
-  let msg = {
-    type: "userinfo",
-    u_id: UserId.value,
-    u_pwd: UserPasswd.value,
-    u_name: UserName.value,
-    u_email: UserEmail.value,
-    u_phone: UserPhone.value,
-    u_address: UserAddress.value,
-    date: Date.now()
-  };
-
   if( websocket == null )
   {
     if( window.location.protocol == "https:" )
@@ -73,12 +59,14 @@ function SendUserInfo()
       websocket = new WebSocket("ws://" + window.location.hostname + ":8080");
     }
 
-    // Send the msg object as a JSON-formatted string.
-    var UseInfoJson =  JSON.stringify(msg);
-    Log("useJson [" + UseInfoJson + "]");
-
     websocket.onopen = function(e){
-      websocket.send("req|register|" + UseInfoJson);
+      websocket.send("req|register|" +
+                      UserId.value +"|" +
+                      UserPasswd.value + "|" +
+                      UserName.value + "|" +
+                      UserEmail.value + "|" +
+                      UserPhone.value + "|" +
+                      UserAddress.value)
     };
     // websocket 에서 수신한 메시지를 화면에 출력한다.
     websocket.onmessage = function(e){
@@ -94,6 +82,7 @@ function SendUserInfo()
             case "register":
               if( arrData[2] == '200' )
               {
+                alert("User registration was successful.["+ UserId.value +"]");
               }
               else
               {
