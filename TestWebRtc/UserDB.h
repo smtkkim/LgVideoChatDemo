@@ -24,7 +24,11 @@ public:
 	int GetUserPasswd(std::string& id, std::string& passwd);
 	std::string saltStr(const std::string str);
 	std::string sha256(const std::string str);
-
+	int ClearWrongPasswdCnt(std::string& id);
+	int IncreaseWrongPasswdCnt(std::string& id);
+	int GetWrongPasswdCnt(std::string& id);
+	int UpdateWrongPasswdLockTime(std::string& id, uint64_t utc_time);
+	uint64_t GetWrongPasswdLockTime(std::string& id);
 
 private:
 	sql::Driver* driver;

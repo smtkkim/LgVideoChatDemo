@@ -180,6 +180,10 @@ function StartSession()
               {
                   alert("Password Database failed");
               }
+              else if (iStatusCode == 420)
+              {
+                  alert("Too many password is wrong. \r\n Wait for 60 seconds...");
+              }
               btnLogin.disabled = false;
               btnInvite.disabled = true;
             }

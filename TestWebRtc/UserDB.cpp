@@ -75,6 +75,19 @@ DELETE FROM tbl_videochat WHERE unique_id = 'test'
 UPDATE tbl_videochat SET passwd = '29e586cd7f3164b3b0448c2953eb7f052ea474bbcd771bbd8820872da9581d56' WHERE unique_id = 'robin'
 */
 
+
+#define SQL_WRONG_PASSWD_CNT_CLEAR		"UPDATE tbl_videochat SET passwd_wrong_cnt = 0 WHERE unique_id = ?"
+
+#define SQL_WRONG_PASSWD_INC			"UPDATE tbl_videochat SET passwd_wrong_cnt = passwd_wrong_cnt + 1 WHERE unique_id = ?"
+
+#define SQL_WRONG_PASSWD_CNT			"SELECT passwd_wrong_cnt FROM tbl_videochat WHERE unique_id = ?"
+
+#define SQL_WRONG_PASSWD_LOCK_UPDATE	"UPDATE tbl_videochat SET passwd_lock_utc = ? WHERE unique_id = ?"
+
+#define SQL_WRONG_PASSWD_LOCK_UTC		"SELECT passwd_lock_utc FROM tbl_videochat WHERE unique_id = ?"
+
+
+
 const std::string salt = "_cmu_videochat";
 
 CUserDB::CUserDB()
@@ -415,6 +428,226 @@ std::string CUserDB::sha256(const std::string str)
 		ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(hash[i]);
 	}
 	return ss.str();
+}
+
+
+
+int CUserDB::ClearWrongPasswdCnt(std::string& id)
+{
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
+
+	std::lock_guard<std::mutex> guard(mMutex);
+
+	int count = 0;
+	sql::PreparedStatement* pstmt;
+	sql::ResultSet* res;
+
+	try
+	{
+		pstmt = con->prepareStatement(SQL_WRONG_PASSWD_CNT_CLEAR);
+		pstmt->setString(1, id);
+		res = pstmt->executeQuery();
+
+		if (res->next()) {
+		}
+	}
+	catch (sql::SQLException& e)
+	{
+		std::cout << "# ERR: SQLException in " << __FILE__;
+		std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+		std::cout << "# ERR: " << e.what();
+		std::cout << " (MySQL error code: " << e.getErrorCode();
+		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
+		return -1;
+	}
+
+	delete res;
+	delete pstmt;
+
+#if DB_DEBUG
+	printf("-[%s]\n", __func__);
+#endif
+
+	return count;
+}
+
+int CUserDB::IncreaseWrongPasswdCnt(std::string& id)
+{
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
+
+	std::lock_guard<std::mutex> guard(mMutex);
+
+	int count = 0;
+	sql::PreparedStatement* pstmt;
+	sql::ResultSet* res;
+
+	try
+	{
+		pstmt = con->prepareStatement(SQL_WRONG_PASSWD_INC);
+		pstmt->setString(1, id);
+		res = pstmt->executeQuery();
+
+		if (res->next()) {
+		}
+	}
+	catch (sql::SQLException& e)
+	{
+		std::cout << "# ERR: SQLException in " << __FILE__;
+		std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+		std::cout << "# ERR: " << e.what();
+		std::cout << " (MySQL error code: " << e.getErrorCode();
+		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
+		return -1;
+	}
+
+	delete res;
+	delete pstmt;
+
+#if DB_DEBUG
+	printf("-[%s]\n", __func__);
+#endif
+
+	return count;
+}
+
+
+int CUserDB::GetWrongPasswdCnt(std::string& id)
+{
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
+
+	std::lock_guard<std::mutex> guard(mMutex);
+
+	int count = 0;
+	sql::PreparedStatement* pstmt;
+	sql::ResultSet* res;
+
+	try
+	{
+		pstmt = con->prepareStatement(SQL_WRONG_PASSWD_CNT);
+		pstmt->setString(1, id);
+		res = pstmt->executeQuery();
+
+		if (res->next()) {
+			count = res->getInt(1);
+		}
+	}
+	catch (sql::SQLException& e)
+	{
+		std::cout << "# ERR: SQLException in " << __FILE__;
+		std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+		std::cout << "# ERR: " << e.what();
+		std::cout << " (MySQL error code: " << e.getErrorCode();
+		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
+		return -1;
+	}
+
+	delete res;
+	delete pstmt;
+
+#if DB_DEBUG
+	printf("-[%s]\n", __func__);
+#endif
+
+	return count;
+}
+
+
+
+int CUserDB::UpdateWrongPasswdLockTime(std::string& id, uint64_t utc_time)
+{
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
+
+	std::lock_guard<std::mutex> guard(mMutex);
+
+	int count = 0;
+	sql::PreparedStatement* pstmt;
+	sql::ResultSet* res;
+
+	try
+	{
+		pstmt = con->prepareStatement(SQL_WRONG_PASSWD_LOCK_UPDATE);
+		pstmt->setUInt64(1, utc_time);
+		pstmt->setString(2, id);
+		res = pstmt->executeQuery();
+
+		if (res->next()) {
+		}
+	}
+	catch (sql::SQLException& e)
+	{
+		std::cout << "# ERR: SQLException in " << __FILE__;
+		std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+		std::cout << "# ERR: " << e.what();
+		std::cout << " (MySQL error code: " << e.getErrorCode();
+		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
+		return -1;
+	}
+
+	delete res;
+	delete pstmt;
+
+#if DB_DEBUG
+	printf("-[%s]\n", __func__);
+#endif
+
+	return count;
+}
+
+
+
+uint64_t CUserDB::GetWrongPasswdLockTime(std::string& id)
+{
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
+
+	std::lock_guard<std::mutex> guard(mMutex);
+
+	uint64_t utc_time = 0;
+	sql::PreparedStatement* pstmt;
+	sql::ResultSet* res;
+
+	try
+	{
+		pstmt = con->prepareStatement(SQL_WRONG_PASSWD_LOCK_UTC);
+		pstmt->setString(1, id);
+		res = pstmt->executeQuery();
+
+		if (res->next()) {
+			utc_time = res->getUInt64(1);
+		}
+	}
+	catch (sql::SQLException& e)
+	{
+		std::cout << "# ERR: SQLException in " << __FILE__;
+		std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+		std::cout << "# ERR: " << e.what();
+		std::cout << " (MySQL error code: " << e.getErrorCode();
+		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
+		return -1;
+	}
+
+	delete res;
+	delete pstmt;
+
+#if DB_DEBUG
+	printf("-[%s]\n", __func__);
+#endif
+
+	return utc_time;
 }
 
 

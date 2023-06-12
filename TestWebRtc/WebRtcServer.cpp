@@ -244,11 +244,23 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		}
 
 		// passwd check
+		std::string user_id = clsList[2];
 		std::string db_user_passwd;
 
-		if (m_clsUserDB->CountUserId(clsList[2]) == 1)	// check if id is registered
+		if (m_clsUserDB->CountUserId(user_id) == 1)	// check if id is registered
 		{
-			if (m_clsUserDB->GetUserPasswd(clsList[2], db_user_passwd) == 0)	// get the passwd
+			uint64_t utc_time_now;
+			getTimeUtc(&utc_time_now);
+
+			if (m_clsUserDB->GetWrongPasswdLockTime(user_id) > utc_time_now)	// check if password lock time
+			{
+				// reject caused password lock time 
+				Send(pszClientIp, iClientPort, "res|login|420");
+
+				return true;
+			}
+
+			if (m_clsUserDB->GetUserPasswd(user_id, db_user_passwd) == 0)	// get the passwd
 			{
 				std::string entered_passwd = m_clsUserDB->sha256( m_clsUserDB->saltStr(clsList[3]) );
 
@@ -256,11 +268,25 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 				{
 					// passwd OK
 					printf("password is correct\n");
+					m_clsUserDB->ClearWrongPasswdCnt(user_id);
+					m_clsUserDB->UpdateWrongPasswdLockTime(user_id, 0);
 				}
 				else
 				{
 					printf("password is wrong\n");
+					m_clsUserDB->IncreaseWrongPasswdCnt(user_id);
+
+					// check if passwd was wrong 3 times
+					if (m_clsUserDB->GetWrongPasswdCnt(user_id) >= 3)
+					{
+						// too many times passwd wrong and update lock time
+						m_clsUserDB->UpdateWrongPasswdLockTime(user_id, utc_time_now + 60);
+					}
+
 					Send(pszClientIp, iClientPort, "res|login|400");
+
+
+
 					return true;
 				}
 			}
