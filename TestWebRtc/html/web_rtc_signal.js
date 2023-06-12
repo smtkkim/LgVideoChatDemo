@@ -218,11 +218,17 @@ function StartSession()
           case "contact":
             ClearLog()
             Print("### Contact ID Logined ###")
+			//Print("unique_id   /  name  /   email  /   phone  / address ")
             var iContactCount = parseInt( arrData[2] );
             for (var i = 0; i < iContactCount; i++)
             {
-              Print(arrData[3+i])
+              //Print(arrData[3+i])
+              // send userinfo
+              Send( "req|userinfo|" + arrData[3+i] );
             }
+            break;
+          case "userinfo":
+			Print(arrData[2] + " / " + arrData[3] + " / " + arrData[4] + " / " + arrData[5] + " / " + arrData[6])
             break;
         }
         break;

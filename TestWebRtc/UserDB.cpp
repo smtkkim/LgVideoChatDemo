@@ -50,6 +50,8 @@ INSERT INTO tbl_videochat (unique_id, passwd, username, email, phone, address)
 VALUES ('eve', 'lge1234', 'eve jeon', 'eve@lge.com', '01012345678', "Gangseo-gu Seoul")
 */
 
+#define SQL_USER_INFO		"SELECT unique_id, username, email, phone, address FROM tbl_videochat WHERE unique_id = ?"
+
 // update user info
 #define SQL_UPDATE_USER		"UPDATE tbl_videochat SET passwd = ?, username = ?, email = ?, phone = ?, address = ? WHERE unique_id = ?"
 
@@ -100,6 +102,9 @@ CUserDB::CUserDB()
 	//GetUserPasswd(std::string("robin"), passwd);
 	//RegisterUserId(std::string("test"), std::string("lge1234"), std::string("test kim"), std::string("test@lge.com"), std::string("01012345678"), std::string("Seocho-gu Seoul"));
 	//DeleteUserId(std::string("test"));
+	//std::string username; std::string email; std::string phone; std::string address;
+	//GetUserInfo(std::string("robin"), username, email, phone, address);
+	//printf("robin : %s : %s : %s : %s", username.c_str(), email.c_str(), phone.c_str(), address.c_str());
 
 	// https://www.convertstring.com/ko/Hash/SHA256
 	//std::string sha256_passwd = sha256(std::string("lge1234") + salt);
@@ -187,6 +192,52 @@ int CUserDB::RegisterUserId(std::string& unique_id, std::string& passwd, std::st
 		res = pstmt->executeQuery();
 
 		if (res->next()) {
+		}
+	}
+	catch (sql::SQLException& e)
+	{
+		std::cout << "# ERR: SQLException in " << __FILE__;
+		std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+		std::cout << "# ERR: " << e.what();
+		std::cout << " (MySQL error code: " << e.getErrorCode();
+		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
+		return -1;
+	}
+
+	delete res;
+	delete pstmt;
+
+#if DB_DEBUG
+	printf("-[%s]\n", __func__);
+#endif
+	return 0;
+}
+
+
+int CUserDB::GetUserInfo(std::string& unique_id, std::string& username, std::string& email, std::string& phone, std::string& address)
+{
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
+
+	std::lock_guard<std::mutex> guard(mMutex);
+
+	sql::PreparedStatement* pstmt;
+	sql::ResultSet* res;
+
+	try
+	{
+		pstmt = con->prepareStatement(SQL_USER_INFO);
+		pstmt->setString(1, unique_id);
+
+		res = pstmt->executeQuery();
+
+		if (res->next()) {
+			username = res->getString("username");
+			email = res->getString("email");
+			phone = res->getString("phone");
+			address = res->getString("address");
 		}
 	}
 	catch (sql::SQLException& e)

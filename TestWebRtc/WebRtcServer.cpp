@@ -355,6 +355,26 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 
 		Send(pszClientIp, iClientPort, strContactList.c_str());
 	}
+	else if (!strcmp(pszCommand, "userinfo"))
+	{
+		std::string strUserInfo;
+		std::string username; 
+		std::string email; 
+		std::string phone; 
+		std::string address;
+
+		if (iCount < 3)
+		{
+			printf("userinfo request arg is not correct\n");
+			return false;
+		}
+
+		m_clsUserDB->GetUserInfo(clsList[2], username, email, phone, address);
+
+		strUserInfo = "res|userinfo|" + clsList[2] + "|" + username + "|" + email + "|" + phone + "|" + address;
+
+		Send(pszClientIp, iClientPort, strUserInfo.c_str());
+	}
 	else if( !strcmp( pszCommand, "bye" ) )
 	{
 		SendCall( pszClientIp, iClientPort, strData, strUserId );
