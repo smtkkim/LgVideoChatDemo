@@ -86,7 +86,12 @@ UPDATE tbl_videochat SET passwd = '29e586cd7f3164b3b0448c2953eb7f052ea474bbcd771
 
 #define SQL_WRONG_PASSWD_LOCK_UTC		"SELECT passwd_lock_utc FROM tbl_videochat WHERE unique_id = ?"
 
+/*
+UPDATE tbl_videochat SET passwd_update_utc = '1655099156' WHERE unique_id = 'alice'
+*/
+#define SQL_UPDATE_PASSWD_UPDATED_TIME	"UPDATE tbl_videochat SET passwd_update_utc = ? WHERE unique_id = ?"
 
+#define SQL_GET_PASSWD_UPDATED_TIME		"SELECT passwd_update_utc FROM tbl_videochat WHERE unique_id = ?"
 
 const std::string salt = "_cmu_videochat";
 
@@ -650,4 +655,48 @@ uint64_t CUserDB::GetWrongPasswdLockTime(std::string& id)
 	return utc_time;
 }
 
+
+
+uint64_t CUserDB::GetPasswdUpdatedTime(std::string& id)
+{
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
+
+	std::lock_guard<std::mutex> guard(mMutex);
+
+	uint64_t utc_time = 0;
+	sql::PreparedStatement* pstmt;
+	sql::ResultSet* res;
+
+	try
+	{
+		pstmt = con->prepareStatement(SQL_GET_PASSWD_UPDATED_TIME);
+		pstmt->setString(1, id);
+		res = pstmt->executeQuery();
+
+		if (res->next()) {
+			utc_time = res->getUInt64(1);
+		}
+	}
+	catch (sql::SQLException& e)
+	{
+		std::cout << "# ERR: SQLException in " << __FILE__;
+		std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+		std::cout << "# ERR: " << e.what();
+		std::cout << " (MySQL error code: " << e.getErrorCode();
+		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
+		return -1;
+	}
+
+	delete res;
+	delete pstmt;
+
+#if DB_DEBUG
+	printf("-[%s]\n", __func__);
+#endif
+
+	return utc_time;
+}
 

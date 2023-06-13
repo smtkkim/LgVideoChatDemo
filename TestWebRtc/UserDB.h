@@ -29,6 +29,7 @@ public:
 	int GetWrongPasswdCnt(std::string& id);
 	int UpdateWrongPasswdLockTime(std::string& id, uint64_t utc_time);
 	uint64_t GetWrongPasswdLockTime(std::string& id);
+	uint64_t GetPasswdUpdatedTime(std::string& id);
 
 private:
 	sql::Driver* driver;

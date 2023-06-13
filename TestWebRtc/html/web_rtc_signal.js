@@ -184,6 +184,10 @@ function StartSession()
               {
                   alert("Too many password is wrong. \r\n Wait for 60 seconds...");
               }
+              else if (iStatusCode == 430)
+              {
+                  alert("Your password is outdated and needs to be changed.");
+              }
               btnLogin.disabled = false;
               btnInvite.disabled = true;
             }

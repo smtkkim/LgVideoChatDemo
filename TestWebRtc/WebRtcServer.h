@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
  *
  * This program is free software; you can redistribute it and/or modify
@@ -13,7 +13,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 #ifndef _SIMPLE_HTTP_SERVER_H_
@@ -47,6 +47,7 @@ private:
 	bool Send( const char * pszClientIp, int iClientPort, const char * fmt, ... );
 	bool SendCall( const char * pszClientIp, int iClientPort, std::string & strData, std::string & strUserId );
 	int getTimeUtc(uint64_t* time_utc);
+	bool NeedPasswdUpdate(time_t last_time, time_t current_time);
 };
 
 #endif

@@ -270,6 +270,15 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 					printf("password is correct\n");
 					m_clsUserDB->ClearWrongPasswdCnt(user_id);
 					m_clsUserDB->UpdateWrongPasswdLockTime(user_id, 0);
+
+                    // check password updated time
+                    time_t last_updated_time = m_clsUserDB->GetPasswdUpdatedTime(user_id);
+                    if (NeedPasswdUpdate((time_t)utc_time_now, last_updated_time))
+                    {
+                        printf("Password is outdated and  needs to be changed.\n");
+                        Send(pszClientIp, iClientPort, "res|login|430");
+                        return true;
+                    }
 				}
 				else
 				{
@@ -486,4 +495,9 @@ int CWebRtcServer::getTimeUtc(uint64_t* time_utc)
 	return 0;
 }
 
+bool CWebRtcServer::NeedPasswdUpdate(time_t last_time, time_t current_time) {
+    time_t diff = std::abs(last_time - current_time);
 
+    // 30d * 24h * 60m * 60s
+    return diff >= (30 * 24 * 60 * 60);
+}
