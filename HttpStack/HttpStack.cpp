@@ -33,7 +33,7 @@ CHttpStack::CHttpStack() : m_pclsCallBack(NULL)
 {
 	if( m_psttMd == NULL )
 	{
-		OpenSSL_add_all_digests();
+		//OpenSSL_add_all_digests();
 		m_psttMd = EVP_get_digestbyname( "sha1" );
 	}
 }
@@ -78,7 +78,7 @@ bool CHttpStack::Stop( )
  */
 void CHttpStack::Release()
 {
-	EVP_cleanup();
+	//EVP_cleanup();
 }
 
 /**

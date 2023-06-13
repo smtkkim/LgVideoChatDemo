@@ -193,7 +193,7 @@ LOOP_END:
 
 	if( pclsStack->m_clsSetup.m_bUseTls )
 	{
-		ERR_remove_thread_state( NULL );
+		//ERR_remove_thread_state( NULL );
 	}
 
 	return 0;

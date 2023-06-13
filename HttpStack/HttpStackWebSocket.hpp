@@ -167,7 +167,7 @@ bool CHttpStack::MakeWebSocketResponse( CHttpMessage * pclsRecv, CHttpMessage * 
 	pclsSend->AddHeader( "Upgrade", "websocket" );
 	pclsSend->AddHeader( "Connection", "Upgrade" );
 
-	EVP_MD_CTX	sttCtx;
+	EVP_MD_CTX	*sttCtx;
 	uint8_t			szDigest[EVP_MAX_MD_SIZE];
 	char				szOutput[EVP_MAX_MD_SIZE*2+1];
 	uint32_t		iDigestLen;
@@ -175,10 +175,12 @@ bool CHttpStack::MakeWebSocketResponse( CHttpMessage * pclsRecv, CHttpMessage * 
 	memset( szDigest, 0, sizeof(szDigest) );
 	memset( szOutput, 0, sizeof(szOutput) );
 
-	EVP_DigestInit( &sttCtx, m_psttMd );
-	EVP_DigestUpdate( &sttCtx, strKey.c_str(), strKey.length() );
-	EVP_DigestUpdate( &sttCtx, "258EAFA5-E914-47DA-95CA-C5AB0DC85B11", 36 );
-	EVP_DigestFinal( &sttCtx, szDigest, &iDigestLen );
+	sttCtx = EVP_MD_CTX_new();
+	EVP_DigestInit( sttCtx, m_psttMd );
+	EVP_DigestUpdate( sttCtx, strKey.c_str(), strKey.length() );
+	EVP_DigestUpdate( sttCtx, "258EAFA5-E914-47DA-95CA-C5AB0DC85B11", 36 );
+	EVP_DigestFinal( sttCtx, szDigest, &iDigestLen );
+	EVP_MD_CTX_free( sttCtx );
 
 	Base64Encode( (char *)szDigest, iDigestLen, szOutput, sizeof(szOutput) );
 

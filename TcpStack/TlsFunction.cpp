@@ -15,12 +15,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
  */
-
 #include "SipPlatformDefine.h"
 
 #ifdef WIN32
-#pragma comment( lib, "libeay32" )
-#pragma comment( lib, "ssleay32" )
+#pragma comment( lib, "libcrypto" )
+#pragma comment( lib, "libssl" )
 #endif
 
 #include "TlsFunction.h"
@@ -54,14 +53,14 @@ static CSipMutex gclsMutex;
  */
 static void SSLLockingFunction( int mode, int n, const char * file, int line )
 {
-	if( mode & CRYPTO_LOCK )
-	{
-		garrMutex[n].acquire();
-	}
-	else
-	{
-		garrMutex[n].release();
-	}
+//	if( mode & CRYPTO_LOCK )
+//	{
+//		garrMutex[n].acquire();
+//	}
+//	else
+//	{
+//		garrMutex[n].release();
+//	}
 }
 
 /**
@@ -85,6 +84,7 @@ static unsigned long SSLIdFunction( )
  */
 static bool SSLStart( )
 {
+#if 0
 	garrMutex = new CSipMutex[ CRYPTO_num_locks() ];
 	if( garrMutex == NULL )
 	{
@@ -100,6 +100,7 @@ static bool SSLStart( )
 		CLog::Print( LOG_ERROR, "SSL_init_library error" );
 		return false;
 	}
+#endif
 
 	return true;
 }
@@ -111,6 +112,7 @@ static bool SSLStart( )
  */
 static bool SSLStop( )
 {
+#if 0
 	CRYPTO_set_id_callback(NULL);
 	CRYPTO_set_locking_callback(NULL);
 
@@ -119,6 +121,7 @@ static bool SSLStop( )
 		delete [] garrMutex;
 		garrMutex = NULL;
 	}
+#endif
 
 	return true;
 }
@@ -151,8 +154,8 @@ bool SSLServerStart( const char * szCertFile, const char * szCipherList )
 
 		if( SSLStart() )
 		{
-			SSL_load_error_strings();
-			SSLeay_add_ssl_algorithms();
+			//SSL_load_error_strings();
+			//SSLeay_add_ssl_algorithms();
 
 			gpsttServerMeth = SSLv23_server_method();
 			if( (gpsttServerCtx = SSL_CTX_new( gpsttServerMeth )) == NULL )
@@ -181,7 +184,7 @@ bool SSLServerStart( const char * szCertFile, const char * szCipherList )
 				}
 				else
 				{
-					SSL_CTX_set_ecdh_auto( gpsttServerCtx, 1 );
+					//SSL_CTX_set_ecdh_auto( gpsttServerCtx, 1 );
 
 					if( szCipherList && strlen(szCipherList) > 0 )
 					{
@@ -243,8 +246,8 @@ bool SSLClientStart( )
 	{
 		if( SSLStart() )
 		{
-			SSL_load_error_strings();
-			SSLeay_add_ssl_algorithms();
+			//SSL_load_error_strings();
+			//SSLeay_add_ssl_algorithms();
 
 			gpsttClientMeth = SSLv23_client_method();
 
@@ -347,15 +350,15 @@ SSL_CTX * SSLClientStart( const char * szCertFile )
  */
 void SSLFinal()
 {
-	ERR_free_strings();
+	//ERR_free_strings();
 
 #ifdef USE_TLS_FREE
 	// http://clseto.mysinablog.com/index.php?op=ViewArticle&articleId=3304652
-	ERR_remove_state(0);
-	COMP_zlib_cleanup();
+	//ERR_remove_state(0);
+	//COMP_zlib_cleanup();
 	OBJ_NAME_cleanup(-1);
-	CRYPTO_cleanup_all_ex_data();
-	EVP_cleanup();
+	//CRYPTO_cleanup_all_ex_data();
+	//EVP_cleanup();
 	sk_SSL_COMP_free( SSL_COMP_get_compression_methods() );
 #endif
 }
