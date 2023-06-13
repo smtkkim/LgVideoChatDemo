@@ -232,7 +232,7 @@ function StartSession()
             }
             break;
           case "userinfo":
-			Print(arrData[2] + " / " + arrData[3] + " / " + arrData[4] + " / " + arrData[5] + " / " + arrData[6])
+			Print("[" + arrData[2] + "]  " + arrData[3] + " / " + arrData[4] + " / " + arrData[5] + " / " + arrData[6])
             break;
         }
         break;
