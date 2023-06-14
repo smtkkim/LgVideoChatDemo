@@ -22,6 +22,7 @@
 #pragma comment( lib, "libssl" )
 #endif
 
+#include <openssl/applink.c>
 #include "TlsFunction.h"
 #include "SipMutex.h"
 #include "Log.h"
