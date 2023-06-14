@@ -12,7 +12,72 @@ btnBye.disabled = true;
 
 function CheckDuplicateId()
 {
-  Log("Check Duplicate ID");
+  let websocket = null;
+  let UserId = document.getElementById('userid_id');
+
+  if( UserId.value.length == 0 )
+  {
+    Log("User ID has not been entered");
+    alert("User ID has not been entered" );
+    return;
+  }
+
+  if( websocket == null )
+  {
+    if( window.location.protocol == "https:" )
+    {
+      websocket = new WebSocket("wss://" + window.location.hostname );
+    }
+    else
+    {
+      websocket = new WebSocket("ws://" + window.location.hostname + ":8080");
+    }
+
+    websocket.onopen = function(e){
+      websocket.send("req|check|" + UserId.value)
+    };
+    // websocket 에서 수신한 메시지를 화면에 출력한다.
+    websocket.onmessage = function(e){
+      Log("Recv[" + e.data + "]");
+	
+      var arrData = e.data.split("|");
+  
+      websocket.close();
+      switch( arrData[0] )
+      {
+        case "res":
+          switch( arrData[1] )
+          {
+            case "check":
+              if( arrData[2] == '200' )
+              {
+                alert("user ID is available.["+ UserId.value +"]");
+              }
+              else
+              {
+                var iStatusCode = parseInt( arrData[2] );
+
+                if (iStatusCode == 400)
+                {
+                  Log("user ID is alread registered");
+                  alert("user ID is alread registered\r\nPlease use another user ID");
+                }
+                else if (iStatusCode == 410)
+                {
+                  alert("userid has not been entered");
+                }
+              }
+              break;
+          }
+          break;
+      }
+    };	
+    // websocket 세션이 종료되면 화면에 출력한다.
+    websocket.onclose = function(e){
+      websocket = null;
+      Log("WebSocket is closed");
+    }
+  }
 }
 
 function SendUserInfo()
@@ -28,6 +93,26 @@ function SendUserInfo()
   let passwordRules = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{10,15}$/;
   let websocket = null;
 
+  if( UserId.value.length == 0 )
+  {
+    Log("userid has not been entered");
+    alert("userid has not been entered" );
+    return;
+  }
+
+  if(passwordRules.test(UserPasswd.value) == false ){
+    Log( "Password format is not valid : "+ UserPasswd.value );
+    alert("Password format is not valid");
+    return;
+  }
+
+  if( UserName.value.length == 0 )
+  {
+    Log("userid has not been entered");
+    alert("userid has not been entered" );
+    return;
+  }
+
   if( UserEmail.value.length == 0 )
   {
     Log( "Email has not been entered" );
@@ -37,14 +122,8 @@ function SendUserInfo()
 
   if(emailRules.test(UserEmail.value)==false){
     //이메일 형식이 알파벳+숫자@알파벳+숫자.알파벳+숫자 형식이 아닐경우
-    Log( "The email format is not valid.: "+ UserEmail.value );
-    alert("The email format is not valid.");
-    return;
-  }
-
-  if(passwordRules.test(UserPasswd.value)==false){
-    Log( "The Password format is not valid.: "+ UserPasswd.value );
-    alert("The Password format is not valid.");
+    Log("Email format is not valid: "+ UserEmail.value );
+    alert("Email format is not valid");
     return;
   }
 
@@ -73,7 +152,8 @@ function SendUserInfo()
       Log("Recv[" + e.data + "]");
 	
       var arrData = e.data.split("|");
-
+  
+      websocket.close();
       switch( arrData[0] )
       {
         case "res":
@@ -96,6 +176,11 @@ function SendUserInfo()
                 {
                   alert("can not INSERT the user info to mysql");
                 }
+                else if (iStatusCode == 420)
+                {
+                  Log("Password format is not valid");
+                  alert("password format is not valid");
+                }
               }
               break;
           }
@@ -104,8 +189,8 @@ function SendUserInfo()
     };	
     // websocket 세션이 종료되면 화면에 출력한다.
     websocket.onclose = function(e){
-    websocket = null;
-    Log("WebSocket is closed");
+      websocket = null;
+      Log("WebSocket is closed");
     }
   }
 }

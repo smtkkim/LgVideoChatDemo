@@ -15,7 +15,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
  */
-
+#include <iostream>
+#include <regex>
 #include "WebRtcServer.h"
 #include "HttpStatusCode.h"
 #include "FileUtility.h"
@@ -198,7 +199,36 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 	const char * pszCommand = clsList[1].c_str();
 	std::string strUserId;
 
-	if (!strcmp(pszCommand, "register"))
+	if (!strcmp(pszCommand, "check"))
+	{
+		if (iCount < 3)
+		{
+			printf("register request arg is not correct\n");
+			return false;
+		}
+
+		std::string unique_id = clsList[2];
+
+		if( unique_id.length() == 0)
+		{
+			printf("userid has not been entered");
+			Send(pszClientIp, iClientPort, "res|check|410");
+			return true;
+		}
+
+		int CountUserId = m_clsUserDB->CountUserId(unique_id);
+		if ( CountUserId == 0 )   // check if id is alread registered
+		{
+			printf("same unique_id is already exist\n");
+			Send(pszClientIp, iClientPort, "res|check|200");
+		}
+		else if ( CountUserId >= 1 )   // check if id is alread registered
+		{
+			printf("same unique_id is already exist\n");
+			Send(pszClientIp, iClientPort, "res|check|400");
+		}
+	}
+	else if (!strcmp(pszCommand, "register"))
 	{
 		if (iCount < 8)
 		{
@@ -213,10 +243,27 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		std::string phone = clsList[6];
 		std::string address = clsList[7];
 
-		if (m_clsUserDB->CountUserId(unique_id) >= 1)   // check if id is alread registered
+		if( unique_id.length() == 0
+			|| passwd.length() == 0
+			|| username.length() == 0
+			|| email.length() == 0)
+		{
+			printf("can not INSERT the user info to mysql");
+			Send(pszClientIp, iClientPort, "res|register|410");
+			return true;
+		}
+
+		if (m_clsUserDB->CountUserId(unique_id) >= 1 )   // check if id is alread registered
 		{
 			printf("same unique_id is already exist\n");
 			Send(pszClientIp, iClientPort, "res|register|400");
+			return true;
+		}
+
+    	if (validatePassword(passwd) == false ) 
+		{
+        	printf("password format is not valid\n");
+			Send(pszClientIp, iClientPort, "res|register|420");
 			return true;
 		}
 
@@ -500,4 +547,30 @@ bool CWebRtcServer::NeedPasswdUpdate(time_t last_time, time_t current_time) {
 
     // 30d * 24h * 60m * 60s
     return diff >= (30 * 24 * 60 * 60);
+}
+
+bool CWebRtcServer::validatePassword(const std::string& password) {
+    // 최소 10자 이상의 길이를 가지는지 검사
+    if (password.length() < 10) {
+        return false;
+    }
+
+    // 문자, 특수문자, 숫자를 포함하는지 검사
+    std::regex letterRegex("[a-zA-Z]");
+    std::regex specialCharRegex("[!@#$%^&*-_=+]");
+    std::regex digitRegex("[0-9]");
+
+    if (!std::regex_search(password, letterRegex)) {
+        return false;
+    }
+
+    if (!std::regex_search(password, specialCharRegex)) {
+        return false;
+    }
+
+    if (!std::regex_search(password, digitRegex)) {
+        return false;
+    }
+
+    return true;
 }
