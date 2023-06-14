@@ -149,7 +149,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>../mysql-8.0.33-winx64/include/jdbc;../HttpStack;../TcpStack;../Http2Parser;../HttpParser;../XmlParser;../SipPlatform;../openssl-1.1/x64/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../mysql-8.0.33-winx64/include/jdbc;../HttpStack;../TcpStack;../Http2Parser;../HttpParser;../XmlParser;../SipPlatform;../openssl-1.1/x86/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>STATIC_CONCPP;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
