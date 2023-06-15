@@ -48,6 +48,7 @@ private:
 	bool SendCall( const char * pszClientIp, int iClientPort, std::string & strData, std::string & strUserId );
 	int getTimeUtc(uint64_t* time_utc);
 	bool NeedPasswdUpdate(time_t last_time, time_t current_time);
+	bool validatePassword(const std::string& password);
 };
 
 #endif
