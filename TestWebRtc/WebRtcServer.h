@@ -49,6 +49,7 @@ private:
 	int getTimeUtc(uint64_t* time_utc);
 	bool NeedPasswdUpdate(time_t last_time, time_t current_time);
 	bool validatePassword(const std::string& password);
+	std::string generateKey(const int len);
 };
 
 #endif

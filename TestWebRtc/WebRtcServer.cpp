@@ -17,6 +17,7 @@
  */
 #include <iostream>
 #include <regex>
+#include <random>
 #include "WebRtcServer.h"
 #include "HttpStatusCode.h"
 #include "FileUtility.h"
@@ -574,3 +575,22 @@ bool CWebRtcServer::validatePassword(const std::string& password) {
 
     return true;
 }
+
+std::string CWebRtcServer::generateKey(const int len)
+{
+	// 랜덤으로 선택할 수 있는 문자
+	const std::string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+
+	std::random_device rd;
+	std::mt19937 generator(rd());
+
+	std::uniform_int_distribution<> distribution(0, chars.size() - 1);
+	std::string key;
+
+	for (int i = 0; i < len; ++i) {
+		key += chars[distribution(generator)];
+	}
+
+	return key;
+}
+

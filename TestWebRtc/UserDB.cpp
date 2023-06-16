@@ -21,7 +21,8 @@
 	address    TEXT    NOT NULL, \n \
 	passwd_update_utc INTEGER,   \n \
 	passwd_wrong_cnt  INTEGER DEFAULT 0,  \n \
-	passwd_lock_utc   INTEGER DEFAULT 0   \n \
+	passwd_lock_utc   INTEGER DEFAULT 0,  \n \
+	gotp       TEXT              \n \
 	);"
 /*
 CREATE TABLE IF NOT EXISTS tbl_videochat (
@@ -52,6 +53,12 @@ VALUES ('bob', 'lge1234', 'bob park', 'bob@lge.com', '01012345678', "Gangnam-gu 
 INSERT INTO tbl_videochat (unique_id, passwd, username, email, phone, address)
 VALUES ('eve', 'lge1234', 'eve jeon', 'eve@lge.com', '01012345678', "Gangseo-gu Seoul")
 */
+
+// update user info
+#define SQL_UPDATE_GOTP		"UPDATE tbl_videochat SET gotp = ? WHERE unique_id = ?"
+
+#define SQL_COUNT_GOTP		"SELECT COUNT(*) FROM tbl_videochat WHERE gotp = ?"
+
 
 #define SQL_USER_INFO		"SELECT unique_id, username, email, phone, address FROM tbl_videochat WHERE unique_id = ?"
 
@@ -700,3 +707,90 @@ uint64_t CUserDB::GetPasswdUpdatedTime(std::string& id)
 	return utc_time;
 }
 
+
+int CUserDB::updateGOtp(std::string& id, std::string& otp_string)
+{
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
+
+	std::lock_guard<std::mutex> guard(mMutex);
+
+	sql::PreparedStatement* pstmt;
+	sql::ResultSet* res;
+
+	try
+	{
+		pstmt = con->prepareStatement(SQL_UPDATE_GOTP);
+		pstmt->setString(1, otp_string);
+		pstmt->setString(2, id);
+		res = pstmt->executeQuery();
+
+		if (res->next()) {
+		}
+	}
+	catch (sql::SQLException& e)
+	{
+		std::cout << "# ERR: SQLException in " << __FILE__;
+		std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+		std::cout << "# ERR: " << e.what();
+		std::cout << " (MySQL error code: " << e.getErrorCode();
+		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
+		return -1;
+	}
+
+	delete res;
+	delete pstmt;
+
+#if DB_DEBUG
+	printf("-[%s]\n", __func__);
+#endif
+
+	return 0;
+}
+
+
+int CUserDB::CountGOtp(std::string& otp_string)
+{
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
+
+	std::lock_guard<std::mutex> guard(mMutex);
+
+	int count = 0;
+	sql::PreparedStatement* pstmt;
+	sql::ResultSet* res;
+
+	try
+	{
+		pstmt = con->prepareStatement(SQL_COUNT_GOTP);
+		pstmt->setString(1, otp_string);
+		res = pstmt->executeQuery();
+
+		if (res->next()) {
+			count = res->getInt(1);
+		}
+	}
+	catch (sql::SQLException& e)
+	{
+		std::cout << "# ERR: SQLException in " << __FILE__;
+		std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+		std::cout << "# ERR: " << e.what();
+		std::cout << " (MySQL error code: " << e.getErrorCode();
+		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
+		return -1;
+	}
+
+	delete res;
+	delete pstmt;
+
+#if DB_DEBUG
+	printf("DB[CountGOtp]:(%d)\n", count);
+	printf("-[%s]\n", __func__);
+#endif
+
+	return count;
+}
