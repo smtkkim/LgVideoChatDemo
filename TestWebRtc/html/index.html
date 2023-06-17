@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+  <script src="qrcode.min.js"></script>
   <title>LgVideoChat</title>
 </head>
 
@@ -51,9 +52,10 @@
       <th>Google OTP KEY : </th>
       <td>
         <input id="google_key" type="text" name="Google" placeholder="" required size="50" readonly>
-        You should register this key to Google Authenticator
+        You should register Google Authenticator with QR code or key!
       </td>
     </tr>
+    <div id="qrcode"></div>
   <hr>
   <h2>Video Chat </h2>
   <div>

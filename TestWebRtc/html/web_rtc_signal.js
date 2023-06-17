@@ -165,8 +165,24 @@ function SendUserInfo()
               {
                 alert("User registration was successful.["+ UserId.value +"]");
 
+                // display Otp Key
                 var txtOtpKey = document.getElementById('google_key');
 				txtOtpKey.value = arrData[3]
+
+                // display Otp QR code
+                var txtIssuer = document.getElementById('userid_id');
+                var issuer = txtIssuer.value;
+                var txtName = document.getElementById('name_id');
+                var accountName = txtName.value;
+                var txtKey = document.getElementById('google_key');
+                var secretKey = txtKey.value;
+
+                var otpAuthUrl = "otpauth://totp/" + issuer + ":" + accountName + "?secret=" + secretKey + "&issuer=" + issuer;
+                var qrcode = new QRCode(document.getElementById("qrcode"), {
+                  text: otpAuthUrl,
+                  width: 128,
+                  height: 128,
+                });
               }
               else
               {
