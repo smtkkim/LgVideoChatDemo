@@ -47,11 +47,17 @@
   <p>
     <button id="btnSubmit" onclick="SendUserInfo()" >submit</button>
   </p>
-
+    <tr>
+      <th>Google OTP KEY : </th>
+      <td>
+        <input id="google_key" type="text" name="Google" placeholder="" required size="50" readonly>
+        You should register this key to Google Authenticator
+      </td>
+    </tr>
   <hr>
   <h2>Video Chat </h2>
   <div>
-    <p>user id : <input id="user_id" type="text" > password : <input id="user_passwd" type="password" > 
+    <p>user id : <input id="user_id" type="text" > password : <input id="user_passwd" type="password" > otp : <input id="otp_num" type="text" > 
     <button id="btnLogin" onclick="StartSession()" >login</button>
     <button id="btnRetreiveList" onclick="ContactList()" >Retreive logined ID</button>
     </p>

@@ -50,6 +50,9 @@ private:
 	bool NeedPasswdUpdate(time_t last_time, time_t current_time);
 	bool validatePassword(const std::string& password);
 	std::string generateKey(const int len);
+	int generateTOTP(const std::string& secret);
+	std::string base32_decode(const std::string& base32);
+	int base32_decode_char(char c);
 };
 
 #endif

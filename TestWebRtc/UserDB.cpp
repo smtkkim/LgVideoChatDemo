@@ -59,6 +59,8 @@ VALUES ('eve', 'lge1234', 'eve jeon', 'eve@lge.com', '01012345678', "Gangseo-gu 
 
 #define SQL_COUNT_GOTP		"SELECT COUNT(*) FROM tbl_videochat WHERE gotp = ?"
 
+#define SQL_GOTP_KEY        "SELECT gotp FROM tbl_videochat WHERE unique_id = ?"
+
 
 #define SQL_USER_INFO		"SELECT unique_id, username, email, phone, address FROM tbl_videochat WHERE unique_id = ?"
 
@@ -69,7 +71,7 @@ VALUES ('eve', 'lge1234', 'eve jeon', 'eve@lge.com', '01012345678', "Gangseo-gu 
 #define SQL_COUNT_USER		"SELECT COUNT(*) FROM tbl_videochat WHERE unique_id = ?"
 
 // find the password for unique_id
-#define SQL_USER_PASSWD		"SELECT passwd from tbl_videochat WHERE unique_id = ?"
+#define SQL_USER_PASSWD		"SELECT passwd FROM tbl_videochat WHERE unique_id = ?"
 
 // delete user
 #define SQL_DELETE_USER		"DELETE FROM tbl_videochat WHERE unique_id = ?"
@@ -793,4 +795,47 @@ int CUserDB::CountGOtp(std::string& otp_string)
 #endif
 
 	return count;
+}
+
+int CUserDB::GetGOtpKey(std::string& id, std::string& otp_key)
+{
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
+
+	std::lock_guard<std::mutex> guard(mMutex);
+
+	sql::PreparedStatement* pstmt;
+	sql::ResultSet* res;
+
+	try
+	{
+		pstmt = con->prepareStatement(SQL_GOTP_KEY);
+		pstmt->setString(1, id);
+		res = pstmt->executeQuery();
+
+		if (res->next()) {
+			otp_key = res->getString("gotp");
+		}
+	}
+	catch (sql::SQLException& e)
+	{
+		std::cout << "# ERR: SQLException in " << __FILE__;
+		std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+		std::cout << "# ERR: " << e.what();
+		std::cout << " (MySQL error code: " << e.getErrorCode();
+		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
+		return -1;
+	}
+
+	delete res;
+	delete pstmt;
+
+#if DB_DEBUG
+	printf("DB[GetGOtpKey]:(%s)\n", otp_key.c_str());
+	printf("-[%s]\n", __func__);
+#endif
+
+	return 0;
 }

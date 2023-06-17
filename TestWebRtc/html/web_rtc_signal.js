@@ -1,5 +1,6 @@
 var gstrUserId = "";
 var gstrUserPasswd = "";
+var gstrOtpNum = "";
 var gstrToId = "";
 var gstrSdp = "";
 var ws = null;
@@ -163,6 +164,9 @@ function SendUserInfo()
               if( arrData[2] == '200' )
               {
                 alert("User registration was successful.["+ UserId.value +"]");
+
+                var txtOtpKey = document.getElementById('google_key');
+				txtOtpKey.value = arrData[3]
               }
               else
               {
@@ -202,6 +206,9 @@ function StartSession()
 
   var txtUserPasswd = document.getElementById('user_passwd');
   gstrUserPasswd = txtUserPasswd.value;
+
+  var txtOtpNum = document.getElementById('otp_num');
+  gstrOtpNum = txtOtpNum.value;
   
   if( gstrUserId.length == 0 )
   {
@@ -211,6 +218,11 @@ function StartSession()
   if( gstrUserPasswd.length == 0 )
   {
     alert( "password is not provided" );
+    return;
+  }
+  if( gstrOtpNum.length == 0 )
+  {
+    alert( "otp is not provided" );
     return;
   }
   
@@ -227,7 +239,7 @@ function StartSession()
 
     // websocket 서버에 연결되면 연결 메시지를 화면에 출력한다.
     ws.onopen = function(e){
-        Send( "req|login|" + gstrUserId + "|" + gstrUserPasswd );
+        Send( "req|login|" + gstrUserId + "|" + gstrUserPasswd + "|" + gstrOtpNum );
     };
 
     // websocket 에서 수신한 메시지를 화면에 출력한다.
@@ -273,6 +285,11 @@ function StartSession()
               {
                   alert("Your password is outdated and needs to be changed.");
               }
+              else if (iStatusCode == 440)
+              {
+                  alert("OTP is WRONG!");
+              }
+
               btnLogin.disabled = false;
               btnInvite.disabled = true;
             }

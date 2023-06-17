@@ -27,6 +27,10 @@
 #include "CallMap.h"
 #include "MemoryDebug.h"
 
+#include <openssl/hmac.h>
+#include <openssl/bio.h>
+#include <openssl/evp.h>
+
 extern CHttpStack gclsStack;
 
 CWebRtcServer::CWebRtcServer() : m_bStop(false)
@@ -220,7 +224,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		int CountUserId = m_clsUserDB->CountUserId(unique_id);
 		if ( CountUserId == 0 )   // check if id is alread registered
 		{
-			printf("same unique_id is already exist\n");
+			printf("available unique_id (%s)\n", unique_id.c_str());
 			Send(pszClientIp, iClientPort, "res|check|200");
 		}
 		else if ( CountUserId >= 1 )   // check if id is alread registered
@@ -273,8 +277,22 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 
 		if (m_clsUserDB->RegisterUserId(unique_id, passwd, username, email, phone, address, utc_time) == 0)
 		{
-			printf("user is correctly registered");
-			Send(pszClientIp, iClientPort, "res|register|200");
+			std::string google_totp_key;
+			int count_key = 0;
+
+			do {
+				// generate Google TOTP key
+				google_totp_key = generateKey(32);
+
+				// check if same TOTP key is exist
+				count_key = m_clsUserDB->CountGOtp(google_totp_key);
+			} while (count_key != 0);
+
+			// save key to database
+			m_clsUserDB->updateGOtp(unique_id, google_totp_key);
+
+			printf("user is correctly registered (%s)", google_totp_key.c_str());
+			Send(pszClientIp, iClientPort, "res|register|200|%s", google_totp_key.c_str());
 		}
 		else
 		{
@@ -293,6 +311,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 
 		// passwd check
 		std::string user_id = clsList[2];
+		std::string otp_key;
 		std::string db_user_passwd;
 
 		if (m_clsUserDB->CountUserId(user_id) == 1)	// check if id is registered
@@ -318,6 +337,21 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 					printf("password is correct\n");
 					m_clsUserDB->ClearWrongPasswdCnt(user_id);
 					m_clsUserDB->UpdateWrongPasswdLockTime(user_id, 0);
+
+					// TOTP check
+					std::string entered_otp = clsList[4];
+					m_clsUserDB->GetGOtpKey(user_id, otp_key);
+
+					int totp = generateTOTP(otp_key);
+					printf("otp : %d\n", totp);
+
+					if (std::stoi(entered_otp) != totp)
+					{
+						// OTP is wrong
+						printf("OTP num is wrong(%d, %d)\n", std::stoi(entered_otp), totp);
+						Send(pszClientIp, iClientPort, "res|login|440");
+						return true;
+					}
 
                     // check password updated time
                     time_t last_updated_time = m_clsUserDB->GetPasswdUpdatedTime(user_id);
@@ -594,3 +628,65 @@ std::string CWebRtcServer::generateKey(const int len)
 	return key;
 }
 
+// Generate TOTP
+int CWebRtcServer::generateTOTP(const std::string& secret) 
+{
+	std::string decoded_secret = base32_decode(secret);
+	long long timestamp = std::time(nullptr) / 30;
+
+	unsigned char msg[8];
+	for (int i = 7; i >= 0; i--) {
+		msg[i] = static_cast<unsigned char>(timestamp);
+		timestamp >>= 8;
+	}
+
+	unsigned char hash[EVP_MAX_MD_SIZE];
+	unsigned int hash_len;
+	HMAC(EVP_sha1(), decoded_secret.c_str(), decoded_secret.length(), msg, 8, hash, &hash_len);
+
+	int offset = hash[hash_len - 1] & 0xf;
+	int otp = (hash[offset + 0] & 0x7f) << 24 |
+		(hash[offset + 1] & 0xff) << 16 |
+		(hash[offset + 2] & 0xff) << 8 |
+		(hash[offset + 3] & 0xff);
+	otp %= 1000000;
+
+	return otp;
+}
+
+
+std::string CWebRtcServer::base32_decode(const std::string& base32) 
+{
+	std::vector<unsigned char> bytes;
+	int buffer = 0, bits = 0;
+
+	for (char c : base32) {
+		int val = base32_decode_char(c);
+		if (val != -1) {
+			buffer <<= 5;
+			buffer |= val;
+			bits += 5;
+
+			if (bits >= 8) {
+				bytes.push_back(static_cast<unsigned char>(buffer >> (bits - 8)));
+				bits -= 8;
+			}
+		}
+		else {
+			// Invalid character
+			return {};
+		}
+	}
+
+	return std::string(bytes.begin(), bytes.end());
+}
+
+int CWebRtcServer::base32_decode_char(char c) 
+{
+	if (c >= 'A' && c <= 'Z')
+		return c - 'A';
+	else if (c >= '2' && c <= '7')
+		return c - '2' + 26;
+	else
+		return -1; // Invalid character
+}

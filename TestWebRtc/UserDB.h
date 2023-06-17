@@ -32,6 +32,7 @@ public:
 	uint64_t GetPasswdUpdatedTime(std::string& id);
 	int updateGOtp(std::string& id, std::string& otp_string);
 	int CountGOtp(std::string& otp_string);
+	int GetGOtpKey(std::string& id, std::string& otp_key);
 
 private:
 	sql::Driver* driver;
