@@ -7,6 +7,7 @@
 
 #define DB_DEBUG			1
 #define DB_SHA256_PASSWD	1
+#define DB_OTP_ENCRYPTION	1
 
 
 // make table named tbl_videochat
@@ -55,12 +56,19 @@ VALUES ('eve', 'lge1234', 'eve jeon', 'eve@lge.com', '01012345678', "Gangseo-gu 
 */
 
 // update user info
+#if DB_OTP_ENCRYPTION
+#define SQL_UPDATE_GOTP		"UPDATE tbl_videochat SET gotp = TO_BASE64(AES_ENCRYPT(?, ?)) WHERE unique_id = ?"
+#else
 #define SQL_UPDATE_GOTP		"UPDATE tbl_videochat SET gotp = ? WHERE unique_id = ?"
+#endif
 
 #define SQL_COUNT_GOTP		"SELECT COUNT(*) FROM tbl_videochat WHERE gotp = ?"
 
+#if DB_OTP_ENCRYPTION
+#define SQL_GOTP_KEY        "SELECT CAST(AES_DECRYPT(FROM_BASE64(gotp), ?) AS CHAR) AS decrypted_gotp FROM tbl_videochat WHERE unique_id = ?"
+#else
 #define SQL_GOTP_KEY        "SELECT gotp FROM tbl_videochat WHERE unique_id = ?"
-
+#endif
 
 #define SQL_USER_INFO		"SELECT unique_id, username, email, phone, address FROM tbl_videochat WHERE unique_id = ?"
 
@@ -103,6 +111,8 @@ UPDATE tbl_videochat SET passwd_update_utc = '1655099156' WHERE unique_id = 'ali
 #define SQL_GET_PASSWD_UPDATED_TIME		"SELECT passwd_update_utc FROM tbl_videochat WHERE unique_id = ?"
 
 const std::string salt = "_cmu_videochat";
+const std::string aes_key = "lg_video_chat";
+
 
 CUserDB::CUserDB()
 {
@@ -724,8 +734,14 @@ int CUserDB::updateGOtp(std::string& id, std::string& otp_string)
 	try
 	{
 		pstmt = con->prepareStatement(SQL_UPDATE_GOTP);
+#if DB_OTP_ENCRYPTION
+		pstmt->setString(1, otp_string);
+		pstmt->setString(2, aes_key);
+		pstmt->setString(3, id);
+#else
 		pstmt->setString(1, otp_string);
 		pstmt->setString(2, id);
+#endif
 		res = pstmt->executeQuery();
 
 		if (res->next()) {
@@ -811,11 +827,20 @@ int CUserDB::GetGOtpKey(std::string& id, std::string& otp_key)
 	try
 	{
 		pstmt = con->prepareStatement(SQL_GOTP_KEY);
+#if DB_OTP_ENCRYPTION
+		pstmt->setString(1, aes_key);
+		pstmt->setString(2, id);
+#else
 		pstmt->setString(1, id);
+#endif
 		res = pstmt->executeQuery();
 
 		if (res->next()) {
+#if DB_OTP_ENCRYPTION
+			otp_key = res->getString("decrypted_gotp");
+#else
 			otp_key = res->getString("gotp");
+#endif
 		}
 	}
 	catch (sql::SQLException& e)
