@@ -66,8 +66,8 @@ function CheckDuplicateId()
 
                 if (iStatusCode == 400)
                 {
-                  Log("user ID is alread registered");
-                  alert("user ID is alread registered\r\nPlease use another user ID");
+                  Log("user ID is ALREADY registered");
+                  alert("user ID is ALREADY registered\r\nPlease use another user ID");
                 }
                 else if (iStatusCode == 410)
                 {
