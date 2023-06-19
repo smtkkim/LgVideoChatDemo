@@ -22,6 +22,12 @@ function CheckDuplicateId()
     alert("User ID has not been entered" );
     return;
   }
+  if( UserId.value.includes('|'))
+  {
+    Log("userid can NOT include '|' character");
+    alert("userid can NOT include '|' character" );
+    return;
+  }
 
   if( websocket == null )
   {
@@ -93,6 +99,43 @@ function SendUserInfo()
   let emailRules = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
   let passwordRules = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{10,15}$/;
   let websocket = null;
+
+  if( UserId.value.includes('|'))
+  {
+    Log("userid can NOT include '|' character");
+    alert("userid can NOT include '|' character" );
+    return;
+  }
+  if( UserPasswd.value.includes('|'))
+  {
+    Log("password can NOT include '|' character");
+    alert("password can NOT include '|' character" );
+    return;
+  }
+  if( UserName.value.includes('|'))
+  {
+    Log("user name can NOT include '|' character");
+    alert("user name can NOT include '|' character" );
+    return;
+  }
+  if( UserEmail.value.includes('|'))
+  {
+    Log("user email can NOT include '|' character");
+    alert("user email can NOT include '|' character" );
+    return;
+  }
+  if( UserPhone.value.includes('|'))
+  {
+    Log("user phone can NOT include '|' character");
+    alert("user phone can NOT include '|' character" );
+    return;
+  }
+  if( UserAddress.value.includes('|'))
+  {
+    Log("user address can NOT include '|' character");
+    alert("user address can NOT include '|' character" );
+    return;
+  }
 
   if( UserId.value.length == 0 )
   {
@@ -226,6 +269,7 @@ function StartSession()
   var txtOtpNum = document.getElementById('otp_num');
   gstrOtpNum = txtOtpNum.value;
   
+  let otpRules = /^[0-9]+$/;
   if( gstrUserId.length == 0 )
   {
     alert( "user id is not defined" );
@@ -238,7 +282,11 @@ function StartSession()
   }
   if( gstrOtpNum.length == 0 )
   {
-    alert( "otp is not provided" );
+    alert( "OTP is not provided" );
+    return;
+  }
+  if(otpRules.test(gstrOtpNum)==false){
+    alert("OTP should be number!");
     return;
   }
   
