@@ -110,6 +110,8 @@ UPDATE tbl_videochat SET passwd_update_utc = '1655099156' WHERE unique_id = 'ali
 
 #define SQL_GET_PASSWD_UPDATED_TIME		"SELECT passwd_update_utc FROM tbl_videochat WHERE unique_id = ?"
 
+#define SQL_UPDATE_EMAIL		"UPDATE tbl_videochat SET email = ? WHERE unique_id = ?"
+
 const std::string salt = "_cmu_videochat";
 const std::string aes_key = "lg_video_chat";
 
@@ -626,6 +628,7 @@ int CUserDB::UpdateWrongPasswdLockTime(std::string& id, uint64_t utc_time)
 	printf("-[%s]\n", __func__);
 #endif
 
+    // TBD: why do we return count here?
 	return count;
 }
 
@@ -864,3 +867,47 @@ int CUserDB::GetGOtpKey(std::string& id, std::string& otp_key)
 
 	return 0;
 }
+
+
+int CUserDB::UpdateEmail(std::string& id, std::string& new_email)
+{
+#if DB_DEBUG
+        printf("+[%s]\n", __func__);
+#endif
+    
+        std::lock_guard<std::mutex> guard(mMutex);
+    
+        sql::PreparedStatement* pstmt;
+        sql::ResultSet* res;
+    
+        try
+        {
+            pstmt = con->prepareStatement(SQL_UPDATE_EMAIL);
+            pstmt->setString(1, new_email);
+            pstmt->setString(2, id);
+            res = pstmt->executeQuery();
+    
+            if (res->next()) {
+            }
+        }
+        catch (sql::SQLException& e)
+        {
+            std::cout << "# ERR: SQLException in " << __FILE__;
+            std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+            std::cout << "# ERR: " << e.what();
+            std::cout << " (MySQL error code: " << e.getErrorCode();
+            std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+    
+            return -1;
+        }
+    
+        delete res;
+        delete pstmt;
+    
+#if DB_DEBUG
+        printf("-[%s]\n", __func__);
+#endif
+    
+        return 0;
+}
+

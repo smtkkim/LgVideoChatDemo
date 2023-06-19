@@ -16,6 +16,7 @@ var remoteVideo = document.getElementById("remoteVideo");
 
 var btnLogin = document.getElementById("btnLogin");
 var btnRetreiveList = document.getElementById("btnRetreiveList");
+var btnChangeEmail = document.getElementById("btnChangeEmail");
 var btnInvite = document.getElementById("btnInvite");
 var btnAccept = document.getElementById("btnAccept");
 var btnDecline = document.getElementById("btnDecline");

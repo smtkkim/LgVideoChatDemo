@@ -303,7 +303,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 	}
 	else if( !strcmp( pszCommand, "login" ) )
 	{
-		if( iCount < 4 )
+		if( iCount < 5 )
 		{
 			printf( "login request arg is not correct\n" );
 			return false;
@@ -474,6 +474,37 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		strContactList = "res|contact|" + std::to_string(iUserCount) + "|" + strUserAllId;
 
 		Send(pszClientIp, iClientPort, strContactList.c_str());
+	}
+	else if (!strcmp(pszCommand, "changeacc"))
+	{
+		if (iCount < 4)
+		{
+			printf("change account request arg is not correct\n");
+			return false;
+		}
+
+		std::string unique_id = clsList[2];
+		std::string email = clsList[3];
+
+		if( unique_id.length() == 0
+			|| email.length() == 0)
+		{
+			printf("can not INSERT the user info to mysql");
+			Send(pszClientIp, iClientPort, "res|register|410");
+			return true;
+		}
+
+		if (m_clsUserDB->UpdateEmail(unique_id, email) == 0)
+		{
+			printf("Email is updated (%s)", email.c_str());
+			Send(pszClientIp, iClientPort, "res|register|200|%s", email.c_str());
+		}
+		else
+		{
+			printf("can not INSERT the user info to mysql");
+			Send(pszClientIp, iClientPort, "res|register|410");
+			return true;
+		}
 	}
 	else if (!strcmp(pszCommand, "userinfo"))
 	{

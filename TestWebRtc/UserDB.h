@@ -33,6 +33,7 @@ public:
 	int updateGOtp(std::string& id, std::string& otp_string);
 	int CountGOtp(std::string& otp_string);
 	int GetGOtpKey(std::string& id, std::string& otp_key);
+    int UpdateEmail(std::string& id, std::string& new_email);
 
 private:
 	sql::Driver* driver;

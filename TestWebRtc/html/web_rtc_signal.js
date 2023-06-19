@@ -6,6 +6,7 @@ var gstrSdp = "";
 var ws = null;
 
 btnRetreiveList.disabled = true;
+btnChangeEmail.disabled = true;
 btnInvite.disabled = true;
 btnAccept.disabled = true;
 btnDecline.disabled = true;
@@ -323,6 +324,7 @@ function StartSession()
             {
               btnLogin.disabled = true;
               btnRetreiveList.disabled = false;
+              btnChangeEmail.disabled = false;
               btnInvite.disabled = false;
             }
             else
@@ -527,4 +529,63 @@ function SendBye()
   gstrToId = "";
   btnInvite.disabled = false;
   btnBye.disabled = true;
+}
+
+function changeEmail()
+{
+    var modal = document.getElementById("accountModal");
+    modal.style.display = "block";
+}
+
+document.getElementById("infoForm").addEventListener("submit", function(event)
+{
+    event.preventDefault();
+
+    var newEmail = document.getElementById("new_email").value;
+  
+    document.getElementById("accountModal").style.display = "none";
+   
+    if( newEmail.includes('|'))
+    {
+      Log("user email can NOT include '|' character");
+      alert("user email can NOT include '|' character" );
+      return;
+    }
+
+    let emailRules = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-Za-z0-9\-]+/;
+    if( newEmail.length == 0 )
+    {
+      Log( "Email has not been entered" );
+      alert( "Email has not been entered" );
+      return;
+    }
+    
+    if( emailRules.test(newEmail)==false )
+    {
+      Log("Email format is not valid: "+ newEmail);
+      alert("Email format is not valid");
+      return;
+    }
+
+    Send( "req|changeacc|" + gstrUserId + "|" + newEmail );    
+});
+
+var modal = document.getElementById("accountModal");
+var span = document.getElementsByClassName("close")[0];
+
+btnChangeEmail.onclick = function()
+    {
+  modal.style.display = "block";
+}
+
+span.onclick = function()
+{
+  modal.style.display = "none";
+}
+
+window.onclick = function(event)
+{
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
 }
