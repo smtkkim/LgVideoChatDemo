@@ -152,8 +152,8 @@ function SendUserInfo()
 
   if( UserName.value.length == 0 )
   {
-    Log("userid has not been entered");
-    alert("userid has not been entered" );
+    Log("user name has not been entered");
+    alert("user name has not been entered" );
     return;
   }
 
