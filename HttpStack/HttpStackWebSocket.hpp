@@ -1,30 +1,6 @@
-/* 
- * Copyright (C) 2021 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
 
-/**
- * @ingroup HttpStack
- * @brief WebSocket 클라이언트로 데이터를 전송한다.
- * @param pszClientIp WebSocket 클라이언트 IP 주소
- * @param iClientPort WebSocket 클라이언트 포트 번호
- * @param pszData			WebSocket 으로 전송할 payload 데이터
- * @param iDataLen		WebSocket 으로 전송할 payload 데이터 길이
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
+
 bool CHttpStack::SendWebSocketPacket( const char * pszClientIp, int iClientPort, const char * pszData, int iDataLen )
 {
 	int iPacketLen = 0;
@@ -145,13 +121,7 @@ bool CHttpStack::RecvPacketWebSocket( char * pszPacket, int iPacketLen, CTcpSess
 }
 
 
-/**
- * @ingroup HttpStack
- * @brief WebSocket 연결을 위한 HTTP 요청 메시지에 대한 HTTP 응답 메시지를 생성한다.
- * @param pclsRecv 수신된 HTTP 요청 메시지
- * @param pclsSend 전송할 HTTP 응답 메시지
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpStack::MakeWebSocketResponse( CHttpMessage * pclsRecv, CHttpMessage * pclsSend )
 {
 	CHttpHeader * pclsHeader = pclsRecv->GetHeader( "Sec-WebSocket-Key" );
