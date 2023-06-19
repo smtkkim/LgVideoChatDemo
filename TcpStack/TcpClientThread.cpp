@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "SipPlatformDefine.h"
 #include "TcpStack.h"
@@ -24,10 +8,7 @@
 #include "Log.h"
 #include "MemoryDebug.h"
 
-/**
- * @ingroup TcpStack
- * @brief TCP 클라이언트 쓰레드 실행 인자
- */
+
 class CTcpClientArg
 {
 public:
@@ -39,22 +20,17 @@ public:
 	{
 	}
 
-	/** TCP 서버 IP 주소 */
+	
 	std::string	m_strIp;
 
-	/** TCP 서버 포트 번호 */
+	
 	int			m_iPort;
 
-	/** TCP stack */
+	
 	CTcpStack * m_pclsStack;
 };
 
-/**
- * @ingroup TcpStack
- * @brief TCP 연결 Thread
- * @param lpParameter CTcpClientArg 객체
- * @returns 0 을 리턴한다.
- */
+
 THREAD_API TcpClientThread( LPVOID lpParameter )
 {
 	CTcpClientArg * pclsArg = (CTcpClientArg *)lpParameter;
@@ -141,14 +117,7 @@ THREAD_API TcpClientThread( LPVOID lpParameter )
 	return 0;
 }
 
-/**
- * @ingroup TcpStack
- * @brief TCP 연결 Thread 를 시작한다.
- * @param pszIp			TCP 서버 IP 주소
- * @param iPort			TCP 서버 포트 번호
- * @param pclsStack TCP stack
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool StartTcpClientThread( const char * pszIp, int iPort, CTcpStack * pclsStack )
 {
 	CTcpClientArg * pclsArg = new CTcpClientArg();

@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "SipPlatformDefine.h"
 #include "SipTcp.h"
@@ -33,14 +17,7 @@ CHttpClient::~CHttpClient()
 {
 }
 
-/**
- * @ingroup HttpStack
- * @brief	HTTP GET 명령을 실행한다.
- * @param pszUrl								HTTP URL (예:http://www.naver.com)
- * @param strOutputContentType	수신 Content-Type
- * @param strOutputBody					수신 body
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpClient::DoGet( const char * pszUrl, std::string & strOutputContentType, std::string & strOutputBody )
 {
 	strOutputContentType.clear();
@@ -78,16 +55,7 @@ bool CHttpClient::DoGet( const char * pszUrl, std::string & strOutputContentType
 	return false;
 }
 
-/**
- * @ingroup HttpStack
- * @brief	HTTP GET 명령을 실행한다.
- * @param pszUrl								HTTP URL (예:http://wsf.cdyne.com/WeatherWS/Weather.asmx)
- * @param pszInputContentType		전송 Content-Type
- * @param pszInputBody					전송 body
- * @param strOutputContentType	수신 Content-Type
- * @param strOutputBody					수신 body
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpClient::DoGet( const char * pszUrl, const char * pszInputContentType, const char * pszInputBody, std::string & strOutputContentType, std::string & strOutputBody )
 {
 	strOutputContentType.clear();
@@ -135,15 +103,7 @@ bool CHttpClient::DoGet( const char * pszUrl, const char * pszInputContentType, 
 	return false;
 }
 
-/**
- * @ingroup HttpStack
- * @brief	HTTP GET 명령을 실행한다.
- * @param pszUrl								HTTP URL (예:http://www.naver.com)
- * @param pclsHeaderList				전송 헤더에 포함될 헤더 항목 리스트
- * @param strOutputContentType	수신 Content-Type
- * @param strOutputBody					수신 body
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpClient::DoGet( const char * pszUrl, HTTP_HEADER_LIST * pclsHeaderList, std::string & strOutputContentType, std::string & strOutputBody )
 {
 	strOutputContentType.clear();
@@ -186,33 +146,13 @@ bool CHttpClient::DoGet( const char * pszUrl, HTTP_HEADER_LIST * pclsHeaderList,
 	return false;
 }
 
-/**
- * @ingroup HttpStack
- * @brief	HTTP POST 명령을 실행한다.
- * @param pszUrl								HTTP URL (예:http://wsf.cdyne.com/WeatherWS/Weather.asmx)
- * @param pszInputContentType		전송 Content-Type
- * @param pszInputBody					전송 body
- * @param strOutputContentType	수신 Content-Type
- * @param strOutputBody					수신 body
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpClient::DoPost( const char * pszUrl, const char * pszInputContentType, const char * pszInputBody, std::string & strOutputContentType, std::string & strOutputBody )
 {
 	return DoPost( pszUrl, NULL, pszInputContentType, pszInputBody, 0, strOutputContentType, strOutputBody );
 }
 
-/**
- * @ingroup HttpStack
- * @brief	HTTP POST 명령을 실행한다.
- * @param pszUrl								HTTP URL (예:http://wsf.cdyne.com/WeatherWS/Weather.asmx)
- * @param pclsHeaderList				전송 헤더에 포함될 헤더 항목 리스트
- * @param pszInputContentType		전송 Content-Type
- * @param pszInputBody					전송 body
- * @param iInputBodyLen					전송 body 길이
- * @param strOutputContentType	수신 Content-Type
- * @param strOutputBody					수신 body
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpClient::DoPost( const char * pszUrl, HTTP_HEADER_LIST * pclsHeaderList, const char * pszInputContentType, const char * pszInputBody, int iInputBodyLen, std::string & strOutputContentType, std::string & strOutputBody )
 {
 	strOutputContentType.clear();
@@ -274,30 +214,13 @@ bool CHttpClient::DoPost( const char * pszUrl, HTTP_HEADER_LIST * pclsHeaderList
 	return false;
 }
 
-/**
- * @ingroup HttpClientApi
- * @brief HTTP POST 기반으로 SOAP 명령을 실행한다.
- * @param pszUrl				HTTP URL (예:http://wsf.cdyne.com/WeatherWS/Weather.asmx)
- * @param pszSoapAction HTTP SOAPAction 헤더에 저장될 문자열 (예:http://ws.cdyne.com/WeatherWS/GetWeatherInformation)
- * @param pszInputBody	전송 body
- * @param strOutputBody 수신 body
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpClient::DoSoap( const char * pszUrl, const char * pszSoapAction, const char * pszInputBody, std::string & strOutputBody )
 {
 	return DoSoap( pszUrl, pszSoapAction, "text/xml;charset=UTF-8", pszInputBody, strOutputBody );
 }
 
-/**
- * @ingroup HttpClientApi
- * @brief HTTP POST 기반으로 SOAP 명령을 실행한다.
- * @param pszUrl				HTTP URL (예:http://wsf.cdyne.com/WeatherWS/Weather.asmx)
- * @param pszSoapAction HTTP SOAPAction 헤더에 저장될 문자열 (예:http://ws.cdyne.com/WeatherWS/GetWeatherInformation)
- * @param pszInputContentType	HTTP Content-Type
- * @param pszInputBody	전송 body
- * @param strOutputBody 수신 body
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpClient::DoSoap( const char * pszUrl, const char * pszSoapAction, const char * pszInputContentType, const char * pszInputBody, std::string & strOutputBody )
 {
 	std::string strOutputContentType;
@@ -317,17 +240,7 @@ bool CHttpClient::DoSoap( const char * pszUrl, const char * pszSoapAction, const
 	return DoPost( pszUrl, NULL, pszInputContentType, pszInputBody, 0, strOutputContentType, strOutputBody );
 }
 
-/**
- * @ingroup HttpStack
- * @brief	HTTP POST 명령으로 파일 업로드한다.
- * @param pszUrl								HTTP URL (예:http://wsf.cdyne.com/WeatherWS/Weather.asmx)
- * @param pszFilePath						업로드할 파일 경로 ( full path )
- * @param pszPostName						업로드 파일에 대한 POST 인자(name)
- * @param	clsPostDataMap				POST 데이터
- * @param strOutputContentType	수신 Content-Type
- * @param strOutputBody					수신 body
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpClient::DoUpload( const char * pszUrl, const char * pszFilePath, const char * pszPostName, POST_NAME_VALUE_MAP & clsPostDataMap, std::string & strOutputContentType, std::string & strOutputBody )
 {
 	std::string strContentType, strBody, strBoundary, strFileName;
@@ -389,44 +302,25 @@ bool CHttpClient::DoUpload( const char * pszUrl, const char * pszFilePath, const
 	return DoPost( pszUrl, NULL, strContentType.c_str(), strBody.c_str(), (int)strBody.length(), strOutputContentType, strOutputBody );
 }
 
-/**
- * @ingroup HttpStack
- * @brief User-Agent 헤더에 저장할 문자열을 설정한다.
- * @param pszUserAgent User-Agent 헤더에 저장할 문자열
- */
+
 void CHttpClient::SetUserAgent( const char * pszUserAgent )
 {
 	m_strUserAgent = pszUserAgent;
 }
 
-/**
- * @ingroup HttpStack
- * @brief HTTP 응답 메시지 수신 timeout 시간을 설정한다.
- * @param iRecvTimeout HTTP 응답 메시지 수신 timeout 시간 (초단위)
- */
+
 void CHttpClient::SetRecvTimeout( int iRecvTimeout )
 {
 	m_iRecvTimeout = iRecvTimeout;
 }
 
-/**
- * @ingroup HttpStack
- * @brief HTTP 응답 status code 를 리턴한다.
- * @returns HTTP 응답 status code 를 리턴한다.
- */
+
 int CHttpClient::GetStatusCode()
 {
 	return m_iStatusCode;
 }
 
-/**
- * @ingroup HttpStack
- * @brief HTTP 서버에 연결하여서 HTTP 요청 메시지를 전송한 후, HTTP 응답 메시지를 수신한다.
- * @param pclsUri				HTTP request URI
- * @param pclsRequest		HTTP request
- * @param pclsPacket		HTTP response 를 저장할 패킷 객체
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpClient::Execute( CHttpUri * pclsUri, CHttpMessage * pclsRequest, CHttpPacket * pclsPacket )
 {
 	char * pszBuf = NULL;

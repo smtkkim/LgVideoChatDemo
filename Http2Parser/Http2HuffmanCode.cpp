@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "Http2HuffmanCode.h"
 #include <stdio.h>
@@ -22,15 +6,7 @@
 #include "Http2HuffmanCodeEncode.hpp"
 #include "Http2HuffmanCodeDecode.hpp"
 
-/**
- * @ingroup HttpParser
- * @brief Huffman code 인코딩 함수
- * @param pszInput		[in] 평문
- * @param iInputLen		[in] pszInput 변수의 길이
- * @param pszOutput		[out] Huffman code 인코딩된 데이터를 저장할 버퍼
- * @param iOutputSize [in] pszOutput 변수의 크기
- * @returns 성공하면 Huffman code 인코딩된 데이터의 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
- */
+
 int HuffmanCodeEncode( const uint8_t * pszInput, uint32_t iInputLen, uint8_t * pszOutput, uint32_t iOutputSize )
 {
 	HuffmanEncode * psttCode;
@@ -100,15 +76,7 @@ static void PrintDebug( const char * pszName, uint32_t iCode, int iBitPos, int i
 	printf( "] input remain[%d]\n", iInputBitRemain );
 }
 
-/**
- * @ingroup HttpParser
- * @brief Huffman code 디코더 함수
- * @param pszInput		[in] Huffman code 로 인코딩된 데이터를 저장하는 버퍼
- * @param iInputLen		[in] pszInput 변수의 길이
- * @param pszOutput		[out] Huffman code 로 디코딩된 문자열을 저장할 버퍼
- * @param iOutputSize [in] pszOutput 변수의 크기
- * @returns 성공하면 Huffman code 로 디코딩된 문자열의 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
- */
+
 int HuffmanCodeDecode( const uint8_t * pszInput, uint32_t iInputLen, uint8_t * pszOutput, uint32_t iOutputSize )
 {
 	int iInputPos = 0, iInputBitRemain = 0;

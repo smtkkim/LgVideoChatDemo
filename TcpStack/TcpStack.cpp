@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "TcpStack.h"
 #include "TcpThread.h"
@@ -32,13 +16,7 @@ CTcpStack::~CTcpStack()
 {
 }
 
-/**
- * @ingroup TcpStack
- * @brief TCP stack 을 시작한다.
- * @param pclsSetup			TCP stack 설정
- * @param pclsCallBack	TCP stack callback
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpStack::Start( CTcpStackSetup * pclsSetup, ITcpStackCallBack * pclsCallBack )
 {
 	if( pclsSetup == NULL || pclsCallBack == NULL ) return false;
@@ -101,11 +79,7 @@ bool CTcpStack::Start( CTcpStackSetup * pclsSetup, ITcpStackCallBack * pclsCallB
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief TCP stack 을 중지한다.
- * @returns true 를 리턴한다.
- */
+
 bool CTcpStack::Stop( )
 {
 	m_bStop = true;
@@ -152,16 +126,7 @@ bool CTcpStack::Stop( )
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 특정 세션에 TCP 패킷을 전송한다.
- * @param pszIp				IP 주소
- * @param iPort				포트 번호
- * @param pszPacket		패킷
- * @param iPacketLen	패킷 길이
- * @param bConnectIfNoSession	TCP 세션이 존재하지 않으면 새로운 TCP 세션을 연결한 후, 패킷을 전송하는가?
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpStack::Send( const char * pszIp, int iPort, const char * pszPacket, int iPacketLen, bool bConnectIfNoSession )
 {
 	if( m_clsSetup.m_bUseThreadPipe )
@@ -178,15 +143,7 @@ bool CTcpStack::Send( const char * pszIp, int iPort, const char * pszPacket, int
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 특정 세션에 TCP 패킷을 전송한다.
- * @param iThreadIndex	TCP 쓰레드 번호
- * @param iSessionIndex TCP 세션 번호
- * @param pszPacket			패킷
- * @param iPacketLen		패킷 길이
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpStack::Send( int iThreadIndex, int iSessionIndex, const char * pszPacket, int iPacketLen )
 {
 	if( m_clsSetup.m_bUseThreadPipe )
@@ -197,13 +154,7 @@ bool CTcpStack::Send( int iThreadIndex, int iSessionIndex, const char * pszPacke
 	return m_clsSessionMap.Send( iThreadIndex, pszPacket, iPacketLen );
 }
 
-/**
- * @ingroup TcpStack
- * @brief 모든 세션에 TCP 패킷을 전송한다.
- * @param pszPacket			패킷
- * @param iPacketLen		패킷 길이
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpStack::SendAll( const char * pszPacket, int iPacketLen )
 {
 	if( m_clsSetup.m_bUseThreadPipe )
@@ -214,15 +165,7 @@ bool CTcpStack::SendAll( const char * pszPacket, int iPacketLen )
 	return m_clsSessionMap.SendAll( pszPacket, iPacketLen, m_pclsCallBack );
 }
 
-/**
- * @ingroup TcpStack
- * @brief 특정 세션을 제외한 모든 세션에 TCP 패킷을 전송한다.
- * @param pszPacket			패킷
- * @param iPacketLen		패킷 길이
- * @param iThreadIndex	전송하지 않을 세션의 쓰레드 인덱스
- * @param iSessionIndex 전송하지 않을 세션 인덱스
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpStack::SendAllExcept( const char * pszPacket, int iPacketLen, int iThreadIndex, int iSessionIndex )
 {
 	if( m_clsSetup.m_bUseThreadPipe )

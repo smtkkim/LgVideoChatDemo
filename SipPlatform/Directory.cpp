@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include <string.h>
 #include "Directory.h"
@@ -29,18 +13,7 @@
 
 #include "MemoryDebug.h"
 
-/** 
- * @ingroup SipPlatform
- * @brief 디렉토리를 생성한다. 
- *	
- *	이미 디렉토리가 생성되어 있으면 아무런 동작을 하지 않는다.
- *	"c:\temp\test" 와 같은 문자열을 입력하면 다음과 같이 동작하다.
- *	"c:\temp" 디렉토리가 존재하지 않으면 이를 생성한 후, "c:\temp\test" 디렉토리를 생성한다.
- *
- * @param	szDirName	[in] 생성할 디렉토리의 full pathname
- * @param iDirMode	[in] 생성할 디렉토리의 권한
- * @return	성공하면 true 을 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CDirectory::Create( const char * szDirName, int iDirMode )
 {
 	int		i, iLen, iCount, n;
@@ -120,12 +93,7 @@ bool CDirectory::Create( const char * szDirName, int iDirMode )
 	return true;
 }
 
-/** 
- * @ingroup SipPlatform
- * @brief 사용자가 입력한 path 가 디렉토리인지를 점검한다.
- * @param	szDirName	[in] 디렉토리 이름
- * @return	입력된 path 가 디렉토리이면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CDirectory::IsDirectory( const char * szDirName )
 {
 	if( CDirectory::IsDirectoryCheck( szDirName ) == 0 ) return true;
@@ -133,14 +101,7 @@ bool CDirectory::IsDirectory( const char * szDirName )
 	return false;
 }
 
-/** 
- * @ingroup SipPlatform
- * @brief 사용자가 입력한 path 가 디렉토리인지를 점검한다.
- * @param	szDirName	[in] 디렉토리 이름
- * @return	입력된 path 가 디렉토리이면 0 을 리턴한다.
- *					존재하지 않으면 -2 을 리턴한다.
- *					디렉토리가 아니면 -1 을 리턴한다.
- */
+
 int CDirectory::IsDirectoryCheck( const char * szDirName )
 {
 #ifdef WIN32
@@ -187,12 +148,7 @@ int CDirectory::IsDirectoryCheck( const char * szDirName )
 	return 0;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 파일 경로에 파일 이름을 추가한다.
- * @param strFileName 파일 경로
- * @param pszAppend		추가할 파일 이름
- */
+
 void CDirectory::AppendName( std::string & strFileName, const char * pszAppend )
 {
 #ifdef WIN32
@@ -204,13 +160,7 @@ void CDirectory::AppendName( std::string & strFileName, const char * pszAppend )
 #endif
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 폴더에 존재하는 모든 파일/폴더 리스트를 가져온다.
- * @param pszDirName	폴더 경로
- * @param clsFileList 파일/폴더 리스트를 저장할 변수
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CDirectory::List( const char * pszDirName, FILE_LIST & clsFileList )
 {
 	clsFileList.clear();
@@ -262,13 +212,7 @@ bool CDirectory::List( const char * pszDirName, FILE_LIST & clsFileList )
 	return true;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 폴더에 존재하는 모든 파일 리스트를 가져온다.
- * @param pszDirName	폴더 경로
- * @param clsFileList 파일 리스트를 저장할 변수
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CDirectory::FileList( const char * pszDirName, FILE_LIST & clsFileList )
 {
 	clsFileList.clear();
@@ -329,11 +273,7 @@ bool CDirectory::FileList( const char * pszDirName, FILE_LIST & clsFileList )
 	return true;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 프로그램을 시작한 폴더를 가져온다.
- * @returns 프로그램을 시작한 폴더 경로를 리턴한다.
- */
+
 char * CDirectory::GetProgramDirectory( )
 {
 	static char	szDir[1024];
@@ -375,12 +315,7 @@ char * CDirectory::GetProgramDirectory( )
 
 #define MAX_INT	4294967296L
 
-/**
- * @ingroup SipPlatform
- * @brief 폴더 크기를 가져온다.
- * @param pszDirName 폴더 fulll path
- * @returns 폴더 크기를 리턴한다.
- */
+
 int64_t CDirectory::GetSize( const char * pszDirName )
 {
 	uint64_t iTotalSize = 0;
@@ -460,11 +395,7 @@ int64_t CDirectory::GetSize( const char * pszDirName )
 	return iTotalSize;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 폴더에 포함된 파일들을 모두 삭제한다.
- * @param pszDirName 폴더 full path
- */
+
 void CDirectory::DeleteAllFile( const char * pszDirName )
 {
 	FILE_LIST::iterator	itFile;
@@ -486,12 +417,7 @@ void CDirectory::DeleteAllFile( const char * pszDirName )
 	}
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 파일 경로에서 폴더 이름을 가져온다.
- * @param pszFilePath 파일 경로
- * @param strDirName	폴더 이름을 저장할 변수
- */
+
 void CDirectory::GetDirName( const char * pszFilePath, std::string & strDirName )
 {
 	int iLen = (int)strlen( pszFilePath );
@@ -512,12 +438,7 @@ void CDirectory::GetDirName( const char * pszFilePath, std::string & strDirName 
 	}
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 파일 경로에서 파일 이름을 가져온다.
- * @param pszFilePath 파일 경로
- * @param strFileName 파일 이름을 저장할 변수
- */
+
 void CDirectory::GetFileName( const char * pszFilePath, std::string & strFileName )
 {
 	int iLen = (int)strlen( pszFilePath );
@@ -538,12 +459,7 @@ void CDirectory::GetFileName( const char * pszFilePath, std::string & strFileNam
 	}
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 폴더를 모두 삭제한다.
- * @param pszDirName 폴더 이름
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CDirectory::Delete( const char * pszDirName )
 {
 #ifdef WIN32

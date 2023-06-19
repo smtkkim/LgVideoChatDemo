@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #ifndef _TCP_THREAD_LIST_H_
 #define _TCP_THREAD_LIST_H_
@@ -29,10 +13,7 @@
 
 class CTcpStack;
 
-/**
- * @ingroup TcpStack
- * @brief TCP 쓰레드에 TCP 세션을 전달할 때에 사용되는 클래스 - m_bUseThreadPipe 가 true 일 때에 사용된다.
- */
+
 class CTcpComm
 {
 public:
@@ -61,14 +42,11 @@ public:
 	int			m_iPort;
 	SSL			* m_psttSsl;
 
-	/** TCP client 로 서버에 연결된 경우에 true 이다. */
+	
 	bool		m_bClient;
 };
 
-/**
- * @ingroup TcpStack
- * @brief 쓰레드 리스트에 포함되는 하나의 쓰레드 정보 저장 클래스
- */
+
 class CTcpThreadInfo
 {
 public:
@@ -87,10 +65,7 @@ public:
 
 typedef std::vector< CTcpThreadInfo * > THREAD_LIST;
 
-/**
- * @ingroup TcpStack
- * @brief 쓰레드 리스트 자료구조
- */
+
 class CTcpThreadList
 {
 public:

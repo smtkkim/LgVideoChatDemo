@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "SipPlatformDefine.h"
 #include "TcpThreadList.h"
@@ -38,13 +22,7 @@ CTcpSessionInfo::~CTcpSessionInfo()
 	Clear();
 }
 
-/**
- * @ingroup TcpStack
- * @brief TCP 패킷을 전송한다.
- * @param pszPacket		패킷
- * @param iPacketLen	패킷 길이
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpSessionInfo::Send( const char * pszPacket, int iPacketLen )
 {
 	bool bRes = false;
@@ -79,13 +57,7 @@ bool CTcpSessionInfo::Send( const char * pszPacket, int iPacketLen )
 	return bRes;
 }
 
-/**
- * @ingroup TcpStack
- * @brief TCP 전송/수신에 대한 로그를 출력한다.
- * @param pszPacket		패킷
- * @param iPacketLen	패킷 길이
- * @param bSend				전송 여부
- */
+
 void CTcpSessionInfo::Log( const char * pszPacket, int iPacketLen, bool bSend )
 {
 	const char * pszFunction = "TcpSend";
@@ -129,10 +101,7 @@ void CTcpSessionInfo::Log( const char * pszPacket, int iPacketLen, bool bSend )
 	}
 }
 
-/**
- * @ingroup TcpStack
- * @brief 세션 정보를 초기화시킨다.
- */
+
 void CTcpSessionInfo::Clear()
 {
 	m_clsMutex.acquire();
@@ -177,13 +146,7 @@ CTcpSessionList::~CTcpSessionList()
 	}
 }
 
-/**
- * @ingroup TcpStack
- * @brief TCP 세션 정보를 초기화시킨다.
- * @param iThreadIndex	thread index
- * @param iPollFdMax TCP 세션 개수
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CTcpSessionList::Init( int iThreadIndex, int iPollFdMax )
 {
 	m_iPollFdMax = iPollFdMax;
@@ -212,12 +175,7 @@ bool CTcpSessionList::Init( int iThreadIndex, int iPollFdMax )
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief TCP 소켓을 추가한다.
- * @param hSocket TCP 소켓
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CTcpSessionList::Insert( Socket hSocket )
 {
 	if( m_iPoolFdCount >= m_iPollFdMax ) return false;
@@ -228,12 +186,7 @@ bool CTcpSessionList::Insert( Socket hSocket )
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief TCP 세션 정보를 추가한다.
- * @param clsTcpComm	TCP 세션 정보 저장 객체
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 int CTcpSessionList::Insert( CTcpComm & clsTcpComm )
 {
 	if( m_iPoolFdCount >= m_iPollFdMax )
@@ -256,12 +209,7 @@ int CTcpSessionList::Insert( CTcpComm & clsTcpComm )
 	return m_iPoolFdCount - 1;
 }
 
-/**
- * @ingroup TcpStack
- * @brief TCP 세션 정보를 삭제한다.
- * @param iIndex		TCP 세션 인덱스
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CTcpSessionList::Delete( int iIndex )
 {
 	if( iIndex >= m_iPoolFdCount || iIndex < 0 ) return false;
@@ -283,10 +231,7 @@ bool CTcpSessionList::Delete( int iIndex )
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 모든 TCP 세션 정보를 삭제한다.
- */
+
 void CTcpSessionList::DeleteAll( )
 {
 	for( int i = 0; i < m_iPoolFdCount; ++i )
@@ -298,14 +243,7 @@ void CTcpSessionList::DeleteAll( )
 	m_iPoolFdCount = 0;
 }
 
-/**
- * @ingroup TcpStack
- * @brief TCP 수신 timeout 이 발생한 TCP 세션을 종료시킨다.
- * @param iTimeout	TCP 수신 timeout 시간 (초단위)
- * @param iNoPacketTimeout	TCP 연결 후, 패킷이 수신되지 않은 경우의 timeout 시간 (초단위)
- * @param BeforeDelete	삭제하기 전에 호출하는 callback 함수
- * @param pclsArg				응용 프로그램 변수
- */
+
 void CTcpSessionList::DeleteTimeout( int iTimeout, int iNoPacketTimeout
 	, void (*BeforeDelete)( CTcpSessionList * pclsSessionList, int iIndex, void * pclsArg ), void * pclsArg )
 {
@@ -337,27 +275,13 @@ void CTcpSessionList::DeleteTimeout( int iTimeout, int iNoPacketTimeout
 	}
 }
 
-/**
- * @ingroup TcpStack
- * @brief 특정 세션에 패킷을 전송한다.
- * @param iIndex			세션 인덱스
- * @param pszPacket		패킷
- * @param iPacketLen	패킷 길이
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CTcpSessionList::Send( int iIndex, const char * pszPacket, int iPacketLen )
 {
 	return m_pclsSession[iIndex].Send( pszPacket, iPacketLen );
 }
 
-/**
- * @ingroup TcpStack
- * @brief 모든 세션에 패킷을 전송한다.
- * @param pszPacket		패킷
- * @param iPacketLen	패킷 길이
- * @param pclsCallBack	세션별로 전송 유무를 결정하는 callback 객체
- * @returns true 를 리턴한다.
- */
+
 bool CTcpSessionList::SendAll( const char * pszPacket, int iPacketLen, ITcpStackCallBack * pclsCallBack )
 {
 	for( int i = 1; i < m_iPoolFdCount; ++i )
@@ -374,16 +298,7 @@ bool CTcpSessionList::SendAll( const char * pszPacket, int iPacketLen, ITcpStack
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 모든 세션에 패킷을 전송한다.
- * @param pszPacket		패킷
- * @param iPacketLen	패킷 길이
- * @param pclsCallBack	세션별로 전송 유무를 결정하는 callback 객체
- * @param iThreadIndex	전송하지 않을 세션의 쓰레드 인덱스
- * @param iSessionIndex 전송하지 않을 세션 인덱스
- * @returns true 를 리턴한다.
- */
+
 bool CTcpSessionList::SendAllExcept( const char * pszPacket, int iPacketLen, ITcpStackCallBack * pclsCallBack, int iThreadIndex, int iSessionIndex )
 {
 	for( int i = 1; i < m_iPoolFdCount; ++i )
@@ -402,12 +317,7 @@ bool CTcpSessionList::SendAllExcept( const char * pszPacket, int iPacketLen, ITc
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 세션 정보를 저장한다.
- * @param iIndex			세션 순번
- * @param clsTcpComm	세션 인덱스
- */
+
 void CTcpSessionList::Insert( int iIndex, CTcpComm & clsTcpComm )
 {
 	time_t	iTime;
@@ -438,11 +348,7 @@ void CTcpSessionList::Insert( int iIndex, CTcpComm & clsTcpComm )
 		, iIndex, m_pclsSession[iIndex].m_strIp.c_str(), m_pclsSession[iIndex].m_iPort, clsTcpComm.m_bClient ? "true" : "false" );
 }
 
-/**
- * @ingroup TcpStack
- * @brief 세션 소켓 정보를 초기화시킨다.
- * @param iIndex 세션 인덱스
- */
+
 void CTcpSessionList::ClearFd( int iIndex )
 {
 	m_pclsSession[iIndex].m_clsMutex.acquire();

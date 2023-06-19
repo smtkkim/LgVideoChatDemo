@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "SipPlatformDefine.h"
 #include "TcpSessionMap.h"
@@ -29,14 +13,7 @@ CTcpSessionMap::~CTcpSessionMap()
 {
 }
 
-/**
- * @ingroup TcpStack
- * @brief TCP 세션 정보를 저장한다.
- * @param pszIp		클라이언트 IP 주소
- * @param iPort		클라이언트 포트 번호
- * @param pclsSessionInfo TCP 세션 정보
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CTcpSessionMap::Insert( const char * pszIp, int iPort, CTcpSessionInfo * pclsSessionInfo )
 {
 	TCP_SESSION_MAP::iterator itTSM;
@@ -58,13 +35,7 @@ bool CTcpSessionMap::Insert( const char * pszIp, int iPort, CTcpSessionInfo * pc
 	return bRes;
 }
 
-/**
- * @ingroup TcpStack
- * @brief TCP 세션 정보를 삭제한다.
- * @param pszIp		클라이언트 IP 주소
- * @param iPort		클라이언트 포트 번호
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CTcpSessionMap::Delete( const char * pszIp, int iPort )
 {
 	TCP_SESSION_MAP::iterator itTSM;
@@ -99,11 +70,7 @@ bool CTcpSessionMap::Delete( const char * pszIp, int iPort )
 	return bRes;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 세션 개수를 리턴한다.
- * @returns 세션 개수를 리턴한다.
- */
+
 int CTcpSessionMap::GetCount( )
 {
 	int iCount;
@@ -115,15 +82,7 @@ int CTcpSessionMap::GetCount( )
 	return iCount;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 특정 세션에 TCP 패킷을 전송한다.
- * @param pszIp				IP 주소
- * @param iPort				포트 번호
- * @param pszPacket		패킷
- * @param iPacketLen	패킷 길이
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CTcpSessionMap::Send( const char * pszIp, int iPort, const char * pszPacket, int iPacketLen )
 {
 	TCP_SESSION_MAP::iterator itTSM;
@@ -143,14 +102,7 @@ bool CTcpSessionMap::Send( const char * pszIp, int iPort, const char * pszPacket
 	return bRes;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 특정 세션에 TCP 패킷을 전송한다.
- * @param iThreadIndex	TCP 쓰레드 번호
- * @param pszPacket			패킷
- * @param iPacketLen		패킷 길이
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CTcpSessionMap::Send( int iThreadIndex, const char * pszPacket, int iPacketLen )
 {
 	TCP_SESSION_MAP::iterator itTSM;
@@ -170,14 +122,7 @@ bool CTcpSessionMap::Send( int iThreadIndex, const char * pszPacket, int iPacket
 	return bRes;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 모든 세션에 TCP 패킷을 전송한다.
- * @param pszPacket			패킷
- * @param iPacketLen		패킷 길이
- * @param pclsCallBack	세션별로 전송 유무를 결정하는 callback 객체
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CTcpSessionMap::SendAll( const char * pszPacket, int iPacketLen, ITcpStackCallBack * pclsCallBack )
 {
 	TCP_SESSION_MAP::iterator itTSM;
@@ -196,16 +141,7 @@ bool CTcpSessionMap::SendAll( const char * pszPacket, int iPacketLen, ITcpStackC
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 특정 세션을 제외한 모든 세션에 TCP 패킷을 전송한다.
- * @param pszPacket			패킷
- * @param iPacketLen		패킷 길이
- * @param pclsCallBack	세션별로 전송 유무를 결정하는 callback 객체
- * @param iThreadIndex	전송하지 않을 세션의 쓰레드 인덱스
- * @param iSessionIndex 전송하지 않을 세션 인덱스
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CTcpSessionMap::SendAllExcept( const char * pszPacket, int iPacketLen, ITcpStackCallBack * pclsCallBack, int iThreadIndex, int iSessionIndex )
 {
 	TCP_SESSION_MAP::iterator itTSM;
@@ -226,13 +162,7 @@ bool CTcpSessionMap::SendAllExcept( const char * pszPacket, int iPacketLen, ITcp
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 자료구조의 키를 생성한다.
- * @param pszIp TCP 서버 IP 주소
- * @param iPort TCP 서버 포트 번호
- * @param strKey 자료구조의 키를 저장할 변수
- */
+
 void CTcpSessionMap::GetKey( const char * pszIp, int iPort, std::string & strKey )
 {
 	char szPort[6];
@@ -244,11 +174,7 @@ void CTcpSessionMap::GetKey( const char * pszIp, int iPort, std::string & strKey
 	strKey.append( szPort );
 }
 
-/**
- * @ingroup TcpStack
- * @brief 새로 사용할 쓰레드 번호를 가져온다.
- * @returns 새로 사용할 쓰레드 번호를 리턴한다.
- */
+
 int CTcpSessionMap::GetThreadIndex()
 {
 	++m_iThreadIndex;
@@ -269,12 +195,7 @@ int CTcpSessionMap::GetThreadIndex()
 	return m_iThreadIndex;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 쓰레드 번호가 사용중인지 검사한다.
- * @param iThreadIndex 쓰레드 번호
- * @returns 쓰레드 번호가 사용중이면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpSessionMap::SelectThreadIndex( int iThreadIndex )
 {
 	TCP_SESSION_MAP::iterator itTSM;

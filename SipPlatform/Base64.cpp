@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "Base64.h"
 #include <stdio.h>
@@ -30,37 +14,19 @@ static char garrBase64Table[] =
 	};
 static char gcBase64Pad = '=';
 
-/** 
- * @ingroup SipPlatform
- * @brief plain text 를 base64 문자열로 변환하였을 때의 base64 문자열의 길이를 리턴한다.
- * @param	iLength	plain text 문자열
- * @return base64 문자열의 길이를 리턴한다.
- */
+
 int GetBase64EncodeLength( int iLength )
 {
 	return ((iLength + 3 - iLength % 3) * 4 / 3 + 1);
 }
 
-/** 
- * @ingroup SipPlatform
- * @brief base64 문자열을 plain text 로 변환하였을 때에 plain text 의 길이를 리턴한다.
- * @param	iLength	base64 문자열의 길이
- * @return plain text 문자열의 길이를 리턴한다.
- */
+
 int GetBase64DecodeLength( int iLength )
 {
 	return( (iLength / 4 * 3 + 1) * sizeof(char) );
 }
 
-/**	
- * @ingroup SipPlatform
- * @brief plain text 를 base64 문자열로 변환한다.
- * @param	pszInput			plain text 문자열
- * @param	iInputLength	plain text 문자열의 길이
- * @param	pszOutput			base64 문자열 저장 변수
- * @param	iOutputLength	base64 문자열 저장 변수의 크기
- * @return	성공하면 base64 문자열의 길이를 리턴하고 실패하면 -1 을 리턴한다.
- */
+
 int Base64Encode( const char * pszInput, int iInputLength, char * pszOutput, int iOutputLength )
 {
 	const unsigned char *pszCurrent = (const unsigned char *)pszInput;
@@ -102,15 +68,7 @@ int Base64Encode( const char * pszInput, int iInputLength, char * pszOutput, int
 	return i;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief base64 문자열을 plain text 문자열로 변환한다.
- * @param	pszInput			base64 문자열
- * @param	iInputLength	base64 문자열 길이
- * @param	pszOutput			plain text 를 저장할 변수
- * @param	iOutputLength	plain text 를 저장할 변수의 크기
- * @return	성공하면 변환된 문자열의 길이를 리턴하고 그렇지 않으면 -1 을 리턴한다.
- */
+
 int Base64Decode( const char * pszInput, int iInputLength, char * pszOutput, int iOutputLength )
 {
 	const unsigned char *pszCurrent = (const unsigned char *)pszInput;
@@ -167,14 +125,7 @@ int Base64Decode( const char * pszInput, int iInputLength, char * pszOutput, int
 	return j;
 }
 
-/**	
- * @ingroup SipPlatform
- * @brief plain text 를 base64 문자열로 변환한다.
- * @param	pszInput			plain text 문자열
- * @param	iInputLength	plain text 문자열의 길이
- * @param	strOutput			base64 문자열 저장 변수
- * @return	성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool Base64Encode( const char * pszInput, int iInputLength, std::string & strOutput )
 {
 	int iOutputLen = GetBase64EncodeLength( iInputLength );

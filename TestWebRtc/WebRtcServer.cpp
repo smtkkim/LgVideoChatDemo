@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 #include <iostream>
 #include <regex>
 #include <random>
@@ -43,13 +27,7 @@ CWebRtcServer::~CWebRtcServer()
 	delete m_clsUserDB;
 }
 
-/**
- * @ingroup TestWebRtc
- * @brief HTTP 요청 수신 이벤트 callback
- * @param pclsRequest		HTTP 요청 메시지
- * @param pclsResponse	HTTP 응답 메시지 - 응용에서 저장한다.
- * @returns 응용에서 HTTP 응답 메시지를 정상적으로 생성하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CWebRtcServer::RecvHttpRequest( CHttpMessage * pclsRequest, CHttpMessage * pclsResponse )
 {
 	std::string strPath = m_strDocumentRoot;
@@ -147,24 +125,13 @@ bool CWebRtcServer::RecvHttpRequest( CHttpMessage * pclsRequest, CHttpMessage * 
 	return true;
 }
 
-/**
- * @ingroup TestWebRtc
- * @brief WebSocket 클라이언트 TCP 연결 시작 이벤트 callback
- * @param pszClientIp WebSocket 클라이언트 IP 주소
- * @param iClientPort WebSocket 클라이언트 포트 번호
- * @param pclsRequest	HTTP 요청 메시지
- */
+
 void CWebRtcServer::WebSocketConnected( const char * pszClientIp, int iClientPort, CHttpMessage * pclsRequest )
 {
 	printf( "WebSocket[%s:%d] connected\n", pszClientIp, iClientPort );
 }
 
-/**
- * @ingroup TestWebRtc
- * @brief WebSocket 클라이언트 TCP 연결 종료 이벤트 callback
- * @param pszClientIp WebSocket 클라이언트 IP 주소
- * @param iClientPort WebSocket 클라이언트 포트 번호
- */
+
 void CWebRtcServer::WebSocketClosed( const char * pszClientIp, int iClientPort )
 {
 	printf( "WebSocket[%s:%d] closed\n", pszClientIp, iClientPort );
@@ -175,14 +142,7 @@ void CWebRtcServer::WebSocketClosed( const char * pszClientIp, int iClientPort )
 	gclsCallMap.Delete( strUserId.c_str() );
 }
 
-/**
- * @ingroup TestWebRtc
- * @brief WebSocket 클라이언트 데이터 수신 이벤트 callback
- * @param pszClientIp WebSocket 클라이언트 IP 주소
- * @param iClientPort WebSocket 클라이언트 포트 번호
- * @param strData			WebSocket 클라이언트가 전송한 데이터
- * @returns WebSocket 클라이언트 연결을 유지하려면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, std::string & strData )
 {
 	printf( "WebSocket[%s:%d] recv[%s]\n", pszClientIp, iClientPort, strData.c_str() );
@@ -536,14 +496,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 	return true;
 }
 
-/**
- * @ingroup TestWebRtc
- * @brief WebSocket 클라이언트로 패킷을 전송한다.
- * @param pszClientIp WebSocket 클라이언트 IP 주소
- * @param iClientPort WebSocket 클라이언트 포트 번호
- * @param fmt					전송 문자열
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CWebRtcServer::Send( const char * pszClientIp, int iClientPort, const char * fmt, ... )
 {
 	va_list	ap;
@@ -563,15 +516,7 @@ bool CWebRtcServer::Send( const char * pszClientIp, int iClientPort, const char 
 	return false;
 }
 
-/**
- * @ingroup TestWebRtc
- * @brief 통화 INVITE 응답 및 BYE 요청/응답을 전송한다.
- * @param pszClientIp WebSocket 클라이언트 IP 주소
- * @param iClientPort WebSocket 클라이언트 포트 번호
- * @param strData			전송 패킷
- * @param strUserId		전송된 사용자 아이디
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CWebRtcServer::SendCall( const char * pszClientIp, int iClientPort, std::string & strData, std::string & strUserId )
 {
 	std::string strOtherId;

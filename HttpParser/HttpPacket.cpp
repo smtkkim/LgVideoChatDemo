@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "SipPlatformDefine.h"
 #include "HttpPacket.h"
@@ -29,13 +13,7 @@ CHttpPacket::~CHttpPacket()
 {
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP 프로토콜 기반으로 수신한 패킷을 저장하고 파싱한다.
- * @param pszPacket		패킷
- * @param iPacketLen	패킷 길이
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpPacket::AddPacket( const char * pszPacket, int iPacketLen )
 {
 	m_strBuf.append( pszPacket, iPacketLen );
@@ -129,11 +107,7 @@ bool CHttpPacket::AddPacket( const char * pszPacket, int iPacketLen )
 	return true;
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP body 를 모두 가져왔는지 검사한다.
- * @returns HTTP body 를 모두 가져온 경우 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CHttpPacket::IsCompleted( )
 {
 	if( m_eStatus == H_HPS_BODY_END ) return true;
@@ -141,10 +115,7 @@ bool CHttpPacket::IsCompleted( )
 	return false;
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP 메시지 객체를 초기화시킨다.
- */
+
 void CHttpPacket::ClearMessage( )
 {
 	m_clsMessage.Clear();
@@ -152,11 +123,7 @@ void CHttpPacket::ClearMessage( )
 	m_iChunkedLen = -1;
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP 메시지 객체를 리턴한다.
- * @returns HTTP 메시지 객체를 리턴한다.
- */
+
 CHttpMessage * CHttpPacket::GetHttpMessage( )
 {
 	return &m_clsMessage;
@@ -167,11 +134,7 @@ std::string * CHttpPacket::GetBuf()
 	return &m_strBuf;
 }
 
-/**
- * @ingroup HttpParser
- * @brief Chunked header 를 파싱한다.
- * @returns Chunked header 가 모두 파싱되면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpPacket::ParseChunkedHeader( )
 {
 	const char * pszBuf = m_strBuf.c_str();
@@ -214,11 +177,7 @@ bool CHttpPacket::ParseChunkedHeader( )
 	return false;
 }
 
-/**
- * @ingroup HttpParser
- * @brief Chunked body 를 파싱한다.
- * @returns Chunked body 가 모두 파싱되면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpPacket::ParseChunkedBody( )
 {
 	const char * pszBuf = m_strBuf.c_str();

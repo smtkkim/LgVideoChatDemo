@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "SipPlatformDefine.h"
 #include "HttpClient2.h"
@@ -36,14 +20,7 @@ CHttpClient2::~CHttpClient2()
 	Close();
 }
 
-/**
- * @ingroup HttpStack
- * @brief	HTTP GET 명령을 실행한다.
- * @param pszUrl								HTTP URL (예:http://www.naver.com)
- * @param strOutputContentType	수신 Content-Type
- * @param strOutputBody					수신 body
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpClient2::DoGet( const char * pszUrl, std::string & strOutputContentType, std::string & strOutputBody )
 {
 	strOutputContentType.clear();
@@ -83,17 +60,7 @@ bool CHttpClient2::DoGet( const char * pszUrl, std::string & strOutputContentTyp
 	return true;
 }
 
-/**
- * @ingroup HttpStack
- * @brief	HTTP POST 명령을 실행한다.
- * @param pszUrl								HTTP URL (예:http://wsf.cdyne.com/WeatherWS/Weather.asmx)
- * @param pszInputContentType		전송 Content-Type
- * @param pszInputBody					전송 body
- * @param iInputBodyLen					전송 body 길이
- * @param strOutputContentType	수신 Content-Type
- * @param strOutputBody					수신 body
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpClient2::DoPost( const char * pszUrl, const char * pszInputContentType, const char * pszInputBody, int iInputBodyLen, std::string & strOutputContentType, std::string & strOutputBody )
 {
 	strOutputContentType.clear();
@@ -152,10 +119,7 @@ bool CHttpClient2::DoPost( const char * pszUrl, const char * pszInputContentType
 	return true;
 }
 
-/**
- * @ingroup HttpStack
- * @brief 소켓을 종료한다.
- */
+
 void CHttpClient2::Close()
 {
 	CLog::Print( LOG_NETWORK, "TcpClose(%s:%d)", m_strHost.c_str(), m_iPort );
@@ -176,44 +140,25 @@ void CHttpClient2::Close()
 	m_iPort = 0;
 }
 
-/**
- * @ingroup HttpStack
- * @brief HTTP 응답 메시지 수신 timeout 시간을 설정한다.
- * @param iRecvTimeout HTTP 응답 메시지 수신 timeout 시간 (초단위)
- */
+
 void CHttpClient2::SetRecvTimeout( int iRecvTimeout )
 {
 	m_iRecvTimeout = iRecvTimeout;
 }
 
-/**
- * @ingroup HttpStack
- * @brief HTTP 요청 메시지에 저장할 User-Agent 를 설정한다.
- * @param pszUserAgent 
- */
+
 void CHttpClient2::SetUserAgent( const char * pszUserAgent )
 {
 	m_strUserAgent = pszUserAgent;
 }
 
-/**
- * @ingroup HttpStack
- * @brief HTTP 응답 status code 를 리턴한다.
- * @returns HTTP 응답 status code 를 리턴한다.
- */
+
 int CHttpClient2::GetStatusCode()
 {
 	return m_iStatusCode;
 }
 
-/**
- * @ingroup HttpStack
- * @brief HTTP 서버에 연결하여서 HTTP 요청 메시지를 전송한 후, HTTP 응답 메시지를 수신한다.
- * @param pclsUri				HTTP request URI
- * @param pclsRequest		HTTP request
- * @param pclsPacket		HTTP response 를 저장할 패킷 객체
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CHttpClient2::Execute( CHttpUri * pclsUri, CHttpMessage * pclsRequest, CHttpPacket * pclsPacket )
 {
 	char * pszBuf = NULL;

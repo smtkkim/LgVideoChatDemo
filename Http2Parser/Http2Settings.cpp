@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2021 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "Http2Define.h"
 #include "Http2Settings.h"
@@ -31,13 +15,7 @@ CHttp2Settings::~CHttp2Settings()
 	Delete();
 }
 
-/**
- * @ingroup Http2Parser
- * @brief 
- * @param iName 
- * @param iValue 
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CHttp2Settings::Add( uint16_t iName, uint32_t iValue )
 {
 	if( m_pszPacket == NULL )
@@ -60,19 +38,13 @@ bool CHttp2Settings::Add( uint16_t iName, uint32_t iValue )
 	return true;
 }
 
-/**
- * @ingroup Http2Parser
- * @brief 멤버 변수를 초기화시킨다.
- */
+
 void CHttp2Settings::Clear()
 {
 	m_iPacketLen = 0;
 }
 
-/**
- * @ingroup Http2Parser
- * @brief 메모리를 해제한다.
- */
+
 void CHttp2Settings::Delete()
 {
 	if( m_pszPacket )
@@ -85,13 +57,7 @@ void CHttp2Settings::Delete()
 	m_iPacketLen = 0;
 }
 
-/**
- * @ingroup Http2Parser
- * @brief SETTINGS 헤더 정보를 로그에 출력한다.
- * @param eLogLevel		로그 레벨
- * @param pszPacket		패킷
- * @param iPacketLen	pszPacket 길이
- */
+
 void CHttp2Settings::PrintLog( EnumLogLevel eLogLevel, uint8_t * pszPacket, int iPacketLen )
 {
 	uint16_t sId;

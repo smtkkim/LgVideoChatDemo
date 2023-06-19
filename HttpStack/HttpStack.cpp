@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "HttpStack.h"
 #include "HttpStatusCode.h"
@@ -42,13 +26,7 @@ CHttpStack::~CHttpStack()
 {
 }
 
-/**
- * @ingroup HttpStack
- * @brief HTTP 서버를 시작한다.
- * @param pclsSetup			설정 객체
- * @param pclsCallBack	callback 객체
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CHttpStack::Start( CTcpStackSetup * pclsSetup, IHttpStackCallBack * pclsCallBack )
 {
 	if( pclsCallBack == NULL )
@@ -62,41 +40,25 @@ bool CHttpStack::Start( CTcpStackSetup * pclsSetup, IHttpStackCallBack * pclsCal
 	return m_clsTcpStack.Start( pclsSetup, this );
 }
 
-/**
- * @ingroup HttpStack
- * @brief 
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CHttpStack::Stop( )
 {
 	return m_clsTcpStack.Stop();
 }
 
-/**
- * @ingroup HttpStack
- * @brief openssl 알고리즘에 할당된 메모리를 제거한다.
- */
+
 void CHttpStack::Release()
 {
 	//EVP_cleanup();
 }
 
-/**
- * @ingroup HttpStack
- * @brief HTTP 클라이언트가 연결 이벤트 핸들러
- * @param pclsSessionInfo 세션 정보
- * @return HTTP 클라이언트 연결을 허용하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CHttpStack::InComingConnected( CTcpSessionInfo * pclsSessionInfo )
 {
 	return true;
 }
 
-/**
- * @ingroup HttpStack
- * @brief HTTP 클라이언트 세션이 종료 이벤트 핸들러
- * @param pclsSessionInfo 세션 정보
- */
+
 void CHttpStack::SessionClosed( CTcpSessionInfo * pclsSessionInfo )
 {
 	if( pclsSessionInfo->m_pclsApp )
@@ -110,14 +72,7 @@ void CHttpStack::SessionClosed( CTcpSessionInfo * pclsSessionInfo )
 	}
 }
 
-/**
- * @ingroup HttpStack
- * @brief TCP 패킷 수신 이벤트 핸들러
- * @param pszPacket				수신 패킷
- * @param iPacketLen			수신 패킷 길이
- * @param pclsSessionInfo 세션 정보
- * @returns TCP 세션을 유지하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CHttpStack::RecvPacket( char * pszPacket, int iPacketLen, CTcpSessionInfo * pclsSessionInfo )
 {
 	if( pclsSessionInfo->m_pclsApp == NULL )

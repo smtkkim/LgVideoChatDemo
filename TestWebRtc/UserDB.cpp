@@ -27,35 +27,11 @@
 	passwd_lock_utc   INTEGER DEFAULT 0,  \n \
 	gotp       TEXT              \n \
 	);"
-/*
-CREATE TABLE IF NOT EXISTS tbl_videochat (
-id INTEGER PRIMARY KEY AUTO_INCREMENT,
-unique_id  TEXT    NOT NULL,
-passwd     TEXT    NOT NULL,
-username   TEXT    NOT NULL,
-email      TEXT    NOT NULL,
-phone      TEXT    NOT NULL,
-address    TEXT    NOT NULL
-);
 
-SELECT * FROM tbl_videochat;
-*/
 
 // register user info
 #define SQL_INSERT_USER		"INSERT INTO tbl_videochat (unique_id, passwd, username, email, phone, address, passwd_update_utc, salt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-/*
-INSERT INTO tbl_videochat (unique_id, passwd, username, email, phone, address)
-VALUES ('robin', 'lge1234', 'robin kim', 'robin.kim@lge.com', '01082916918', "Yangchun-gu Seoul")
 
-INSERT INTO tbl_videochat (unique_id, passwd, username, email, phone, address)
-VALUES ('alice', 'lge1234', 'alice lee', 'alice@lge.com', '01012345678', "Yongsan-gu Seoul")
-
-INSERT INTO tbl_videochat (unique_id, passwd, username, email, phone, address)
-VALUES ('bob', 'lge1234', 'bob park', 'bob@lge.com', '01012345678', "Gangnam-gu Seoul")
-
-INSERT INTO tbl_videochat (unique_id, passwd, username, email, phone, address)
-VALUES ('eve', 'lge1234', 'eve jeon', 'eve@lge.com', '01012345678', "Gangseo-gu Seoul")
-*/
 
 // update user info
 #if DB_OTP_ENCRYPTION
@@ -88,14 +64,10 @@ VALUES ('eve', 'lge1234', 'eve jeon', 'eve@lge.com', '01012345678', "Gangseo-gu 
 
 // delete user
 #define SQL_DELETE_USER		"DELETE FROM tbl_videochat WHERE unique_id = ?"
-/*
-DELETE FROM tbl_videochat WHERE unique_id = 'test'
-*/
+
 
 #define SQL_UPDATE_PASSWD	"UPDATE tbl_videochat SET passwd = ? WHERE unique_id = ?"
-/*
-UPDATE tbl_videochat SET passwd = '29e586cd7f3164b3b0448c2953eb7f052ea474bbcd771bbd8820872da9581d56' WHERE unique_id = 'robin'
-*/
+
 
 
 #define SQL_WRONG_PASSWD_CNT_CLEAR		"UPDATE tbl_videochat SET passwd_wrong_cnt = 0 WHERE unique_id = ?"
@@ -108,9 +80,7 @@ UPDATE tbl_videochat SET passwd = '29e586cd7f3164b3b0448c2953eb7f052ea474bbcd771
 
 #define SQL_WRONG_PASSWD_LOCK_UTC		"SELECT passwd_lock_utc FROM tbl_videochat WHERE unique_id = ?"
 
-/*
-UPDATE tbl_videochat SET passwd_update_utc = '1655099156' WHERE unique_id = 'alice'
-*/
+
 #define SQL_UPDATE_PASSWD_UPDATED_TIME	"UPDATE tbl_videochat SET passwd_update_utc = ? WHERE unique_id = ?"
 
 #define SQL_GET_PASSWD_UPDATED_TIME		"SELECT passwd_update_utc FROM tbl_videochat WHERE unique_id = ?"

@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #ifndef _LOG_H_
 #define _LOG_H_
@@ -31,33 +15,26 @@
 #define DEFAULT_LOG_FILE_SIZE				1024*1024*10
 #define DEFAULT_LOG_FOLDER_SIZE			3145728000UL
 
-/** 
- * @ingroup SipPlatform
- * @brief 로그 레벨 관련 ENUM
- *	CLog 에서 사용하는 ENUM 이다.
- */
+
 enum EnumLogLevel
 {
-	/** 에러 로그 */
+	
 	LOG_ERROR = 0x0001,
-	/** 정보 로그 */
+	
 	LOG_INFO  = 0x0010,
-	/** 디버그 로그 */
+	
 	LOG_DEBUG = 0x0100,
-	/** 네트워크 데이타 디버그 로그 */
+	
 	LOG_NETWORK = 0x0200,
-	/** 시스템 로그 */
+	
 	LOG_SYSTEM = 0x400,
-	/** HTTP/2 로그 */
+	
 	LOG_HTTP2 = 0x800,
-	/** HTTP 헤더 로그 */
+	
 	LOG_HTTP_HEADER = 0x1000
 };
 
-/**
- * @ingroup SipPlatform
- * @brief 로그 메시지를 프로그램에서 처리하고 싶은 경우에 사용한다.
- */
+
 class ILogCallBack
 {
 public:
@@ -66,10 +43,7 @@ public:
 	virtual void Print( EnumLogLevel eLevel, const char * fmt, ... ) = 0;
 };
 
-/** 
- * @ingroup SipPlatform
- * @brief 로그 관련 클래스
- */
+
 class CLog
 {
 private:

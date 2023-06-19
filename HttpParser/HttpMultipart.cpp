@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "HttpMultipart.h"
 #include "HttpHeader.h"
@@ -30,22 +14,14 @@ CHttpMultipart::~CHttpMultipart()
 	Clear();
 }
 
-/**
- * @ingroup HttpParser
- * @brief multipart 의 boundary 문자열을 저장한다.
- * @param pszBoundary multipart 의 boundary 문자열
- */
+
 void CHttpMultipart::SetBoundary( const char * pszBoundary )
 {
 	m_strBoundary = "--";
 	m_strBoundary.append( pszBoundary );
 }
 
-/**
- * @ingroup HttpParser
- * @brief Content-Type 에서 boundary 문자열을 찾아서 boundary 문자열을 저장한다.
- * @param pszContentType Content-Type 문자열
- */
+
 void CHttpMultipart::SetContentType( const char * pszContentType )
 {
 	CHttpParameterList clsParamList( ';', true );
@@ -61,10 +37,7 @@ void CHttpMultipart::SetContentType( const char * pszContentType )
 	}
 }
 
-/**
- * @ingroup HttpParser
- * @brief 자료구조를 초기화시킨다.
- */
+
 void CHttpMultipart::Clear()
 {
 	HTTP_MULTIPART_DATA_MAP::iterator itMap;
@@ -77,24 +50,13 @@ void CHttpMultipart::Clear()
 	m_clsMap.clear();
 }
 
-/**
- * @ingroup HttpParser
- * @brief multipart 문자열을 파싱한다.
- * @param strText multipart 문자열
- * @returns 성공하면 파싱한 multipart 문자열 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
- */
+
 int CHttpMultipart::Parse( const std::string & strText )
 {
 	return Parse( strText.c_str(), (int)strText.length() );
 }
 
-/**
- * @ingroup HttpParser
- * @brief multipart 문자열을 파싱한다.
- * @param pszText		multipart 문자열
- * @param iTextLen	multipart 문자열 길이
- * @returns 성공하면 파싱한 multipart 문자열 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
- */
+
 int CHttpMultipart::Parse( const char * pszText, int iTextLen )
 {
 	const char * pszBoundary = m_strBoundary.c_str();
@@ -144,12 +106,7 @@ int CHttpMultipart::Parse( const char * pszText, int iTextLen )
 	return -1;
 }
 
-/**
- * @ingroup HttpParser
- * @brief multipart 문자열을 생성한다.
- * @param strText [out] multipart 문자열
- * @returns multipart 문자열 길이를 리턴한다.
- */
+
 int CHttpMultipart::ToString( std::string & strText )
 {
 	HTTP_MULTIPART_DATA_MAP::iterator itMap;
@@ -192,13 +149,7 @@ int CHttpMultipart::ToString( std::string & strText )
 	return (int)strText.length();
 }
 
-/**
- * @ingroup HttpParser
- * @brief multipart 에 포함된 하나의 항목을 form-data 로 파싱한다.
- * @param pszText		문자열
- * @param iTextLen	문자열 길이
- * @returns 정상적으로 파싱되면 파싱한 문자열 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
- */
+
 int CHttpMultipart::ParseData( const char * pszText, int iTextLen )
 {
 	CHttpMultipartData * pclsData = new CHttpMultipartData();

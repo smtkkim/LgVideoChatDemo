@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 #include "SipPlatformDefine.h"
 
 #ifdef WIN32
@@ -44,14 +28,7 @@ static bool gbStartSslServer = false;
 static CSipMutex * garrMutex;
 static CSipMutex gclsMutex;
 
-/**
- * @ingroup TcpStack
- * @brief SSL 라이브러리를 multi-thread 에서 사용할 수 있기 위한 Lock/Unlock function
- * @param mode	CRYPTO_LOCK / CRYPTO_UNLOCK
- * @param n			쓰레드 아이디
- * @param file 
- * @param line 
- */
+
 static void SSLLockingFunction( int mode, int n, const char * file, int line )
 {
 //	if( mode & CRYPTO_LOCK )
@@ -64,11 +41,7 @@ static void SSLLockingFunction( int mode, int n, const char * file, int line )
 //	}
 }
 
-/**
- * @ingroup TcpStack
- * @brief SSL 라이브러리를 multi-thread 에서 사용할 수 있기 위한 ID function
- * @returns 현재 쓰레드 ID 를 리턴한다.
- */
+
 static unsigned long SSLIdFunction( )
 {
 #ifdef WIN32
@@ -78,11 +51,7 @@ static unsigned long SSLIdFunction( )
 #endif
 }
 
-/**
- * @ingroup TcpStack
- * @brief SSL 라이브러리를 multi-thread 기반으로 시작한다.
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 static bool SSLStart( )
 {
 #if 0
@@ -106,11 +75,7 @@ static bool SSLStart( )
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief SSL 라이브러리를 중지시킨다.
- * @returns true 를 리턴한다.
- */
+
 static bool SSLStop( )
 {
 #if 0
@@ -132,13 +97,7 @@ static void SSLPrintError( )
 	CLog::Print( ERR_print_errors_fp );
 }
 
-/**
- * @ingroup TcpStack
- * @brief SSL 서버 라이브러리를 시작한다.
- * @param szCertFile		서버 인증서 및 개인키 파일
- * @param szCipherList	암호화 알고리즘 리스트
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool SSLServerStart( const char * szCertFile, const char * szCipherList )
 {
 	if( szCertFile == NULL ) return false;
@@ -205,11 +164,7 @@ bool SSLServerStart( const char * szCertFile, const char * szCipherList )
 	return gbStartSslServer;
 }
 
-/**
- * @ingroup TcpStack
- * @brief SSL 서버 라이브러리를 종료한다.
- * @returns true 를 리턴한다.
- */
+
 bool SSLServerStop( )
 {
 	gclsMutex.acquire();
@@ -235,11 +190,7 @@ bool SSLServerStop( )
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief SSL 클라이언트 라이브러리를 시작한다.
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool SSLClientStart( )
 {
 	gclsMutex.acquire();
@@ -267,11 +218,7 @@ bool SSLClientStart( )
 	return gbStartSslServer;
 }
 
-/**
- * @ingroup TcpStack
- * @brief SSL 클라이언트 라이브러리를 종료한다.
- * @returns true 를 리턴한다.
- */
+
 bool SSLClientStop( )
 {
 	gclsMutex.acquire();
@@ -292,13 +239,7 @@ bool SSLClientStop( )
 	return true;
 }
 
-/**
- * @ingroup SipStack
- * @brief SSL 클라이언트 CTX 를 생성한다.
- * @param szCertFile	개인키 & 인증서 PEM 파일 full path
- * @param eTlsVersion TLS 버전
- * @returns 성공하면 SSL_CTX 를 리턴하고 그렇지 않으면 NULL 을 리턴한다.
- */
+
 SSL_CTX * SSLClientStart( const char * szCertFile )
 {
 	if( SSLStart() == false ) return NULL;
@@ -345,10 +286,7 @@ SSL_CTX * SSLClientStart( const char * szCertFile )
 }
 
 
-/**
- * @ingroup TcpStack
- * @brief 프로세스가 종료될 때에 최종적으로 실행하여서 openssl 메모리 누수를 출력하지 않는다. 
- */
+
 void SSLFinal()
 {
 	//ERR_free_strings();
@@ -364,12 +302,7 @@ void SSLFinal()
 #endif
 }
 
-/**
- * @brief SSL 세션을 연결한다.
- * @param iFd				클라이언트 TCP 소켓 핸들
- * @param ppsttSsl	SSL 구조체
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool SSLConnect( Socket iFd, SSL ** ppsttSsl )
 {
 	SSL * psttSsl;
@@ -402,14 +335,7 @@ bool SSLConnect( Socket iFd, SSL ** ppsttSsl )
 	return true;
 }
 
-/**
- * @ingroup SipStack
- * @brief SSL 세션을 연결한다.
- * @param pCtx			TLS CTX
- * @param iFd				클라이언트 TCP 소켓 핸들
- * @param ppsttSsl	SSL 구조체
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool SSLConnect( SSL_CTX * pCtx, Socket iFd, SSL ** ppsttSsl )
 {
 	SSL * psttSsl;
@@ -441,16 +367,7 @@ bool SSLConnect( SSL_CTX * pCtx, Socket iFd, SSL ** ppsttSsl )
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 클라이언트 SSL 접속 요청을 허용한다.
- * @param iFd								클라이언트 TCP 소켓 핸들
- * @param ppsttSsl					SSL 구조체
- * @param bCheckClientCert	클라이언트 인증서를 확인할 것인가?
- * @param iVerifyDepth			the maximum depth for the certificate chain verification that shall be allowed for ssl
- * @param iAcceptTimeout		SSL 접속 요청 처리 최대 시간 ( ms 단위 )
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool SSLAccept( Socket iFd, SSL ** ppsttSsl, bool bCheckClientCert, int iVerifyDepth, int iAcceptTimeout )
 {
 	SSL * psttSsl;
@@ -529,14 +446,7 @@ bool SSLAccept( Socket iFd, SSL ** ppsttSsl, bool bCheckClientCert, int iVerifyD
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief SSL 프로토콜로 패킷을 전송한다.
- * @param ssl			SSL 구조체
- * @param szBuf		전송 패킷
- * @param iBufLen 전송 패킷 크기
- * @returns 전송 패킷 크기를 리턴한다.
- */
+
 int SSLSend( SSL * ssl, const char * szBuf, int iBufLen )
 {
 	int		n;	
@@ -561,25 +471,13 @@ int SSLSend( SSL * ssl, const char * szBuf, int iBufLen )
 	return iBufLen;
 }
 
-/**
- * @ingroup TcpStack
- * @brief SSL 프로토콜로 수신된 패킷을 읽는다.
- * @param ssl			SSL 구조체
- * @param szBuf		수신 패킷 저장 버퍼
- * @param iBufLen 수신 패킷 저장 버퍼 크기
- * @returns 성공하면 양수를 리턴하고 실패하면 0 또는 음수를 리턴한다.
- */
+
 int SSLRecv( SSL * ssl, char * szBuf, int iBufLen )
 {
 	return SSL_read( ssl, szBuf, iBufLen );
 }
 
-/**
- * @ingroup TcpStack
- * @brief SSL 세션을 종료한다.
- * @param ssl	SSL 구조체
- * @returns true 를 리턴한다.
- */
+
 bool SSLClose( SSL * ssl )
 {
 	if( ssl ) 
@@ -605,20 +503,14 @@ int SSLAlpnCallBack( SSL * ssl, const unsigned char **out, unsigned char *outlen
 	return -1;
 }
 
-/**
- * @ingroup TcpStack
- * @brief ALPN 으로 h2 또는 http/1.1 을 선택하도록 설정한다.
- */
+
 void SSLServerSetHttp2()
 {
 	SSL_CTX_set_alpn_select_cb( gpsttServerCtx, SSLAlpnCallBack, NULL );
 }
 
 #if 0
-/**
- * @ingroup TcpStack
- * @brief SSL 서버에서 사용되는 cipher list 를 로그로 출력한다.
- */
+
 void SSLPrintLogServerCipherList( )
 {
 	if( gpsttServerCtx == NULL )
@@ -635,10 +527,7 @@ void SSLPrintLogServerCipherList( )
 	}
 }
 
-/**
- * @ingroup TcpStack
- * @brief SSL 클라이언트에서 사용되는 cipher list 를 로그로 출력한다.
- */
+
 void SSLPrintLogClientCipherList( )
 {
 	if( gpsttClientCtx == NULL )

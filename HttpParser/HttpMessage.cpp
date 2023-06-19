@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "HttpStatusCode.h"
 #include "HttpMessage.h"
@@ -29,13 +13,7 @@ CHttpMessage::~CHttpMessage()
 {
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP 메시지를 파싱한다.
- * @param pszText		HTTP 메시지 문자열
- * @param iTextLen	HTTP 메시지 문자열 길이
- * @returns 성공하면 파싱한 문자열 개수를 리턴하고 실패하면 -1 을 리턴한다.
- */
+
 int CHttpMessage::Parse( const char * pszText, int iTextLen )
 {
 	int iCurPos;
@@ -59,13 +37,7 @@ int CHttpMessage::Parse( const char * pszText, int iTextLen )
 	return iCurPos;
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP 메시지의 헤더를 파싱한다.
- * @param pszText		HTTP 메시지 문자열
- * @param iTextLen	HTTP 메시지 문자열 길이
- * @returns 성공하면 파싱한 문자열 개수를 리턴하고 실패하면 -1 을 리턴한다.
- */
+
 int CHttpMessage::ParseHeader( const char * pszText, int iTextLen )
 {
 	if( pszText == NULL || iTextLen <= 4 ) return -1;
@@ -124,10 +96,7 @@ int CHttpMessage::ParseHeader( const char * pszText, int iTextLen )
 	return iCurPos;
 }
 
-/**
- * @ingroup HttpParser
- * @brief 내부 변수를 초기화시킨다.
- */
+
 void CHttpMessage::Clear()
 {
 	m_strHttpMethod.clear();
@@ -141,14 +110,7 @@ void CHttpMessage::Clear()
 	m_strBody.clear();
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP 메시지 문자열을 생성한다.
- * @param pszText			HTTP 메시지 문자열 저장 변수
- * @param iTextSize		HTTP 메시지 문자열 저장 변수 크기
- * @param bHeaderOnly	HTTP 메시지의 헤더만 문자열로 생성하고 싶으면 true 를 저장하고 body 를 포함한 HTTP 메시지를 생성하고 싶으면 false 를 저장한다.
- * @returns 성공하면 저장된 HTTP 메시지 문자열 길이를 리턴하고 실패하면 -1 을 리턴한다.
- */
+
 int CHttpMessage::ToString( char * pszText, int iTextSize, bool bHeaderOnly )
 {
 	if( pszText == NULL || iTextSize <= 0 ) return -1;
@@ -201,13 +163,7 @@ int CHttpMessage::ToString( char * pszText, int iTextSize, bool bHeaderOnly )
 	return iLen;
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP 메시지 문자열을 생성한다.
- * @param strText			HTTP 메시지 문자열 저장 변수
- * @param bHeaderOnly	HTTP 메시지의 헤더만 문자열로 생성하고 싶으면 true 를 저장하고 body 를 포함한 HTTP 메시지를 생성하고 싶으면 false 를 저장한다.
- * @returns 성공하면 저장된 HTTP 메시지 문자열 길이를 리턴하고 실패하면 -1 을 리턴한다.
- */
+
 int CHttpMessage::ToString( std::string & strText, bool bHeaderOnly )
 {
 	char szBuf[2048];
@@ -272,13 +228,7 @@ bool CHttpMessage::AddHeader( const char * pszName, std::string & strValue )
 	return true;
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP 헤더 자료구조에 이름과 값을 추가한다.
- * @param pszName		HTTP 헤더 이름
- * @param pszValue	HTTP 헤더 값
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CHttpMessage::AddHeader( const char * pszName, const char * pszValue )
 {
 	if( pszName == NULL || pszValue == NULL ) return false;
@@ -290,13 +240,7 @@ bool CHttpMessage::AddHeader( const char * pszName, const char * pszValue )
 	return true;
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP 헤더 자료구조에 이름과 값을 추가한다.
- * @param pszName HTTP 헤더 이름
- * @param iValue	HTTP 헤더 값
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CHttpMessage::AddHeader( const char * pszName, int iValue )
 {
 	char szValue[11];
@@ -306,13 +250,7 @@ bool CHttpMessage::AddHeader( const char * pszName, int iValue )
 	return AddHeader( pszName, szValue );
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP 헤더 자료구조에서 이름을 검색한 후, 해당 헤더가 존재하면 값을 수정한다.
- * @param pszName		HTTP 헤더 이름
- * @param pszValue	HTTP 헤더 값
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CHttpMessage::UpdateHeader( const char * pszName, const char * pszValue )
 {
 	HTTP_HEADER_LIST::iterator itList;
@@ -329,13 +267,7 @@ bool CHttpMessage::UpdateHeader( const char * pszName, const char * pszValue )
 	return false;
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP 헤더 자료구조에서 이름을 검색한 후, 해당 헤더가 존재하면 값을 수정하고 존재하지 않으면 새로 추가한다.
- * @param pszName		HTTP 헤더 이름
- * @param pszValue	HTTP 헤더 값
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CHttpMessage::ReplaceHeader( const char * pszName, const char * pszValue )
 {
 	if( UpdateHeader( pszName, pszValue ) == false )
@@ -346,12 +278,7 @@ bool CHttpMessage::ReplaceHeader( const char * pszName, const char * pszValue )
 	return true;
 }
 
-/**
- * @ingroup HttpParser
- * @brief 헤더 리스트를 검색하여서 입력된 이름과 일치하는 헤더를 리턴한다.
- * @param pszName 헤더 이름
- * @returns 헤더 리스트에 존재하면 헤더 객체를 리턴하고 그렇지 않으면 NULL 을 리턴한다.
- */
+
 CHttpHeader * CHttpMessage::GetHeader( const char * pszName )
 {
 	HTTP_HEADER_LIST::iterator	itList;
@@ -367,14 +294,7 @@ CHttpHeader * CHttpMessage::GetHeader( const char * pszName )
 	return NULL;
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP 요청 메시지에 기본적으로 입력되어야 할 내용을 추가한다.
- * @param pszMethod HTTP 메소드
- * @param pclsUri		HTTP URI
- * @param pszUserAgent	HTTP User Agent 헤더에 저장될 문자열
- * @returns true 를 리턴한다.
- */
+
 bool CHttpMessage::SetRequest( const char * pszMethod, CHttpUri * pclsUri, const char * pszUserAgent )
 {
 	m_strHttpMethod = pszMethod;
@@ -410,11 +330,7 @@ bool CHttpMessage::SetRequest( const char * pszMethod, CHttpUri * pclsUri, const
 	return true;
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP 요청 메시지인지 검사한다.
- * @returns HTTP 요청 메시지이면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CHttpMessage::IsRequest( )
 {
 	if( m_strHttpMethod.empty() == false ) return true;
@@ -422,13 +338,7 @@ bool CHttpMessage::IsRequest( )
 	return false;
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP status line 을 파싱한다.
- * @param pszText		HTTP 헤더의 값을 저장한 문자열
- * @param iTextLen	pszText 문자열의 길이
- * @returns 성공하면 파싱한 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
- */
+
 int CHttpMessage::ParseStatusLine( const char * pszText, int iTextLen )
 {
 	int		iPos, iStartPos = -1;
@@ -474,13 +384,7 @@ int CHttpMessage::ParseStatusLine( const char * pszText, int iTextLen )
 	return -1;
 }
 
-/**
- * @ingroup HttpParser
- * @brief HTTP request line 을 파싱한다.
- * @param pszText		SIP 헤더의 값을 저장한 문자열
- * @param iTextLen	pszText 문자열의 길이
- * @returns 성공하면 파싱한 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
- */
+
 int CHttpMessage::ParseRequestLine( const char * pszText, int iTextLen )
 {
 	int		iPos, iStartPos = -1;

@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "SipPlatformDefine.h"
 #include <time.h>
@@ -28,12 +12,7 @@
 
 #include "MemoryDebug.h"
 
-/** 
- * @ingroup SipPlatform
- * @brief		UDP 소켓을 생성한다.
- * @param	bIpv6	IPv6 소켓을 생성할 것인가?
- * @return	성공하면 socket handle 을 리턴한다. 그렇지 않으면 INVALID_SOCKET 를 리턴한다.
- */
+
 Socket UdpSocket( bool bIpv6 )
 {
 	Socket iFd;
@@ -47,14 +26,7 @@ Socket UdpSocket( bool bIpv6 )
 	return iFd;
 }
 
-/** 
- * @ingroup SipPlatform
- * @brief UDP listen 소켓을 생성한다. 
- * @param	iPort	UDP 포트
- * @param	pszIp	UDP IP 주소. NULL 을 입력하면 any ip 주소를 사용한다.
- * @param	bIpv6	IPv6 소켓을 생성할 것인가?
- * @return	성공하면 socket handle 을 리턴한다. 그렇지 않으면 INVALID_SOCKET 를 리턴한다.
- */
+
 Socket UdpListen( unsigned short iPort, const char * pszIp, bool bIpv6 )
 {
 	if( iPort == 0 )
@@ -123,18 +95,7 @@ Socket UdpListen( unsigned short iPort, const char * pszIp, bool bIpv6 )
 	return iFd;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief UDP 메시지를 수신한다.
- * @param iFd			소켓 핸들
- * @param pszBuf	수신 버퍼
- * @param piLen		수신 패킷 크기를 저장할 변수
- * @param pszIp		IP 주소
- * @param iIpSize IP 주소 변수 크기
- * @param piPort	포트 번호
- * @param	bIpv6		IPv6 소켓인가?
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool UdpRecv( Socket iFd, char * pszBuf, int * piLen, char * pszIp, int iIpSize, unsigned short* piPort, bool bIpv6 )
 {
 	if( iFd == INVALID_SOCKET ) return false;
@@ -192,16 +153,7 @@ bool UdpRecv( Socket iFd, char * pszBuf, int * piLen, char * pszIp, int iIpSize,
 	return true;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief IPv4 로 UDP 메시지를 수신한다.
- * @param iFd			소켓 핸들
- * @param pszBuf	수신 버퍼
- * @param piLen		수신 패킷 크기
- * @param piIp		IP 주소
- * @param piPort	포트 번호
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool UdpRecv( Socket iFd, char * pszBuf, int * piLen, unsigned int * piIp, unsigned short* piPort )
 {
 	if( iFd == INVALID_SOCKET ) return false;
@@ -230,16 +182,7 @@ bool UdpRecv( Socket iFd, char * pszBuf, int * piLen, unsigned int * piIp, unsig
 	return true;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief IPv6 로 UDP 메시지를 수신한다.
- * @param iFd			소켓 핸들
- * @param pszBuf	수신 버퍼
- * @param piLen		수신 패킷 크기
- * @param psttIp	IP 주소
- * @param piPort	포트 번호
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool UdpRecv( Socket iFd, char * pszBuf, int * piLen, IN6_ADDR * psttIp, unsigned short* piPort )
 {
 	if( iFd == INVALID_SOCKET ) return false;
@@ -268,16 +211,7 @@ bool UdpRecv( Socket iFd, char * pszBuf, int * piLen, IN6_ADDR * psttIp, unsigne
 	return true;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief UDP 메시지를 전송한다.
- * @param iFd			소캣 핸들
- * @param pszBuf	전송 버퍼
- * @param iBufLen 전송 버퍼 길이
- * @param pszIp		목적지 IP 주소
- * @param iPort		목적지 포트 번호
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool UdpSend( Socket iFd, const char * pszBuf, int iBufLen, const char * pszIp, unsigned short iPort )
 {
 	if( iFd == INVALID_SOCKET || pszBuf == NULL || iBufLen <= 0 || pszIp == NULL || iPort == 0 ) return false;
@@ -323,16 +257,7 @@ bool UdpSend( Socket iFd, const char * pszBuf, int iBufLen, const char * pszIp, 
 	return true;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief IPv4 로 UDP 메시지를 전송한다.
- * @param iFd			소캣 핸들
- * @param pszBuf	발신 버퍼
- * @param iBufLen 발신 버퍼 길이
- * @param iIp			목적지 IP 주소
- * @param iPort		목적지 포트 번호
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool UdpSend( Socket iFd, const char * pszBuf, int iBufLen, unsigned int iIp, unsigned short iPort )
 {
 	if( iFd == INVALID_SOCKET || pszBuf == NULL || iBufLen <= 0 || iPort == 0 ) return false;
@@ -352,16 +277,7 @@ bool UdpSend( Socket iFd, const char * pszBuf, int iBufLen, unsigned int iIp, un
 	return true;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief IPv6 로 UDP 메시지를 전송한다.
- * @param iFd			소캣 핸들
- * @param pszBuf	발신 버퍼
- * @param iBufLen 발신 버퍼 길이
- * @param psttIp	목적지 IP 주소
- * @param iPort		목적지 포트 번호
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool UdpSend( Socket iFd, const char * pszBuf, int iBufLen, IN6_ADDR * psttIp, unsigned short iPort )
 {
 	if( iFd == INVALID_SOCKET || pszBuf == NULL || iBufLen <= 0 || iPort == 0 ) return false;
@@ -381,10 +297,7 @@ bool UdpSend( Socket iFd, const char * pszBuf, int iBufLen, IN6_ADDR * psttIp, u
 	return true;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 네트워크 API 를 초기화시킨다.
- */
+
 void InitNetwork()
 {
 #ifdef WIN32
@@ -405,11 +318,7 @@ void InitNetwork()
 #endif
 }
 
-/**
- * @brief pollfd 구조체에 수신할 핸들을 저장한다.
- * @param sttPollFd pollfd 구조체
- * @param hSocket		수신 이벤트를 위한 소켓
- */
+
 void TcpSetPollIn( struct pollfd & sttPollFd, Socket hSocket )
 {
 	sttPollFd.fd = hSocket;
@@ -418,11 +327,7 @@ void TcpSetPollIn( struct pollfd & sttPollFd, Socket hSocket )
 }
 
 #ifdef WIN32
-/** 
- * @ingroup SipPlatform
- * @brief 윈도우용 poll 메소드
- *	- 현재는 read event 만 처리할 수 있다.
- */
+
 int poll( struct pollfd *fds, unsigned int nfds, int timeout )
 {
 	fd_set	rset;
@@ -462,12 +367,7 @@ int poll( struct pollfd *fds, unsigned int nfds, int timeout )
 }
 #endif
 
-/**  
- * @ingroup SipPlatform
- * @brief localhost IP 주소를 제외한 호스트에 연결된 IP 주소를 가져온다.
- * @param	strIp	IP 주소를 저장할 변수
- * @return 성공하면 true 를 리턴한다. 실패하면 false 를 리턴한다.
- */
+
 bool GetLocalIp( std::string & strIp )
 {
 #ifdef WIN32

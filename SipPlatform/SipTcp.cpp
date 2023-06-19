@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "SipPlatformDefine.h"
 #include "SipTcp.h"
@@ -27,20 +11,7 @@
 #ifndef WIN32
 #include <ctype.h>
 
-/** timeout 이 있는 connect() 함수이다. 
- *
- * @ingroup SipStack
- * @author Yee Young Han 
- * @param  iSockFd socket() 함수로 만들어진 file descriptor
- * @param  saptr   connect 하고자하는 서버의 IP, port 를 기록한 sockaddr 구조체
- * @param  saiLen  saptr 변수의 크기
- * @param  iSecond connect 가 되기까지 기다리는 시간 ( 초단위 ) 
- * @return 성공하면 0을 리턴하고 실패하면 음수의 값을 리턴한다.
- *			connect() 함수 호출 실패시에는 -101를 리턴한다.
- *			poll() 함수 호출 실패시에는 -102를 리턴한다.
- *			getsockopt() 함수 호출 실패시에는 -103을 리턴한다.
- *			SO_ERROR 가 발생한 경우 -104를 리턴한다. 
- */
+
 
 static int ConnectTimeout( int iSockFd, const struct sockaddr *saptr, socklen_t saiLen, int iSecond )
 {
@@ -101,14 +72,7 @@ done:
 }
 #endif
 
-/**
- * @ingroup SipPlatform
- * @brief 호스트 이름으로 IP 주소를 검색한다.
- * @param szHostName	호스트 이름
- * @param szIp				IP 주소를 저장할 변수
- * @param iLen				IP 주소를 저장할 변수의 크기
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool GetIpByName( const char * szHostName, char * szIp, int iLen )
 {
 	struct	hostent	* hptr;
@@ -124,14 +88,7 @@ bool GetIpByName( const char * szHostName, char * szIp, int iLen )
 	return true;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief TCP 서버에 연결한다.
- * @param pszIp			TCP 서버 IP 주소
- * @param iPort			TCP 서버 포트 번호
- * @param iTimeout	연결 timeout 시간 ( 초단위 ) - 0 이상으로 설정해야 연결 timeout 기능이 동작한다.
- * @returns 성공하면 연결된 TCP 소켓을 리턴하고 그렇지 않으면 INVALID_SOCKET 를 리턴한다.
- */
+
 Socket TcpConnect( const char * pszIp, int iPort, int iTimeout )
 {
 	char		szIp[INET6_ADDRSTRLEN];
@@ -222,14 +179,7 @@ Socket TcpConnect( const char * pszIp, int iPort, int iTimeout )
 	return fd;
 }
 
-/** 
- * @ingroup SipPlatform
- * @brief 네트워크 전송 함수
- * @param	fd			소켓 핸들
- * @param	szBuf		전송 버퍼
- * @param	iBufLen	전송 버퍼 크기
- * @return 성공하면 전송한 크기를 리턴하고 실패하면 SOCKET_ERROR 를 리턴한다.
- */
+
 int TcpSend( Socket fd, const char * szBuf, int iBufLen )
 {
 	int		n;	
@@ -247,15 +197,7 @@ int TcpSend( Socket fd, const char * szBuf, int iBufLen )
 	return iBufLen;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief timeout 을 가진 TCP 수신 메소드
- * @param fd			소켓 핸들
- * @param szBuf		수신 버퍼
- * @param iBufLen 수신 버퍼 크기
- * @param iSecond 수신 timeout ( 초 단위 )
- * @returns 성공하면 수신 버퍼 크기를 리턴하고 실패하면 SOCKET_ERROR 을 리턴한다.
- */
+
 int TcpRecv( Socket fd, char * szBuf, int iBufLen, int iSecond )
 {
 	int				n;
@@ -272,15 +214,7 @@ int TcpRecv( Socket fd, char * szBuf, int iBufLen, int iSecond )
 	return recv( fd, szBuf, iBufLen, 0 );
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 수신 버퍼가 가득 찰 때까지 데이터를 수신한다.
- * @param fd			소켓 핸들
- * @param szBuf		수신 버퍼
- * @param iBufLen 수신 버퍼 크기
- * @param iSecond 수신 timeout ( 초 단위 )
- * @returns 성공하면 수신 버퍼 크기를 리턴하고 실패하면 SOCKET_ERROR 을 리턴한다.
- */
+
 int TcpRecvSize( Socket fd, char * szBuf, int iBufLen, int iSecond )
 {
 	int		 n, iRecvLen = 0;
@@ -305,15 +239,7 @@ int TcpRecvSize( Socket fd, char * szBuf, int iBufLen, int iSecond )
 	return iRecvLen;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief TCP 서버 소켓을 생성한다.
- * @param	iPort			TCP 포트 번호
- * @param	iListenQ	queue number to listen
- * @param	pszIp			수신 IP 주소
- * @param bIpv6			IPv6 인가?
- * @return 성공하면 소켓 핸들을 리턴하고 실패하면 INVALID_SOCKET 를 리턴한다.
- */
+
 Socket TcpListen( int iPort, int iListenQ, const char * pszIp, bool bIpv6 )
 {
 	Socket	fd;
@@ -405,17 +331,7 @@ Socket TcpListen( int iPort, int iListenQ, const char * pszIp, bool bIpv6 )
 	return fd;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief TCP accept wrapper function
- * @param hListenFd TCP 서버 소켓
- * @param pszIp			연결된 클라이언트 IP 주소가 저장될 변수
- * @param iIpSize		pszIp 변수의 크기
- * @param piPort		연결된 클라이언트 포트가 저장될 변수
- * @param bIpv6			IPv6 인가?
- * @returns 성공하면 연결된 클라이언트 소켓 핸들을 리턴한다.
- *					실패하면 INVALID_SOCKET 를 리턴한다.
- */
+
 Socket TcpAccept( Socket hListenFd, char * pszIp, int iIpSize, int * piPort, bool bIpv6 )
 {
 	socklen_t		iAddrLen;
@@ -461,14 +377,7 @@ Socket TcpAccept( Socket hListenFd, char * pszIp, int iIpSize, int * piPort, boo
 	return hConnFd;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 소켓의 로컬 IP 주소와 포트 번호를 리턴한다.
- * @param hSocket 소켓
- * @param strIp		로컬 IP 주소 저장 변수
- * @param iPort		로컬 포트 번호 저장 변수
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool GetLocalIpPort( Socket hSocket, std::string & strIp, int & iPort )
 {
 	if( hSocket == INVALID_SOCKET ) return false;
@@ -493,16 +402,7 @@ bool GetLocalIpPort( Socket hSocket, std::string & strIp, int & iPort )
 
 #ifdef WIN32
 
-/** make listening socket for TCP server.
- *	- port reuse option 을 사용하지 않는다.
- *	- 윈도우용 pipe 를 위해서 만들어졌다.
- *
- *  @author Yee Young Han 
- *	@param	iPort		port number to listen
- *	@param	iListenQ	queue number to listen
- *  @return if success, return socket.
- *			if can not create socket, return INVALID_SOCKET.
- */
+
 static Socket TcpListenNotReuse( int iPort, int iListenQ, const char * pszIp )
 {
 	Socket	fd;
@@ -551,7 +451,7 @@ static Socket TcpListenNotReuse( int iPort, int iListenQ, const char * pszIp )
 static bool gbIsStartPipeThread = false;
 static int giListenPort = 0;
 
-/** 윈도우용 pipe 메소드를 위한 쓰레드 */
+
 THREAD_API PipeThread( LPVOID lpParameter )
 {
 	int			iPort;
@@ -580,11 +480,7 @@ THREAD_API PipeThread( LPVOID lpParameter )
 	return 0;
 }
 
-/** 윈도우용 pipe 메소드
- *
- *	@param	filedes	pipe 를 위한 소켓 배열
- *	@return	성공하면 0 을 리턴한다. 실패하면 -1 을 리턴한다.
- */
+
 int pipe( Socket filedes[2] )
 {
 	if( gbIsStartPipeThread == false )

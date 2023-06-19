@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "SipPlatformDefine.h"
 #include "TcpStack.h"
@@ -34,10 +18,7 @@ CTcpThreadInfo::~CTcpThreadInfo()
 	Close();
 }
 
-/**
- * @ingroup TcpStack
- * @brief 소켓을 종료한다.
- */
+
 void CTcpThreadInfo::Close()
 {
 	if( m_hSend != INVALID_SOCKET )
@@ -61,12 +42,7 @@ CTcpThreadList::~CTcpThreadList()
 {
 }
 
-/**
- * @ingroup TcpStack
- * @brief 쓰레드 리스트를 시작한다.
- * @param pclsStack	CTcpStack 객체
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpThreadList::Create( CTcpStack * pclsStack )
 {
 	if( pclsStack->m_clsSetup.m_iMaxSocketPerThread <= 0 )
@@ -101,10 +77,7 @@ bool CTcpThreadList::Create( CTcpStack * pclsStack )
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 쓰레드 리스트를 종료한다.
- */
+
 void CTcpThreadList::Destroy()
 {
 	THREAD_LIST::iterator	itTL;
@@ -117,13 +90,7 @@ void CTcpThreadList::Destroy()
 	m_clsMutex.release();
 }
 
-/**
- * @ingroup TcpStack
- * @brief 쓰레드에 명령을 전송한다.
- * @param pszData				명령
- * @param iDataLen			pszData 길이
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpThreadList::SendCommand( const char * pszData, int iDataLen )
 {
 	bool	bRes = false, bFound = false;
@@ -167,14 +134,7 @@ bool CTcpThreadList::SendCommand( const char * pszData, int iDataLen )
 	return bRes;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 지정된 쓰레드 번호의 쓰레드로 명령을 전송한다.
- * @param pszData				명령
- * @param iDataLen			pszData 길이
- * @param iThreadIndex	쓰레드 인덱스
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpThreadList::SendCommand( const char * pszData, int iDataLen, int iThreadIndex )
 {
 	bool	bRes = false;
@@ -194,12 +154,7 @@ bool CTcpThreadList::SendCommand( const char * pszData, int iDataLen, int iThrea
 	return bRes;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 모든 쓰레드에 명령을 전달한다.
- * @param pszData		명령
- * @param iDataLen	pszData 길이
- */
+
 void CTcpThreadList::SendCommandAll( const char * pszData, int iDataLen )
 {
 	THREAD_LIST::iterator	itTL;
@@ -212,14 +167,7 @@ void CTcpThreadList::SendCommandAll( const char * pszData, int iDataLen )
 	m_clsMutex.release();
 }
 
-/**
- * @ingroup TcpStack
- * @brief 명령을 수신한다.
- * @param hSocket		pipe 수신 핸들
- * @param pszData		명령 저장 변수
- * @param iDataSize pszData 변수 크기
- * @returns 수신한 길이를 리턴한다.
- */
+
 int CTcpThreadList::RecvCommand( Socket hSocket, char * pszData, int iDataSize )
 {
 	int	n;
@@ -233,15 +181,7 @@ int CTcpThreadList::RecvCommand( Socket hSocket, char * pszData, int iDataSize )
 	return n;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 특정 세션에 TCP 패킷을 전송한다.
- * @param iThreadIndex	TCP 쓰레드 번호
- * @param iSessionIndex TCP 세션 번호
- * @param pszPacket			패킷
- * @param iPacketLen		패킷 길이
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpThreadList::Send( int iThreadIndex, int iSessionIndex, const char * pszPacket, int iPacketLen )
 {
 	bool bRes = false;
@@ -261,14 +201,7 @@ bool CTcpThreadList::Send( int iThreadIndex, int iSessionIndex, const char * psz
 	return bRes;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 모든 세션에 TCP 패킷을 전송한다.
- * @param pszPacket			패킷
- * @param iPacketLen		패킷 길이
- * @param pclsCallBack	세션별로 전송 유무를 결정하는 callback 객체
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpThreadList::SendAll( const char * pszPacket, int iPacketLen, ITcpStackCallBack * pclsCallBack )
 {
 	THREAD_LIST::iterator	itTL;
@@ -283,16 +216,7 @@ bool CTcpThreadList::SendAll( const char * pszPacket, int iPacketLen, ITcpStackC
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 모든 세션에 TCP 패킷을 전송한다.
- * @param pszPacket			패킷
- * @param iPacketLen		패킷 길이
- * @param pclsCallBack	세션별로 전송 유무를 결정하는 callback 객체
- * @param iThreadIndex	전송하지 않을 세션의 쓰레드 인덱스
- * @param iSessionIndex 전송하지 않을 세션 인덱스
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpThreadList::SendAllExcept( const char * pszPacket, int iPacketLen, ITcpStackCallBack * pclsCallBack, int iThreadIndex, int iSessionIndex )
 {
 	THREAD_LIST::iterator	itTL;
@@ -309,10 +233,7 @@ bool CTcpThreadList::SendAllExcept( const char * pszPacket, int iPacketLen, ITcp
 
 typedef std::list< int > THREAD_INDEX_LIST;
 
-/**
- * @ingroup TcpStack
- * @brief TCP 클라이언트와 연결되지 않은 쓰레드를 삭제한다.
- */
+
 void CTcpThreadList::DeleteNoUseThread()
 {
 	THREAD_LIST::iterator	itTL;
@@ -369,12 +290,7 @@ void CTcpThreadList::DeleteNoUseThread()
 	}
 }
 
-/**
- * @ingroup TcpStack
- * @brief 쓰레드 정보를 삭제한다.
- * @param iThreadIndex 쓰레드 인덱스
- * @returns 성공하면 true 를 리턴하고 성공하면 false 를 리턴한다.
- */
+
 bool CTcpThreadList::DeleteThread( int iThreadIndex )
 {
 	THREAD_LIST::iterator	itTL;
@@ -415,11 +331,7 @@ bool CTcpThreadList::DeleteThread( int iThreadIndex )
 	return bRes;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 쓰레드 정보를 하나의 문자열에 저장한다.
- * @param strBuf 쓰레드 정보를 저장할 문자열 변수
- */
+
 void CTcpThreadList::GetString( CMonitorString & strBuf )
 {
 	THREAD_LIST::iterator	itTL;
@@ -434,11 +346,7 @@ void CTcpThreadList::GetString( CMonitorString & strBuf )
 	m_clsMutex.release();
 }
 
-/**
- * @ingroup TcpStack
- * @brief 쓰레드를 추가한다.
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CTcpThreadList::AddThread()
 {
 	if( m_pclsStack->m_clsSetup.m_iThreadMaxCount != 0 )
@@ -493,14 +401,7 @@ bool CTcpThreadList::AddThread()
 	return bRes;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 쓰레드에 명령을 전송한다.
- * @param hSocket		pipe 전송 핸들
- * @param pszData		명령
- * @param iDataLen	pszData 길이
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpThreadList::_SendCommand( Socket hSocket, const char * pszData, int iDataLen )
 {
 	int	n;
@@ -518,11 +419,7 @@ bool CTcpThreadList::_SendCommand( Socket hSocket, const char * pszData, int iDa
 	return true;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 쓰레드 개수를 리턴한다.
- * @returns 쓰레드 개수를 리턴한다.
- */
+
 int CTcpThreadList::GetCount()
 {
 	int iCount = 0;
@@ -534,11 +431,7 @@ int CTcpThreadList::GetCount()
 	return iCount;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 새로 사용할 쓰레드 번호를 가져온다.
- * @returns 새로 사용할 쓰레드 번호를 리턴한다.
- */
+
 int CTcpThreadList::GetThreadIndex()
 {
 	int iThreadIndex = 0;
@@ -563,12 +456,7 @@ int CTcpThreadList::GetThreadIndex()
 	return iThreadIndex;
 }
 
-/**
- * @ingroup TcpStack
- * @brief 쓰레드 번호가 사용중인지 검사한다.
- * @param iThreadIndex 쓰레드 번호
- * @returns 쓰레드 번호가 사용중이면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CTcpThreadList::SelectThreadIndex( int iThreadIndex )
 {
 	THREAD_LIST::iterator itTL;

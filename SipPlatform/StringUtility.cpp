@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "StringUtility.h"
 #include <string.h>
@@ -22,13 +6,7 @@
 #include "Log.h"
 #include "MemoryDebug.h"
 
-/**
- * @ingroup SipPlatform
- * @brief 문자열에 포함된 문자열을 수정한다.
- * @param strCallId	문자열
- * @param pszBefore 수정 대상 문자열
- * @param pszAfter	수정 대상 문자열을 수정할 문자열
- */
+
 void ReplaceString( std::string & strCallId, const char * pszBefore, const char * pszAfter )
 {
 	size_t iPos = strCallId.find( pszBefore );
@@ -42,17 +20,7 @@ void ReplaceString( std::string & strCallId, const char * pszBefore, const char 
 	}
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 문자열에 포함된 키의 값을 추출한다. 
- *				"app=36;msg=36;hotline=46;presence=36; broadcast=46" 문자열에서 
- *				app 의 값을 추출하고 싶으면 pszKey 에 "app=" 를 입력하고 cSep 에 ';' 를 입력하면 된다.
- * @param strText		문자열
- * @param pszKey		키
- * @param cSep			구분자
- * @param strValue	키의 값을 저장할 변수
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool SearchValue( std::string & strText, const char * pszKey, char cSep, std::string & strValue )
 {
 	strValue.clear();
@@ -78,17 +46,7 @@ bool SearchValue( std::string & strText, const char * pszKey, char cSep, std::st
 	return false;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 문자열에 포함된 키의 값을 추출한다. 
- *				"app=36;msg=36;hotline=46;presence=36; broadcast=46" 문자열에서 
- *				app 의 값을 추출하고 싶으면 pszKey 에 "app=" 를 입력하고 cSep 에 ';' 를 입력하면 된다.
- * @param strText		문자열
- * @param pszKey		키
- * @param cSep			구분자
- * @param iValue		키의 값을 저장할 변수
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool SearchValue( std::string & strText, const char * pszKey, char cSep, int & iValue )
 {
 	std::string	strValue;
@@ -103,11 +61,7 @@ bool SearchValue( std::string & strText, const char * pszKey, char cSep, int & i
 	return false;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 문자열의 왼쪽 공백을 제거한다.
- * @param strText 문자열
- */
+
 void LeftTrimString( std::string & strText )
 {
 	int iIndex;
@@ -127,11 +81,7 @@ void LeftTrimString( std::string & strText )
 	}
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 문자열의 오른쪽 공백을 제거한다.
- * @param strText 문자열
- */
+
 void RightTrimString( std::string & strText )
 {
 	int iIndex;
@@ -155,24 +105,14 @@ void RightTrimString( std::string & strText )
 	}
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 문자열의 왼쪽, 오른쪽 공백을 제거한다.
- * @param strText 문자열
- */
+
 void TrimString( std::string & strText )
 {
 	LeftTrimString( strText );
 	RightTrimString( strText );
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 입력 문자열을 구분자로 분리하여서 문자열 리스트에 저장한다.
- * @param pszText 입력 문자열
- * @param clsList 문자열 리스트
- * @param cSep		구분자
- */
+
 void SplitString( const char * pszText, STRING_LIST & clsList, char cSep )
 {
 	int iStartPos = -1, i;
@@ -208,13 +148,7 @@ void SplitString( const char * pszText, STRING_LIST & clsList, char cSep )
 	}
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 입력 문자열을 구분자로 분리하여서 문자열 VECTOR 에 저장한다.
- * @param pszText 입력 문자열
- * @param clsList 문자열 VECTOR
- * @param cSep		구분자
- */
+
 void SplitString( const char * pszText, STRING_VECTOR & clsList, char cSep )
 {
 	int iStartPos = -1, i;
@@ -250,12 +184,7 @@ void SplitString( const char * pszText, STRING_VECTOR & clsList, char cSep )
 	}
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 문자열을 unsigned int 로 변환한다.
- * @param pszText 문자열
- * @returns unsigned int 를 리턴한다.
- */
+
 uint32_t GetUInt32( const char * pszText )
 {
 	if( pszText == NULL ) return 0;
@@ -263,12 +192,7 @@ uint32_t GetUInt32( const char * pszText )
 	return strtoul( pszText, NULL, 10 );
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 문자열을 unsigned long long 으로 변환한다.
- * @param pszText 문자열
- * @returns unsigned long long 을 리턴한다.
- */
+
 uint64_t GetUInt64( const char * pszText )
 {
 	if( pszText == NULL ) return 0;
@@ -280,13 +204,7 @@ uint64_t GetUInt64( const char * pszText )
 #endif
 }
 
-/**
- * @ingroup SipPlatform
- * @brief HEX 만 저장된 문자열을 숫자로 변환한 문자열을 생성한다.
- * @param pszInput	HEX 만 저장된 문자열
- * @param strOutput 숫자로 변환된 문자열 저장용 변수
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool HexToString( const char * pszInput, std::string & strOutput )
 {
 	int iLen = (int)strlen( pszInput );
@@ -314,14 +232,7 @@ bool HexToString( const char * pszInput, std::string & strOutput )
 	return true;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief HEX 만 저장된 문자열을 숫자로 변환한 문자열을 생성한다.
- * @param pszInput		HEX 만 저장된 문자열
- * @param iInputSize	HEX 만 저장된 문자열의 길이
- * @param strOutput 숫자로 변환된 문자열 저장용 변수
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool HexToString( const char * pszInput, int iInputSize, std::string & strOutput )
 {
 	int iValue;
@@ -348,12 +259,7 @@ bool HexToString( const char * pszInput, int iInputSize, std::string & strOutput
 	return true;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 입력 문자열을 HEX 만 저장된 문자열로 변환한다.
- * @param strInput	입력 문자열
- * @param strOutput HEX 만 저장된 문자열 저장용 변수
- */
+
 void StringToHex( std::string & strInput, std::string & strOutput )
 {
 	char szHex[3];
@@ -368,13 +274,7 @@ void StringToHex( std::string & strInput, std::string & strOutput )
 	}
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 입력 문자열을 HEX 만 저장된 문자열로 변환한다.
- * @param pszInput		입력 문자열
- * @param iInputSize	입력 문자열의 길이
- * @param strOutput		HEX 만 저장된 문자열 저장용 변수
- */
+
 void StringToHex( const char * pszInput, int iInputSize, std::string & strOutput )
 {
 	char szHex[3];
@@ -388,13 +288,7 @@ void StringToHex( const char * pszInput, int iInputSize, std::string & strOutput
 	}
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 문자열이 출력 가능한지 검사한다.
- * @param pszText		문자열
- * @param iTextLen	문자열 길이
- * @returns 문자열이 출력 가능하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool IsPrintString( const char * pszText, int iTextLen )
 {
 	for( int i = 0; i < iTextLen; ++i )
@@ -405,12 +299,7 @@ bool IsPrintString( const char * pszText, int iTextLen )
 	return true;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief 입력된 문자열에서 " 를 제거한 출력 문자열을 저장한다.
- * @param strInput	입력 문자열
- * @param strOutput 출력 문자열
- */
+
 void DeQuoteString( std::string & strInput, std::string & strOutput )
 {
 	int iLen = (int)strInput.length();
@@ -430,12 +319,7 @@ void DeQuoteString( std::string & strInput, std::string & strOutput )
 	}
 }
 
-/**
- * @ingroup SipPlatform
- * @brief URI 인코딩된 문자열을 디코딩한다.
- * @param strInput	URI 인코딩된 문자열
- * @param strOutput [out] 디코딩된 문자열
- */
+
 void DecodeUri( std::string & strInput, std::string & strOutput )
 {
 	const char * pszInput = strInput.c_str();
@@ -479,13 +363,7 @@ void DecodeUri( std::string & strInput, std::string & strOutput )
 
 #ifdef WIN32
 
-/**
- * @ingroup SipPlatform
- * @brief UTF8 문자열을 ANSI 문자열로 변환한다.
- * @param pszUtf8		UTF8 문자열 (input)
- * @param strOutput ANSI 문자열 (output)
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool Utf8ToAnsi( const char * pszUtf8, std::string & strOutput )
 {
 	BSTR    strWide = NULL;
@@ -534,13 +412,7 @@ bool Utf8ToAnsi( const char * pszUtf8, std::string & strOutput )
 	return true;
 }
 
-/**
- * @ingroup SipPlatform
- * @brief ANSI 문자열을 UTF-8 문자열로 변환한다. EUC-KR 문자열을 UTF-8 문자열로 변환한다.
- * @param pszAnsi		ANSI 문자열
- * @param strOutput UTF-8 문자열을 저장할 변수
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool AnsiToUtf8( const char * pszAnsi, std::string & strOutput )
 {
 	BSTR    strWide = NULL;

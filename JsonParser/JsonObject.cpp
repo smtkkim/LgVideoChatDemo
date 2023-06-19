@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2012 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "SipPlatformDefine.h"
 #include "JsonObject.h"
@@ -31,13 +15,7 @@ CJsonObject::~CJsonObject()
 	Clear();
 }
 
-/**
- * @ingroup JsonParser
- * @brief JSON object 문자열 파싱하여서 자료구조에 저장한다.
- * @param pszText		JSON object 문자열
- * @param iTextLen	JSON object 문자열 길이
- * @returns JSON object 문자열 파싱에 성공하면 파싱한 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
- */
+
 int CJsonObject::Parse( const char * pszText, int iTextLen )
 {
 	int iPos = -1, iParseLen;
@@ -116,14 +94,7 @@ int CJsonObject::Parse( const char * pszText, int iTextLen )
 	return iPos;
 }
 
-/**
- * @ingroup JsonParser
- * @brief 자료구조를 JSON object 문자열로 변환한다.
- * @param strText			JSON object 문자열 저장 변수
- * @param eNewLine		new line 을 입력하는 방법에 대한 설정값
- * @param	iDepth			하위 항목의 깊이. 맨 위의 항목은 0 이고 그 하위 항목은 1 이다.
- * @returns JSON object 문자열 길이를 리턴한다.
- */
+
 int CJsonObject::ToString( std::string & strText, EJsonNewLine eNewLine, int iDepth )
 {
 	JSON_OBJECT_MAP::iterator itMap;
@@ -185,11 +156,7 @@ int CJsonObject::ToString( std::string & strText, EJsonNewLine eNewLine, int iDe
 	return (int)strBuf.length();
 }
 
-/**
- * @ingroup JsonParser
- * @brief ToString 메소드로 new line 없이 생성될 문자열 길이를 리턴한다.
- * @returns ToString 메소드로 new line 없이 생성될 문자열 길이를 리턴한다.
- */
+
 int CJsonObject::GetStringLen( )
 {
 	JSON_OBJECT_MAP::iterator itMap;
@@ -210,11 +177,7 @@ int CJsonObject::GetStringLen( )
 	return iLen;
 }
 
-/**
- * @ingroup JsonParser
- * @brief 자신을 복제한 객체를 생성한다.
- * @returns 성공하면 자신을 복제한 객체를 리턴하고 그렇지 않으면 NULL 을 리턴한다.
- */
+
 CJsonType * CJsonObject::Copy( )
 {
 	JSON_OBJECT_MAP::iterator itMap;
@@ -236,24 +199,13 @@ CJsonType * CJsonObject::Copy( )
 	return pclsObject;
 }
 
-/**
- * @ingroup JsonParser
- * @brief JSON object 문자열 파싱하여서 자료구조에 저장한다.
- * @param strText JSON object 문자열
- * @returns JSON object 문자열 파싱에 성공하면 파싱한 길이를 리턴하고 그렇지 않으면 -1 를 리턴한다.
- */
+
 int CJsonObject::Parse( std::string & strText )
 {
 	return Parse( strText.c_str(), (int)strText.length() );
 }
 
-/**
- * @ingroup JsonParser
- * @brief 자료구조를 JSON object 문자열로 변환한다. 본 메소드는 입력된 strText 를 초기화시킨 후, ToString 메소드를 호출한다.
- * @param strText		JSON object 문자열 저장 변수
- * @param eNewLine	new line 을 입력하는 방법에 대한 설정값
- * @returns JSON object 문자열 길이를 리턴한다.
- */
+
 int CJsonObject::MakeString( std::string & strText, EJsonNewLine eNewLine )
 {
 	strText.clear();
@@ -261,10 +213,7 @@ int CJsonObject::MakeString( std::string & strText, EJsonNewLine eNewLine )
 	return ToString( strText, eNewLine );
 }
 
-/**
- * @ingroup JsonParser
- * @brief 자료구조를 초기화시킨다.
- */
+
 void CJsonObject::Clear()
 {
 	JSON_OBJECT_MAP::iterator itMap;
@@ -277,13 +226,7 @@ void CJsonObject::Clear()
 	m_clsMap.clear();
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에서 프로퍼티 이름에 해당하는 문자열 값을 검색한다. 프로퍼티 값이 숫자이면 문자열로 변환한다.
- * @param pszName		프로퍼티 이름
- * @param strValue	프로퍼티 값
- * @returns 검색에 성공하고 해당 값이 문자열 타입인 경우 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::SelectStringData( const char * pszName, std::string & strValue )
 {
 	CJsonType * pclsType;
@@ -317,13 +260,7 @@ bool CJsonObject::SelectStringData( const char * pszName, std::string & strValue
 	return true;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에서 프로퍼티 이름에 해당하는 문자열 값을 검색한다.
- * @param pszName		프로퍼티 이름
- * @param strValue	프로퍼티 값
- * @returns 검색에 성공하고 해당 값이 문자열 타입인 경우 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::SelectData( const char * pszName, std::string & strValue )
 {
 	CJsonType * pclsType;
@@ -344,13 +281,7 @@ bool CJsonObject::SelectData( const char * pszName, std::string & strValue )
 	return true;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에서 프로퍼티 이름에 해당하는 정수 값을 검색한다.
- * @param pszName 프로퍼티 이름
- * @param iValue	프로퍼티 값
- * @returns 검색에 성공하고 해당 값이 정수 타입인 경우 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::SelectData( const char * pszName, int32_t & iValue )
 {
 	CJsonType * pclsType;
@@ -371,13 +302,7 @@ bool CJsonObject::SelectData( const char * pszName, int32_t & iValue )
 	return true;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에서 프로퍼티 이름에 해당하는 정수 값을 검색한다.
- * @param pszName 프로퍼티 이름
- * @param iValue	프로퍼티 값
- * @returns 검색에 성공하고 해당 값이 정수 타입인 경우 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::SelectData( const char * pszName, int64_t & iValue )
 {
 	CJsonType * pclsType;
@@ -398,13 +323,7 @@ bool CJsonObject::SelectData( const char * pszName, int64_t & iValue )
 	return true;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에서 프로퍼티 이름에 해당하는 boolean 값을 검색한다.
- * @param pszName 프로퍼티 이름
- * @param bValue	프로퍼티 값
- * @returns 검색에 성공하고 해당 값이 boolean 타입인 경우 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::SelectData( const char * pszName, bool & bValue )
 {
 	CJsonType * pclsType;
@@ -425,13 +344,7 @@ bool CJsonObject::SelectData( const char * pszName, bool & bValue )
 	return true;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에서 프로퍼티 이름에 해당하는 object 값을 검색한다.
- * @param pszName			프로퍼티 이름
- * @param ppclsObject 프로퍼티 값
- * @returns 검색에 성공하고 해당 값이 object 타입인 경우 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::SelectData( const char * pszName, CJsonObject ** ppclsObject )
 {
 	CJsonType * pclsType;
@@ -452,13 +365,7 @@ bool CJsonObject::SelectData( const char * pszName, CJsonObject ** ppclsObject )
 	return true;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에서 프로퍼티 이름에 해당하는 배열 값을 검색한다.
- * @param pszName			프로퍼티 이름
- * @param ppclsArray	프로퍼티 값
- * @returns 검색에 성공하고 해당 값이 배열 타입인 경우 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::SelectData( const char * pszName, CJsonArray ** ppclsArray )
 {
 	CJsonType * pclsType;
@@ -479,13 +386,7 @@ bool CJsonObject::SelectData( const char * pszName, CJsonArray ** ppclsArray )
 	return true;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에서 프로퍼티 이름에 해당하는 값을 검색한다.
- * @param pszName		프로퍼티 이름
- * @param ppclsType 프로퍼티 값
- * @returns 검색에 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::SelectData( const char * pszName, CJsonType ** ppclsType )
 {
 	JSON_OBJECT_MAP::iterator itMap;
@@ -502,25 +403,13 @@ bool CJsonObject::SelectData( const char * pszName, CJsonType ** ppclsType )
 	return true;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 문자열 프로퍼티를 추가한다.
- * @param pszName		프로퍼티 이름
- * @param strValue	프로퍼티 값
- * @returns 성공적으로 저장되면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::InsertData( const char * pszName, const std::string & strValue )
 {
 	return InsertData( pszName, strValue.c_str() );
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 문자열 프로퍼티를 추가한다.
- * @param pszName		프로퍼티 이름
- * @param pszValue	프로퍼티 값
- * @returns 성공적으로 저장되면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::InsertData( const char * pszName, const char * pszValue )
 {
 	if( Exist( pszName ) )
@@ -542,25 +431,13 @@ bool CJsonObject::InsertData( const char * pszName, const char * pszValue )
 	return true;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 정수 프로퍼티를 추가한다.
- * @param pszName 프로퍼티 이름
- * @param iValue	프로퍼티 값
- * @returns 성공적으로 저장되면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::InsertData( const char * pszName, int32_t iValue )
 {
 	return InsertData( pszName, (int64_t)iValue );
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 정수 프로퍼티를 추가한다.
- * @param pszName 프로퍼티 이름
- * @param iValue	프로퍼티 값
- * @returns 성공적으로 저장되면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::InsertData( const char * pszName, int64_t iValue )
 {
 	if( Exist( pszName ) )
@@ -582,13 +459,7 @@ bool CJsonObject::InsertData( const char * pszName, int64_t iValue )
 	return true;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 boolean 프로퍼티를 추가한다.
- * @param pszName 프로퍼티 이름
- * @param bValue	프로퍼티 값
- * @returns 성공적으로 저장되면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::InsertData( const char * pszName, bool bValue )
 {
 	if( Exist( pszName ) )
@@ -610,13 +481,7 @@ bool CJsonObject::InsertData( const char * pszName, bool bValue )
 	return true;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 프로퍼티를 추가한다.
- * @param pszName		프로퍼티 이름
- * @param pclsType	프로퍼티 값
- * @returns 성공적으로 저장되면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::InsertData( const char * pszName, CJsonType * pclsType )
 {
 	if( Exist( pszName ) )
@@ -637,12 +502,7 @@ bool CJsonObject::InsertData( const char * pszName, CJsonType * pclsType )
 	return true;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 null 프로퍼티를 추가한다.
- * @param pszName		프로퍼티 이름
- * @returns 성공적으로 저장되면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::InsertData( const char * pszName )
 {
 	if( Exist( pszName ) )
@@ -663,13 +523,7 @@ bool CJsonObject::InsertData( const char * pszName )
 	return true;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 문자열 프로퍼티를 추가한다.
- * @param pszName 프로퍼티 이름
- * @param iValue	프로퍼티 값
- * @returns 성공적으로 저장되면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::InsertStringData( const char * pszName, int32_t iValue )
 {
 	char szValue[11];
@@ -679,25 +533,13 @@ bool CJsonObject::InsertStringData( const char * pszName, int32_t iValue )
 	return InsertData( pszName, szValue );
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 문자열 프로퍼티 또는 null 프로퍼티를 추가한다.
- * @param pszName		프로퍼티 이름
- * @param strValue	프로퍼티 값
- * @returns 성공적으로 저장되면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::InsertStringOrNullData( const char * pszName, std::string & strValue )
 {
 	return InsertStringOrNullData( pszName, strValue.c_str() );
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 문자열 프로퍼티 또는 null 프로퍼티를 추가한다.
- * @param pszName		프로퍼티 이름
- * @param pszValue	프로퍼티 값
- * @returns 성공적으로 저장되면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::InsertStringOrNullData( const char * pszName, const char * pszValue )
 {
 	if( pszValue == NULL || !strcmp( pszValue, "null" ) )
@@ -708,25 +550,13 @@ bool CJsonObject::InsertStringOrNullData( const char * pszName, const char * psz
 	return InsertData( pszName, pszValue );
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 문자열 프로퍼티를 수정한다.
- * @param pszName		프로퍼티 이름
- * @param strValue	프로퍼티 값
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CJsonObject::UpdateData( const char * pszName, const std::string & strValue )
 {
 	return UpdateData( pszName, strValue.c_str() );
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 문자열 프로퍼티를 수정한다.
- * @param pszName		프로퍼티 이름
- * @param pszValue	프로퍼티 값
- * @returns 성공하면 true 를 리턴하고 실패하면 false 를 리턴한다.
- */
+
 bool CJsonObject::UpdateData( const char * pszName, const char * pszValue )
 {
 	JSON_OBJECT_MAP::iterator itMap;
@@ -762,25 +592,13 @@ bool CJsonObject::UpdateData( const char * pszName, const char * pszValue )
 	return bRes;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 정수 프로퍼티를 수정한다.
- * @param pszName 프로퍼티 이름
- * @param iValue	프로퍼티 값
- * @returns 성공적하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::UpdateData( const char * pszName, int32_t iValue )
 {
 	return UpdateData( pszName, (int64_t)iValue );
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 정수 프로퍼티를 수정한다.
- * @param pszName 프로퍼티 이름
- * @param iValue	프로퍼티 값
- * @returns 성공적하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::UpdateData( const char * pszName, int64_t iValue )
 {
 	JSON_OBJECT_MAP::iterator itMap;
@@ -816,13 +634,7 @@ bool CJsonObject::UpdateData( const char * pszName, int64_t iValue )
 	return bRes;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 boolean 프로퍼티로 수정한다.
- * @param pszName 프로퍼티 이름
- * @param bValue	프로퍼티 값
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::UpdateData( const char * pszName, bool bValue )
 {
 	JSON_OBJECT_MAP::iterator itMap;
@@ -857,13 +669,7 @@ bool CJsonObject::UpdateData( const char * pszName, bool bValue )
 	return bRes;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 프로퍼티를 수정한다.
- * @param pszName		프로퍼티 이름
- * @param pclsType	프로퍼티 값
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::UpdateData( const char * pszName, CJsonType * pclsType )
 {
 	JSON_OBJECT_MAP::iterator itMap;
@@ -889,12 +695,7 @@ bool CJsonObject::UpdateData( const char * pszName, CJsonType * pclsType )
 	return bRes;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에 프로퍼티 이름에 대한 값을 null 로 수정한다.
- * @param pszName		프로퍼티 이름
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::UpdateData( const char * pszName )
 {
 	JSON_OBJECT_MAP::iterator itMap;
@@ -927,12 +728,7 @@ bool CJsonObject::UpdateData( const char * pszName )
 	return bRes;
 }
 
-/**
- * @ingroup JsonParser
- * @brief 프로퍼티를 삭제한다.
- * @param pszName 프로퍼티 이름
- * @returns 프로퍼티 이름이 존재하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::DeleteData( const char * pszName )
 {
 	JSON_OBJECT_MAP::iterator itMap;
@@ -949,12 +745,7 @@ bool CJsonObject::DeleteData( const char * pszName )
 	return bRes;
 }
 
-/**
- * @ingroup JsonParser
- * @brief Object 자료구조에서 프로퍼티 이름이 존재하는지 검색한다.
- * @param pszName		프로퍼티 이름
- * @returns 프로퍼티 이름이 존재하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CJsonObject::Exist( const char * pszName )
 {
 	JSON_OBJECT_MAP::iterator itMap;
@@ -968,14 +759,7 @@ bool CJsonObject::Exist( const char * pszName )
 	return true;
 }
 
-/**
- * @ingroup JsonParser
- * @brief JSON 문자열에 대한 CJsonType 을 생성한다.
- * @param pszText		JSON 문자열
- * @param iTextLen	JSON 문자열 길이
- * @param iPos			JSON 문자열 파싱 위치
- * @returns 성공하면 CJsonType 객체의 포인터를 리턴하고 실패하면 NULL 을 리턴한다.
- */
+
 CJsonType * CJsonObject::GetJsonType( const char * pszText, int iTextLen, int iPos )
 {
 	CJsonType * pclsType = NULL;
@@ -1059,14 +843,7 @@ CJsonType * CJsonObject::GetJsonType( const char * pszText, int iTextLen, int iP
 	return pclsType;
 }
 
-/**
- * @ingroup JsonParser
- * @brief CJsonType 을 문자열에 저장한다.
- * @param pclsType	CJsonType 객체
- * @param strText		JSON 문자열 저장 변수
- * @param eNewLine	new line 을 입력하는 방법에 대한 설정값
- * @param	iDepth		하위 항목의 깊이. 맨 위의 항목은 0 이고 그 하위 항목은 1 이다.
- */
+
 void CJsonObject::JsonToString( CJsonType * pclsType, std::string & strText, EJsonNewLine eNewLine, int iDepth )
 {
 	switch( pclsType->m_cType )
@@ -1095,12 +872,7 @@ void CJsonObject::JsonToString( CJsonType * pclsType, std::string & strText, EJs
 	}
 }
 
-/**
- * @ingroup JsonParser
- * @brief 항목 깊이에 적합하게 문자열 앞에 탭 문자를 추가한다.
- * @param strText	문자열
- * @param iDepth	하위 항목의 깊이. 맨 위의 항목은 0 이고 그 하위 항목은 1 이다.
- */
+
 void CJsonObject::AddTab( std::string & strText, int iDepth )
 {
 	for( int i = 0; i < iDepth; ++i )

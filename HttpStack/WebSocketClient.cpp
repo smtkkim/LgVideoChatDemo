@@ -1,20 +1,4 @@
-/* 
- * Copyright (C) 2021 Yee Young Han <websearch@naver.com> (http://blog.naver.com/websearch)
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
- */
+
 
 #include "SipPlatformDefine.h"
 #include "WebSocketClient.h"
@@ -41,13 +25,7 @@ CWebSocketClient::~CWebSocketClient()
 	Close();
 }
 
-/**
- * @ingroup HttpStack
- * @brief WebSocket 연결한다.
- * @param pszUrl WebSocket url ( 예: wss://127.0.0.1 )
- * @param pclsCallBack 콜백 클래스의 포인터
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CWebSocketClient::Connect( const char * pszUrl, IWebSocketClientCallBack * pclsCallBack )
 {
 	if( IsClosed() == false )
@@ -213,10 +191,7 @@ bool CWebSocketClient::Connect( const char * pszUrl, IWebSocketClientCallBack * 
 	return false;
 }
 
-/**
- * @ingroup HttpStack
- * @brief WebSocket 연결을 종료한다.
- */
+
 void CWebSocketClient::Close()
 {
 	if( m_bThreadRun && m_bStop == false )
@@ -246,25 +221,13 @@ void CWebSocketClient::Close()
 	m_clsMutex.release();
 }
 
-/**
- * @ingroup HttpStack
- * @brief 입력받은 데이터를 WebSocket 패킷으로 변환하여 전송한다.
- * @param strData 전송할 데이터
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CWebSocketClient::Send( std::string & strData )
 {
 	return Send( E_WST_TEXT, strData.c_str(), strData.length() );
 }
 
-/**
- * @ingroup HttpStack
- * @brief 입력받은 데이터를 WebSocket 패킷으로 변환하여 전송한다.
- * @param eType			WebSocket 패킷 타입
- * @param pszData		전송할 데이터
- * @param iDataLen	전송할 데이터 길이
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CWebSocketClient::Send( EWebSocketType eType, const char * pszData, int iDataLen )
 {
 	int iPacketLen = 0;
@@ -345,13 +308,7 @@ bool CWebSocketClient::Send( EWebSocketType eType, const char * pszData, int iDa
 	return bRes;
 }
 
-/**
- * @ingroup HttpStack
- * @brief 입력한 패킷을 TCP 로 전송한다.
- * @param pszPacket		패킷
- * @param iPacketLen	패킷의 길이
- * @returns 성공하면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CWebSocketClient::SendTcp( const char * pszPacket, int iPacketLen )
 {
 	bool bRes = false;
@@ -391,11 +348,7 @@ bool CWebSocketClient::SendTcp( const char * pszPacket, int iPacketLen )
 	return bRes;
 }
 
-/**
- * @ingroup HttpStack
- * @brief WebSocket 이 종료되었는지 확인한다.
- * @returns WebSocket 이 연결되어 있지 않으면 true 를 리턴하고 그렇지 않으면 false 를 리턴한다.
- */
+
 bool CWebSocketClient::IsClosed()
 {
 	if( m_hSocket == INVALID_SOCKET )
