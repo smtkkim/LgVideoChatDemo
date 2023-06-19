@@ -5,7 +5,7 @@
 #include <openssl/sha.h>
 #include "UserDB.h"
 
-#define DB_DEBUG			1
+#define DB_DEBUG			0
 #define DB_SHA256_PASSWD	1
 #define DB_OTP_ENCRYPTION	1
 
