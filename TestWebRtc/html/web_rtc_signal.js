@@ -67,8 +67,8 @@ function CheckDuplicateId()
 
                 if (iStatusCode == 400)
                 {
-                  Log("user ID is alread registered");
-                  alert("user ID is alread registered\r\nPlease use another user ID");
+                  Log("user ID is ALREADY registered");
+                  alert("user ID is ALREADY registered\r\nPlease use another user ID");
                 }
                 else if (iStatusCode == 410)
                 {
@@ -145,6 +145,13 @@ function SendUserInfo()
     return;
   }
 
+  if( UserPasswd.value.length == 0 )
+  {
+    Log("password has not been entered");
+    alert("password has not been entered" );
+    return;
+  }
+  
   if(passwordRules.test(UserPasswd.value) == false ){
     Log( "Password format is not valid : "+ UserPasswd.value );
     alert("Password format is not valid");
