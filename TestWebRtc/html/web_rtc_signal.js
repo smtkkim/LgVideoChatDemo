@@ -357,6 +357,10 @@ function StartSession()
               btnLogin.disabled = false;
               btnInvite.disabled = true;
             }
+
+            ws = null;
+            InitButton();
+
             break;
           case "invite":
             if( arrData[2] == '200' )
