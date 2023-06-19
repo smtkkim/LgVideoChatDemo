@@ -144,6 +144,13 @@ function SendUserInfo()
     return;
   }
 
+  if( UserPasswd.value.length == 0 )
+  {
+    Log("password has not been entered");
+    alert("password has not been entered" );
+    return;
+  }
+  
   if(passwordRules.test(UserPasswd.value) == false ){
     Log( "Password format is not valid : "+ UserPasswd.value );
     alert("Password format is not valid");
