@@ -2,13 +2,14 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <openssl/rand.h>
 #include <openssl/sha.h>
 #include "UserDB.h"
 
 #define DB_DEBUG			0
 #define DB_SHA256_PASSWD	1
 #define DB_OTP_ENCRYPTION	1
-
+#define DB_SALT_LEN         16
 
 // make table named tbl_videochat
 #define SQL_CREATE_TBL		\
@@ -16,6 +17,7 @@
 	id INTEGER PRIMARY KEY AUTO_INCREMENT, \n \
 	unique_id  TEXT    NOT NULL, \n \
 	passwd     TEXT    NOT NULL, \n \
+	salt       TEXT    NOT NULL, \n \
 	username   TEXT    NOT NULL, \n \
 	email      TEXT    NOT NULL, \n \
 	phone      TEXT    NOT NULL, \n \
@@ -40,7 +42,7 @@ SELECT * FROM tbl_videochat;
 */
 
 // register user info
-#define SQL_INSERT_USER		"INSERT INTO tbl_videochat (unique_id, passwd, username, email, phone, address, passwd_update_utc) VALUES (?, ?, ?, ?, ?, ?, ?)"
+#define SQL_INSERT_USER		"INSERT INTO tbl_videochat (unique_id, passwd, username, email, phone, address, passwd_update_utc, salt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
 /*
 INSERT INTO tbl_videochat (unique_id, passwd, username, email, phone, address)
 VALUES ('robin', 'lge1234', 'robin kim', 'robin.kim@lge.com', '01082916918', "Yangchun-gu Seoul")
@@ -81,6 +83,9 @@ VALUES ('eve', 'lge1234', 'eve jeon', 'eve@lge.com', '01012345678', "Gangseo-gu 
 // find the password for unique_id
 #define SQL_USER_PASSWD		"SELECT passwd FROM tbl_videochat WHERE unique_id = ?"
 
+// find the salt for password for unique_id
+#define SQL_USER_SALT		"SELECT salt FROM tbl_videochat WHERE unique_id = ?"
+
 // delete user
 #define SQL_DELETE_USER		"DELETE FROM tbl_videochat WHERE unique_id = ?"
 /*
@@ -112,7 +117,6 @@ UPDATE tbl_videochat SET passwd_update_utc = '1655099156' WHERE unique_id = 'ali
 
 #define SQL_UPDATE_EMAIL		"UPDATE tbl_videochat SET email = ? WHERE unique_id = ?"
 
-const std::string salt = "_cmu_videochat";
 const std::string aes_key = "lg_video_chat";
 
 
@@ -212,6 +216,7 @@ int CUserDB::RegisterUserId(std::string& unique_id, std::string& passwd, std::st
 	sql::ResultSet* res;
 
 #if DB_SHA256_PASSWD
+    std::string salt = RandomString();
 	std::string sha256_passwd = sha256(passwd + salt);
 #if DB_DEBUG
 	printf("%s:%s\n", passwd.c_str(), sha256_passwd.c_str());
@@ -232,6 +237,7 @@ int CUserDB::RegisterUserId(std::string& unique_id, std::string& passwd, std::st
 		pstmt->setString(5, phone);
 		pstmt->setString(6, address);
 		pstmt->setUInt64(7, utc);
+		pstmt->setString(8, salt);
 
 		res = pstmt->executeQuery();
 
@@ -436,9 +442,58 @@ int CUserDB::GetUserPasswd(std::string& id, std::string& passwd)
 	return 0;
 }
 
-std::string CUserDB::saltStr(const std::string str)
+
+int CUserDB::GetUserSalt(std::string& id, std::string& salt)
 {
-	return str + salt;
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
+
+	std::lock_guard<std::mutex> guard(mMutex);
+
+	sql::PreparedStatement* pstmt;
+	sql::ResultSet* res;
+
+	try
+	{
+		pstmt = con->prepareStatement(SQL_USER_SALT);
+		pstmt->setString(1, id);
+		res = pstmt->executeQuery();
+
+		if (res->next()) {
+			salt = res->getString("salt");
+		}
+	}
+	catch (sql::SQLException& e)
+	{
+		std::cout << "# ERR: SQLException in " << __FILE__;
+		std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+		std::cout << "# ERR: " << e.what();
+		std::cout << " (MySQL error code: " << e.getErrorCode();
+		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
+		return -1;
+	}
+
+	delete res;
+	delete pstmt;
+
+#if DB_DEBUG
+	printf("DB[GetUserSalt]:(%s)\n", salt.c_str());
+	printf("-[%s]\n", __func__);
+#endif
+
+	return 0;
+}
+
+// load salt from DB and combine with the given string
+std::string CUserDB::saltStr(std::string& id, const std::string pwd)
+{
+    std::string salt;
+    if ((this->GetUserSalt(id, salt)) == 0) {
+        return pwd + salt;
+    }
+    return nullptr;
 }
 
 std::string CUserDB::sha256(const std::string str)
@@ -456,7 +511,23 @@ std::string CUserDB::sha256(const std::string str)
 	return ss.str();
 }
 
+std::string CUserDB::RandomString()
+{
+    const std::string chars("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
 
+    unsigned char random_bytes[DB_SALT_LEN];
+    if (RAND_bytes(random_bytes, DB_SALT_LEN) != 1) {
+        printf("[%s] RAND_bytes failed\n", __func__);
+        return "_cmu_videochat";
+    }
+
+    std::string result;
+    for (std::size_t i = 0; i < DB_SALT_LEN; ++i) {
+        result.push_back(chars[random_bytes[i] % chars.size()]);
+    }
+
+    return result;
+}
 
 int CUserDB::ClearWrongPasswdCnt(std::string& id)
 {

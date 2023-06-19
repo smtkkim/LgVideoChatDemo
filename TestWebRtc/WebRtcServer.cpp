@@ -329,7 +329,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 
 			if (m_clsUserDB->GetUserPasswd(user_id, db_user_passwd) == 0)	// get the passwd
 			{
-				std::string entered_passwd = m_clsUserDB->sha256( m_clsUserDB->saltStr(clsList[3]) );
+				std::string entered_passwd = m_clsUserDB->sha256(m_clsUserDB->saltStr(user_id, clsList[3]));
 
 				if (!strcmp(entered_passwd.c_str(), db_user_passwd.c_str()))
 				{

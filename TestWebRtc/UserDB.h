@@ -22,8 +22,10 @@ public:
 	int DeleteUserId(std::string& unique_id);
 	int CountUserId(std::string& id);
 	int GetUserPasswd(std::string& id, std::string& passwd);
-	std::string saltStr(const std::string str);
+    int GetUserSalt(std::string& id, std::string& salt);
+    std::string saltStr(std::string& id, const std::string pwd);
 	std::string sha256(const std::string str);
+    std::string RandomString();
 	int ClearWrongPasswdCnt(std::string& id);
 	int IncreaseWrongPasswdCnt(std::string& id);
 	int GetWrongPasswdCnt(std::string& id);
