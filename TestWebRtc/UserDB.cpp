@@ -117,6 +117,7 @@ UPDATE tbl_videochat SET passwd_update_utc = '1655099156' WHERE unique_id = 'ali
 
 #define SQL_UPDATE_EMAIL		"UPDATE tbl_videochat SET email = ? WHERE unique_id = ?"
 
+const std::string aes_key = "lg_video_chat";
 
 
 CUserDB::CUserDB()
@@ -795,13 +796,6 @@ uint64_t CUserDB::GetPasswdUpdatedTime(std::string& id)
 
 int CUserDB::updateGOtp(std::string& id, std::string& otp_string)
 {
-	std::string aes_key;
-
-	if ((this->GetUserSalt(id, aes_key)) != 0) {
-		printf("[%s]GetUserSalt Error\n", __func__);
-		return -1;
-	}
-
 #if DB_DEBUG
 	printf("+[%s]\n", __func__);
 #endif
@@ -895,13 +889,6 @@ int CUserDB::CountGOtp(std::string& otp_string)
 
 int CUserDB::GetGOtpKey(std::string& id, std::string& otp_key)
 {
-	std::string aes_key;
-
-	if ((this->GetUserSalt(id, aes_key)) != 0) {
-		printf("[%s]GetUserSalt Error\n", __func__);
-		return -1;
-	}
-
 #if DB_DEBUG
 	printf("+[%s]\n", __func__);
 #endif
