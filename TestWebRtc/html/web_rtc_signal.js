@@ -356,10 +356,10 @@ function StartSession()
 
               btnLogin.disabled = false;
               btnInvite.disabled = true;
-            }
 
-            ws = null;
-            InitButton();
+              ws = null;
+              InitButton();
+            }
 
             break;
           case "invite":
