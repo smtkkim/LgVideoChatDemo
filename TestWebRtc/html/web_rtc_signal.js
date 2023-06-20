@@ -189,6 +189,16 @@ function SendUserInfo()
     return;
   }
 
+  if( UserPhone.value.length == 0 )
+  {
+	  UserPhone.value = " ";
+  }
+  
+  if( UserAddress.value.length == 0 )
+  {
+	  UserAddress.value = " ";
+  }
+  
   if( websocket == null )
   {
     if( window.location.protocol == "https:" )
