@@ -24,9 +24,7 @@ int main( int argc, char * argv[] )
 
 #ifdef WIN32
 	CLog::SetDirectory( "c:\\temp\\http" );
-#ifdef _DEBUG
 	CLog::SetLevel( LOG_INFO | LOG_DEBUG | LOG_NETWORK );
-#endif
 #endif
 
 	const char * pszDocumentRoot = argv[1];
