@@ -21,7 +21,7 @@ char * CLog::m_pszDirName = NULL;
 char CLog::m_szDate[9] = { '\0' };
 FILE * CLog::m_sttFd = NULL;
 CSipMutex * CLog::m_pThreadMutex = NULL;
-int CLog::m_iLevel = LOG_ERROR;
+int CLog::m_iLevel = LOG_NONE;
 int CLog::m_iMaxLogSize = DEFAULT_LOG_FILE_SIZE;
 int CLog::m_iLogSize = 0;
 int64_t CLog::m_iMaxFolderSize = DEFAULT_LOG_FOLDER_SIZE;
@@ -124,6 +124,8 @@ int CLog::Print( EnumLogLevel iLevel, const char * fmt, ... )
 	case LOG_HTTP_HEADER:
 		snprintf( szHeader, sizeof(szHeader), "[HTTP] " );
 		break;
+	case LOG_WEBRTC:
+		snprintf(szHeader, sizeof(szHeader), "[WEBRTC] ");
 	default:
 		memset( szHeader, 0, sizeof(szHeader) );
 		break;
@@ -262,7 +264,7 @@ int CLog::GetLevel( )
 
 void CLog::SetLevel( int iLevel )
 {
-	m_iLevel = LOG_ERROR | LOG_SYSTEM;
+	//m_iLevel = LOG_ERROR | LOG_SYSTEM;
 	m_iLevel |= iLevel;
 }
 

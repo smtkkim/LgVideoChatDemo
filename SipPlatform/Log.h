@@ -18,6 +18,7 @@
 
 enum EnumLogLevel
 {
+	LOG_NONE = 0x0000,
 	
 	LOG_ERROR = 0x0001,
 	
@@ -27,11 +28,13 @@ enum EnumLogLevel
 	
 	LOG_NETWORK = 0x0200,
 	
-	LOG_SYSTEM = 0x400,
+	LOG_SYSTEM = 0x0400,
 	
-	LOG_HTTP2 = 0x800,
-	
-	LOG_HTTP_HEADER = 0x1000
+	LOG_HTTP2 = 0x0800,
+
+	LOG_HTTP_HEADER = 0x1000,
+
+	LOG_WEBRTC = 0x2000,
 };
 
 

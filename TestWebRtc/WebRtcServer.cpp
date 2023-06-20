@@ -33,7 +33,7 @@ bool CWebRtcServer::RecvHttpRequest( CHttpMessage * pclsRequest, CHttpMessage * 
 	std::string strPath = m_strDocumentRoot;
 	std::string strExt;
 
-	//CLog::Print( LOG_DEBUG, "req uri[%s]", pclsRequest->m_strReqUri.c_str() );
+	CLog::Print(LOG_WEBRTC, "req uri[%s]", pclsRequest->m_strReqUri.c_str() );
 
 	// 보안상 .. 을 포함한 URL 을 무시한다.
 	if( strstr( pclsRequest->m_strReqUri.c_str(), ".." ) )
@@ -129,12 +129,14 @@ bool CWebRtcServer::RecvHttpRequest( CHttpMessage * pclsRequest, CHttpMessage * 
 void CWebRtcServer::WebSocketConnected( const char * pszClientIp, int iClientPort, CHttpMessage * pclsRequest )
 {
 	printf( "WebSocket[%s:%d] connected\n", pszClientIp, iClientPort );
+	CLog::Print(LOG_WEBRTC, "WebSocket[%s:%d] connected\n", pszClientIp, iClientPort );
 }
 
 
 void CWebRtcServer::WebSocketClosed( const char * pszClientIp, int iClientPort )
 {
 	printf( "WebSocket[%s:%d] closed\n", pszClientIp, iClientPort );
+	CLog::Print(LOG_WEBRTC, "WebSocket[%s:%d] closed\n", pszClientIp, iClientPort );
 
 	std::string strUserId;
 
@@ -146,6 +148,7 @@ void CWebRtcServer::WebSocketClosed( const char * pszClientIp, int iClientPort )
 bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, std::string & strData )
 {
 	printf( "WebSocket[%s:%d] recv[%s]\n", pszClientIp, iClientPort, strData.c_str() );
+	CLog::Print(LOG_WEBRTC, "WebSocket[%s:%d] recv[%s]\n", pszClientIp, iClientPort, strData.c_str() );
 
 	STRING_VECTOR clsList;
 
@@ -169,6 +172,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		if (iCount < 3)
 		{
 			printf("register request arg is not correct\n");
+			CLog::Print(LOG_WEBRTC, "register request arg is not correct\n");
 			return false;
 		}
 
@@ -177,6 +181,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		if( unique_id.length() == 0)
 		{
 			printf("userid has not been entered");
+			CLog::Print(LOG_WEBRTC, "userid has not been entered");
 			Send(pszClientIp, iClientPort, "res|check|410");
 			return true;
 		}
@@ -185,11 +190,13 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		if ( CountUserId == 0 )   // check if id is alread registered
 		{
 			printf("available unique_id (%s)\n", unique_id.c_str());
+			CLog::Print(LOG_WEBRTC, "available unique_id (%s)\n", unique_id.c_str());
 			Send(pszClientIp, iClientPort, "res|check|200");
 		}
 		else if ( CountUserId >= 1 )   // check if id is alread registered
 		{
 			printf("same unique_id is already exist\n");
+			CLog::Print(LOG_WEBRTC, "same unique_id is already exist\n");
 			Send(pszClientIp, iClientPort, "res|check|400");
 		}
 	}
@@ -198,6 +205,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		if (iCount < 8)
 		{
 			printf("register request arg is not correct\n");
+			CLog::Print(LOG_WEBRTC, "register request arg is not correct\n");
 			return false;
 		}
 
@@ -251,12 +259,14 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 			// save key to database
 			m_clsUserDB->updateGOtp(unique_id, google_totp_key);
 
-			printf("user is correctly registered (%s)", google_totp_key.c_str());
+			printf("user is correctly registered");
+			CLog::Print(LOG_WEBRTC, "user is correctly registered");
 			Send(pszClientIp, iClientPort, "res|register|200|%s", google_totp_key.c_str());
 		}
 		else
 		{
 			printf("can not INSERT the user info to mysql");
+			CLog::Print(LOG_WEBRTC, "can not INSERT the user info to mysql");
 			Send(pszClientIp, iClientPort, "res|register|410");
 			return true;
 		}
@@ -266,6 +276,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		if( iCount < 5 )
 		{
 			printf( "login request arg is not correct\n" );
+			CLog::Print(LOG_WEBRTC, "login request arg is not correct\n");
 			return false;
 		}
 
@@ -303,12 +314,13 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 					m_clsUserDB->GetGOtpKey(user_id, otp_key);
 
 					int totp = generateTOTP(otp_key);
-					printf("otp : %d\n", totp);
+					//printf("otp : %d\n", totp);
 
 					if (std::stoi(entered_otp) != totp)
 					{
 						// OTP is wrong
-						printf("OTP num is wrong(%d, %d)\n", std::stoi(entered_otp), totp);
+						printf("OTP num is wrong(%d)\n", std::stoi(entered_otp));
+						CLog::Print(LOG_WEBRTC, "OTP num is wrong(%d)\n", std::stoi(entered_otp));
 						Send(pszClientIp, iClientPort, "res|login|440");
 						return true;
 					}
@@ -318,6 +330,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
                     if (NeedPasswdUpdate((time_t)utc_time_now, last_updated_time))
                     {
                         printf("Password is outdated and  needs to be changed.\n");
+						CLog::Print(LOG_WEBRTC, "Password is outdated and  needs to be changed.\n");
                         Send(pszClientIp, iClientPort, "res|login|430");
                         return true;
                     }
@@ -325,6 +338,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 				else
 				{
 					printf("password is wrong\n");
+					CLog::Print(LOG_WEBRTC, "password is wrong\n");
 					m_clsUserDB->IncreaseWrongPasswdCnt(user_id);
 
 					// check if passwd was wrong 3 times
@@ -344,6 +358,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 			else
 			{
 				printf("can not get the passwd from mysql\n");
+				CLog::Print(LOG_WEBRTC, "can not get the passwd from mysql\n");
 				Send(pszClientIp, iClientPort, "res|login|410");
 				return true;
 			}
@@ -351,6 +366,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		else
 		{
 			printf("Unregisterd user\n");
+			CLog::Print(LOG_WEBRTC, "Unregisterd user\n");
 			Send(pszClientIp, iClientPort, "res|login|300");
 			return true;
 		}
@@ -372,6 +388,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 			if( iCount < 4 )
 			{
 				printf( "invite request arg is not correct\n" );
+				CLog::Print(LOG_WEBRTC, "invite request arg is not correct\n");
 				return false;
 			}
 
@@ -410,6 +427,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 			if( iCount < 3 )
 			{
 				printf( "invite response arg is not correct\n" );
+				CLog::Print(LOG_WEBRTC, "invite response arg is not correct\n");
 				return false;
 			}
 
@@ -440,6 +458,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		if (iCount < 4)
 		{
 			printf("change account request arg is not correct\n");
+			CLog::Print(LOG_WEBRTC, "change account request arg is not correct\n");
 			return false;
 		}
 
@@ -450,6 +469,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 			|| email.length() == 0)
 		{
 			printf("can not INSERT the user info to mysql");
+			CLog::Print(LOG_WEBRTC, "can not INSERT the user info to mysql");
 			Send(pszClientIp, iClientPort, "res|register|410");
 			return true;
 		}
@@ -457,11 +477,13 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		if (m_clsUserDB->UpdateEmail(unique_id, email) == 0)
 		{
 			printf("Email is updated (%s)", email.c_str());
+			CLog::Print(LOG_WEBRTC, "Email is updated (%s)", email.c_str());
 			Send(pszClientIp, iClientPort, "res|register|200|%s", email.c_str());
 		}
 		else
 		{
 			printf("can not INSERT the user info to mysql");
+			CLog::Print(LOG_WEBRTC, "can not INSERT the user info to mysql");
 			Send(pszClientIp, iClientPort, "res|register|410");
 			return true;
 		}
@@ -477,6 +499,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		if (iCount < 3)
 		{
 			printf("userinfo request arg is not correct\n");
+			CLog::Print(LOG_WEBRTC, "userinfo request arg is not correct\n");
 			return false;
 		}
 
@@ -510,6 +533,7 @@ bool CWebRtcServer::Send( const char * pszClientIp, int iClientPort, const char 
 	if( gclsStack.SendWebSocketPacket( pszClientIp, iClientPort, szBuf, iBufLen ) )
 	{
 		printf( "WebSocket[%s:%d] send[%s]\n", pszClientIp, iClientPort, szBuf );
+		CLog::Print(LOG_WEBRTC, "WebSocket[%s:%d] send[%s]\n", pszClientIp, iClientPort, szBuf);
 		return true;
 	}
 
@@ -525,16 +549,19 @@ bool CWebRtcServer::SendCall( const char * pszClientIp, int iClientPort, std::st
 	if( gclsUserMap.SelectUserId( pszClientIp, iClientPort, strUserId ) == false )
 	{
 		printf( "gclsUserMap.SelectUserId(%s:%d) error\n", pszClientIp, iClientPort );
+		CLog::Print(LOG_WEBRTC, "gclsUserMap.SelectUserId(%s:%d) error\n", pszClientIp, iClientPort );
 		return false;
 	}
 	else if( gclsCallMap.Select( strUserId.c_str(), strOtherId ) == false )
 	{
 		printf( "gclsCallMap.Select(%s) error\n", strUserId.c_str() );
+		CLog::Print(LOG_WEBRTC, "gclsCallMap.Select(%s) error\n", strUserId.c_str());
 		return false;
 	}
 	else if( gclsUserMap.Select( strOtherId.c_str(), clsOtherInfo ) == false )
 	{
 		printf( "gclsUserMap.Select(%s) error\n", strOtherId.c_str() );
+		CLog::Print(LOG_WEBRTC, "gclsUserMap.Select(%s) error\n", strOtherId.c_str());
 		return false;
 	}
 
