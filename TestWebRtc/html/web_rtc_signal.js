@@ -40,7 +40,7 @@ function CheckDuplicateId()
     }
     else
     {
-      websocket = new WebSocket("ws://" + window.location.hostname + ":8080");
+      return;
     }
 
     websocket.onopen = function(e){
@@ -207,7 +207,7 @@ function SendUserInfo()
     }
     else
     {
-      websocket = new WebSocket("ws://" + window.location.hostname + ":8080");
+      return;
     }
 
     websocket.onopen = function(e){
@@ -334,7 +334,7 @@ function StartSession()
     }
     else
     {
-      ws = new WebSocket("ws://" + window.location.hostname + ":8080");
+      return;
     }
 
     // websocket 서버에 연결되면 연결 메시지를 화면에 출력한다.
