@@ -95,7 +95,7 @@ CUserDB::CUserDB()
 	try
 	{
 		driver = get_driver_instance();
-		con = driver->connect("tcp://127.0.0.1:3306", "root", "lge1234");
+		con = driver->connect("tcp://127.0.0.1:3306", "server", "lge12345!@");
 		con->setSchema("lge");
 	}
 	catch (sql::SQLException& e)
