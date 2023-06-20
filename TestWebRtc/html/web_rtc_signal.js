@@ -249,6 +249,14 @@ function SendUserInfo()
                 var secretKey = txtKey.value;
 
                 var otpAuthUrl = "otpauth://totp/" + issuer + ":" + accountName + "?secret=" + secretKey + "&issuer=" + issuer;
+
+                // Clear the previous QR code
+                var qrcodeElement = document.getElementById("qrcode");
+
+                while (qrcodeElement.firstChild) {
+                  qrcodeElement.firstChild.remove();
+                }
+
                 var qrcode = new QRCode(document.getElementById("qrcode"), {
                   text: otpAuthUrl,
                   width: 128,
