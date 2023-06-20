@@ -1,5 +1,7 @@
 var gstrUserId = "";
 var gstrUserPasswd = "";
+var gstrUserPasswd1 = "";
+var gstrUserPasswd2 = "";
 var gstrOtpNum = "";
 var gstrToId = "";
 var gstrSdp = "";
@@ -91,7 +93,8 @@ function CheckDuplicateId()
 function SendUserInfo()
 {
   let UserId = document.getElementById('userid_id');
-  let UserPasswd = document.getElementById('password_id');
+  let UserPasswd1 = document.getElementById('password_id_1');
+  let UserPasswd2 = document.getElementById('password_id_2');
   let UserName = document.getElementById('name_id');
   let UserEmail = document.getElementById('email_id');
   let UserPhone = document.getElementById('phone_id');
@@ -107,7 +110,7 @@ function SendUserInfo()
     alert("userid can NOT include '|' character" );
     return;
   }
-  if( UserPasswd.value.includes('|'))
+  if( UserPasswd1.value.includes('|'))
   {
     Log("password can NOT include '|' character");
     alert("password can NOT include '|' character" );
@@ -145,15 +148,22 @@ function SendUserInfo()
     return;
   }
 
-  if( UserPasswd.value.length == 0 )
+  if( UserPasswd1.value.length == 0 )
   {
     Log("password has not been entered");
     alert("password has not been entered" );
     return;
   }
+
+  if( UserPasswd1.value !=  UserPasswd2.value )
+  {
+    Log("password entered is NOT same");
+    alert("password entered is NOT same" );
+    return;
+  }
   
-  if(passwordRules.test(UserPasswd.value) == false ){
-    Log( "Password format is not valid : "+ UserPasswd.value );
+  if(passwordRules.test(UserPasswd1.value) == false ){
+    Log( "Password format is not valid : "+ UserPasswd1.value );
     alert("Password format is not valid");
     return;
   }
@@ -193,7 +203,7 @@ function SendUserInfo()
     websocket.onopen = function(e){
       websocket.send("req|register|" +
                       UserId.value +"|" +
-                      UserPasswd.value + "|" +
+                      UserPasswd1.value + "|" +
                       UserName.value + "|" +
                       UserEmail.value + "|" +
                       UserPhone.value + "|" +
