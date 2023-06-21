@@ -314,10 +314,6 @@ bool SSLConnect( Socket iFd, SSL ** ppsttSsl )
 		return false;
 	}
 	
-	char* HOST_NAME = "192.168.0.10";
-	SSL_set1_host(psttSsl, HOST_NAME); // Compliant
-	SSL_set_verify(psttSsl, SSL_VERIFY_PEER, NULL);
-
 	try
 	{
 		SSL_set_fd( psttSsl, (int)iFd );
