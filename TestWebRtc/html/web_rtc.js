@@ -8,7 +8,7 @@ var pc;
 var pc_config = null;
 
 //
-var pc_constraints = { 'optional': [{'DtlsSrtpKeyAgreement': true} ]};
+var pc_constraints = { 'optional': [{ 'DtlsSrtpKeyAgreement': true }] };
 var sdpConstraints = {};
 
 var localVideo = document.getElementById("localVideo");
@@ -17,6 +17,8 @@ var remoteVideo = document.getElementById("remoteVideo");
 var btnLogin = document.getElementById("btnLogin");
 var btnRetreiveList = document.getElementById("btnRetreiveList");
 var btnChangeEmail = document.getElementById("btnChangeEmail");
+var btnChangePassword = document.getElementById("btnChangePassword");
+var btnResetPassword = document.getElementById("btnResetPassword");
 var btnInvite = document.getElementById("btnInvite");
 var btnAccept = document.getElementById("btnAccept");
 var btnDecline = document.getElementById("btnDecline");
@@ -29,242 +31,208 @@ var iLogRowCount = 0;
 InitButton();
 startLocal();
 
-function Log(strLog)
-{
-/*
-  var clsDate = new Date();
-  var strTime = "[" + clsDate.getHours() + ":" + clsDate.getMinutes() + ":" + clsDate.getSeconds() + "] ";
-
-  if( iLogRowCount == iLogMaxRowCount )
-  {
-    lyLog.innerHTML = strTime + strLog + "<br>";
-    iLogRowCount = 0;
-  }
-  else
-  {
-    lyLog.innerHTML += strTime + strLog + "<br>";
-  }
-
-  ++iLogRowCount;
-*/
-  //console.log(strLog);
+function Log(strLog) {
+    /*
+      var clsDate = new Date();
+      var strTime = "[" + clsDate.getHours() + ":" + clsDate.getMinutes() + ":" + clsDate.getSeconds() + "] ";
+    
+      if( iLogRowCount == iLogMaxRowCount )
+      {
+        lyLog.innerHTML = strTime + strLog + "<br>";
+        iLogRowCount = 0;
+      }
+      else
+      {
+        lyLog.innerHTML += strTime + strLog + "<br>";
+      }
+    
+      ++iLogRowCount;
+    */
+    //console.log(strLog);
 }
 
-function Print(strLog)
-{
-  if( iLogRowCount == iLogMaxRowCount )
-  {
-    iLogRowCount = 0;
-  }
-  else
-  {
-    lyLog.innerHTML += strLog + "<br>";
-  }
-
-  ++iLogRowCount;
-
-  //console.log(strLog);
-}
-
-function ClearLog()
-{
-	lyLog.innerHTML = "";
-}
-
-function InitButton()
-{
-	btnLogin.disabled = false;
-	btnInvite.disabled = true;
-	btnAccept.disabled = true;
-	btnDecline.disabled = true;
-	btnBye.disabled = true;
-}
-
-function handleLocalMedia(stream)
-{
-  if( window.URL )
-  {
-  	try
-  	{
-    	localVideo.src = URL.createObjectURL(stream);
+function Print(strLog) {
+    if (iLogRowCount == iLogMaxRowCount) {
+        iLogRowCount = 0;
     }
-    catch( exception )
-    {
-    	localVideo.src = stream;
-    	localVideo.srcObject = stream;
+    else {
+        lyLog.innerHTML += strLog + "<br>";
     }
-  }
-  else
-  {
-    localVideo.src = stream;
-  }
-  localStream = stream;
 
-  // 로컬 마이크에서 입력된 음원을 출력하지 않기 위한 기능
-  localVideo.muted = true;
+    ++iLogRowCount;
+
+    //console.log(strLog);
 }
 
-function handleUserMediaError(error)
-{
-  Log("#### handleUserMediaError ####");
-  Log("error(" + error.name + ")");
+function ClearLog() {
+    lyLog.innerHTML = "";
 }
 
-function startLocal()
-{
-  navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-  navigator.getUserMedia( { audio:true, video:true }, handleLocalMedia, handleUserMediaError );
+function InitButton() {
+    btnLogin.disabled = false;
+    btnInvite.disabled = true;
+    btnAccept.disabled = true;
+    btnDecline.disabled = true;
+    btnBye.disabled = true;
+    btnResetPassword.disabled = false;
 }
 
-function stopPeer()
-{
-  if( pc ) pc.close();
-  pc = null;
-  remoteVideo.src = null;
-  remoteVideo.srcObject = null;
-}
-
-function createOffer()
-{
-  Log( "#### createOffer ####")
-
-  if( navigator.webkitGetUserMedia )
-  {
-    // Chrome
-    RTCPeerConnection = webkitRTCPeerConnection;
-  }
-  else if( navigator.mozGetUserMedia )
-  {
-    // Firefox
-    RTCPeerConnection = mozRTCPeerConnection;
-    RTCSessionDescription = mozRTCSessionDescription;
-    RTCIceCandidate = mozRTCIceCandidate;
-  }
-
-  pc = new RTCPeerConnection(pc_config, pc_constraints);
-  pc.addStream(localStream);
-  pc.onicecandidate = setIceCandidateOffer;
-  pc.onaddstream = handleRemoteStreamAdded;
-  pc.onremovestream = handleRemoteStreamRemoved;
-
-  pc.createOffer( setLocalOffer, onSignalingError, sdpConstraints );
-}
-
-function createAnswer( strSdp )
-{
-  Log("#### createAnswer sdp(" + strSdp + ")");
-
-  if( navigator.webkitGetUserMedia )
-  {
-    // Chrome
-    RTCPeerConnection = webkitRTCPeerConnection;
-  }
-  else if( navigator.mozGetUserMedia )
-  {
-    // Firefox
-    RTCPeerConnection = mozRTCPeerConnection;
-    RTCSessionDescription = mozRTCSessionDescription;
-    RTCIceCandidate = mozRTCIceCandidate;
-  }
-
-  pc = new RTCPeerConnection(pc_config, pc_constraints);
-  pc.addStream(localStream);
-  pc.onicecandidate = setIceCandidateAnswer;
-  pc.onaddstream = handleRemoteStreamAdded;
-  pc.onremovestream = handleRemoteStreamRemoved;
-
-  var sd = new RTCSessionDescription( { sdp: strSdp, type:"offer" } );
-
-  pc.setRemoteDescription(sd);
-  pc.createAnswer(setLocalAnswer, onSignalingError, sdpConstraints);
-}
-
-function handleRemoteStreamAdded(event)
-{
-  Log("#### handleRemoteStreamAdded ####" );
-
-  if( window.URL )
-  {
-  	try
-  	{
-    	remoteVideo.src = URL.createObjectURL(event.stream);
+function handleLocalMedia(stream) {
+    if (window.URL) {
+        try {
+            localVideo.src = URL.createObjectURL(stream);
+        }
+        catch (exception) {
+            localVideo.src = stream;
+            localVideo.srcObject = stream;
+        }
     }
-    catch( exception )
-    {
-    	remoteVideo.src = event.stream;
-    	remoteVideo.srcObject = event.stream;
+    else {
+        localVideo.src = stream;
     }
-  }
-  else
-  {
-    remoteVideo.src = event.stream;
-  }
+    localStream = stream;
 
-  remoteStream = event.stream;
+    // 로컬 마이크에서 입력된 음원을 출력하지 않기 위한 기능
+    localVideo.muted = true;
 }
 
-function handleRemoteStreamRemoved(event)
-{
-  Log( "#### handleRemoteStreamRemoved ####" );
+function handleUserMediaError(error) {
+    Log("#### handleUserMediaError ####");
+    Log("error(" + error.name + ")");
 }
 
-function setIceCandidateOffer(event)
-{
-  if( event.candidate == null )
-  {
-    Log( "setIceCandidateOffer(null)" );
-    //Log( "local sdp(" + pc.localDescription.sdp + ")" );
-
-    Invite( pc.localDescription.sdp );
-  }
-  else
-  {
-    //console.log( "handleIceCandidate(" + event.candidate.candidate + ") sdpMid(" + event.candidate.sdpMid + ")" );
-  }
+function startLocal() {
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    navigator.getUserMedia({ audio: true, video: true }, handleLocalMedia, handleUserMediaError);
 }
 
-function setIceCandidateAnswer(event)
-{
-  if( event.candidate == null )
-  {
-    Log( "setIceCandidateAnswer(null)" );
-    //Log( "local sdp(" + pc.localDescription.sdp + ")" );
-
-    Accept(pc.localDescription.sdp);
-  }
-  else
-  {
-    //console.log( "handleIceCandidate(" + event.candidate.candidate + ") sdpMid(" + event.candidate.sdpMid + ")" );
-  }
+function stopPeer() {
+    if (pc) pc.close();
+    pc = null;
+    remoteVideo.src = null;
+    remoteVideo.srcObject = null;
 }
 
-function setLocalOffer(sessionDescription)
-{
-  pc.setLocalDescription(sessionDescription);
+function createOffer() {
+    Log("#### createOffer ####")
 
-  Log( "createOffer result sdp(" + sessionDescription.sdp + ") type(" + sessionDescription.type + ")" );
+    if (navigator.webkitGetUserMedia) {
+        // Chrome
+        RTCPeerConnection = webkitRTCPeerConnection;
+    }
+    else if (navigator.mozGetUserMedia) {
+        // Firefox
+        RTCPeerConnection = mozRTCPeerConnection;
+        RTCSessionDescription = mozRTCSessionDescription;
+        RTCIceCandidate = mozRTCIceCandidate;
+    }
 
-  // IceCandidate 를 가져오기 전에 호출된다. IceCandidate callback 호출에서 Invite 메소드를 호출한다.
+    pc = new RTCPeerConnection(pc_config, pc_constraints);
+    pc.addStream(localStream);
+    pc.onicecandidate = setIceCandidateOffer;
+    pc.onaddstream = handleRemoteStreamAdded;
+    pc.onremovestream = handleRemoteStreamRemoved;
+
+    pc.createOffer(setLocalOffer, onSignalingError, sdpConstraints);
+}
+
+function createAnswer(strSdp) {
+    Log("#### createAnswer sdp(" + strSdp + ")");
+
+    if (navigator.webkitGetUserMedia) {
+        // Chrome
+        RTCPeerConnection = webkitRTCPeerConnection;
+    }
+    else if (navigator.mozGetUserMedia) {
+        // Firefox
+        RTCPeerConnection = mozRTCPeerConnection;
+        RTCSessionDescription = mozRTCSessionDescription;
+        RTCIceCandidate = mozRTCIceCandidate;
+    }
+
+    pc = new RTCPeerConnection(pc_config, pc_constraints);
+    pc.addStream(localStream);
+    pc.onicecandidate = setIceCandidateAnswer;
+    pc.onaddstream = handleRemoteStreamAdded;
+    pc.onremovestream = handleRemoteStreamRemoved;
+
+    var sd = new RTCSessionDescription({ sdp: strSdp, type: "offer" });
+
+    pc.setRemoteDescription(sd);
+    pc.createAnswer(setLocalAnswer, onSignalingError, sdpConstraints);
+}
+
+function handleRemoteStreamAdded(event) {
+    Log("#### handleRemoteStreamAdded ####");
+
+    if (window.URL) {
+        try {
+            remoteVideo.src = URL.createObjectURL(event.stream);
+        }
+        catch (exception) {
+            remoteVideo.src = event.stream;
+            remoteVideo.srcObject = event.stream;
+        }
+    }
+    else {
+        remoteVideo.src = event.stream;
+    }
+
+    remoteStream = event.stream;
+}
+
+function handleRemoteStreamRemoved(event) {
+    Log("#### handleRemoteStreamRemoved ####");
+}
+
+function setIceCandidateOffer(event) {
+    if (event.candidate == null) {
+        Log("setIceCandidateOffer(null)");
+        //Log( "local sdp(" + pc.localDescription.sdp + ")" );
+
+        Invite(pc.localDescription.sdp);
+    }
+    else {
+        //console.log( "handleIceCandidate(" + event.candidate.candidate + ") sdpMid(" + event.candidate.sdpMid + ")" );
+    }
+}
+
+function setIceCandidateAnswer(event) {
+    if (event.candidate == null) {
+        Log("setIceCandidateAnswer(null)");
+        //Log( "local sdp(" + pc.localDescription.sdp + ")" );
+
+        Accept(pc.localDescription.sdp);
+    }
+    else {
+        //console.log( "handleIceCandidate(" + event.candidate.candidate + ") sdpMid(" + event.candidate.sdpMid + ")" );
+    }
+}
+
+function setLocalOffer(sessionDescription) {
+    pc.setLocalDescription(sessionDescription);
+
+    Log("createOffer result sdp(" + sessionDescription.sdp + ") type(" + sessionDescription.type + ")");
+
+    // IceCandidate 를 가져오기 전에 호출된다. IceCandidate callback 호출에서 Invite 메소드를 호출한다.
 }
 
 function setLocalAnswer(sessionDescription) {
-  pc.setLocalDescription(sessionDescription);
+    pc.setLocalDescription(sessionDescription);
 
-  Log( "createAnswer result sdp(" + sessionDescription.sdp + ") type(" + sessionDescription.type + ")" );
+    Log("createAnswer result sdp(" + sessionDescription.sdp + ") type(" + sessionDescription.type + ")");
 
-  // IceCandidate 를 가져오기 전에 호출된다. IceCandidate callback 호출에서 Accept 메소드를 호출한다.
+    // IceCandidate 를 가져오기 전에 호출된다. IceCandidate callback 호출에서 Accept 메소드를 호출한다.
 }
 
-function onSignalingError(error)
-{
-  Log( "Failed to create signaling message : " + error.name);
+function onSignalingError(error) {
+    Log("Failed to create signaling message : " + error.name);
 }
 
-function setAnswer(strSdp)
-{
-  var sd = new RTCSessionDescription( { sdp: strSdp, type:"answer" } );
+function setAnswer(strSdp) {
+    var sd = new RTCSessionDescription({ sdp: strSdp, type: "answer" });
 
-  pc.setRemoteDescription(sd);
+    pc.setRemoteDescription(sd);
 
-  Log( "setAnswer remote sdp(" + strSdp + ")" );
+    Log("setAnswer remote sdp(" + strSdp + ")");
 }

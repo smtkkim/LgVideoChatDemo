@@ -59,16 +59,15 @@
 // find the password for unique_id
 #define SQL_USER_PASSWD		"SELECT passwd FROM tbl_videochat WHERE unique_id = ?"
 
+#define SQL_USER_EMAIL		"SELECT email FROM tbl_videochat WHERE unique_id = ?"
+
 // find the salt for password for unique_id
 #define SQL_USER_SALT		"SELECT salt FROM tbl_videochat WHERE unique_id = ?"
 
 // delete user
 #define SQL_DELETE_USER		"DELETE FROM tbl_videochat WHERE unique_id = ?"
 
-
-#define SQL_UPDATE_PASSWD	"UPDATE tbl_videochat SET passwd = ? WHERE unique_id = ?"
-
-
+#define SQL_UPDATE_PASSWD_AND_TIME  	"UPDATE tbl_videochat SET passwd = ?, passwd_update_utc = ? WHERE unique_id = ?"
 
 #define SQL_WRONG_PASSWD_CNT_CLEAR		"UPDATE tbl_videochat SET passwd_wrong_cnt = 0 WHERE unique_id = ?"
 
@@ -80,8 +79,7 @@
 
 #define SQL_WRONG_PASSWD_LOCK_UTC		"SELECT passwd_lock_utc FROM tbl_videochat WHERE unique_id = ?"
 
-
-#define SQL_UPDATE_PASSWD_UPDATED_TIME	"UPDATE tbl_videochat SET passwd_update_utc = ? WHERE unique_id = ?"
+//#define SQL_UPDATE_PASSWD_UPDATED_TIME	"UPDATE tbl_videochat SET passwd_update_utc = ? WHERE unique_id = ?"
 
 #define SQL_GET_PASSWD_UPDATED_TIME		"SELECT passwd_update_utc FROM tbl_videochat WHERE unique_id = ?"
 
@@ -412,6 +410,48 @@ int CUserDB::GetUserPasswd(std::string& id, std::string& passwd)
 	return 0;
 }
 
+int CUserDB::GetEmail(std::string& id, std::string& email)
+{
+#if DB_DEBUG
+	printf("+[%s]\n", __func__);
+#endif
+
+	std::lock_guard<std::mutex> guard(mMutex);
+
+	sql::PreparedStatement* pstmt;
+	sql::ResultSet* res;
+
+	try
+	{
+		pstmt = con->prepareStatement(SQL_USER_EMAIL);
+		pstmt->setString(1, id);
+		res = pstmt->executeQuery();
+
+		if (res->next()) {
+			email = res->getString("email");
+		}
+	}
+	catch (sql::SQLException& e)
+	{
+		std::cout << "# ERR: SQLException in " << __FILE__;
+		std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+		std::cout << "# ERR: " << e.what();
+		std::cout << " (MySQL error code: " << e.getErrorCode();
+		std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
+		return -1;
+	}
+
+	delete res;
+	delete pstmt;
+
+#if DB_DEBUG
+	printf("DB[GetEmail]:(%s)\n", email.c_str());
+	printf("-[%s]\n", __func__);
+#endif
+
+	return 0;
+}
 
 int CUserDB::GetUserSalt(std::string& id, std::string& salt)
 {
@@ -913,42 +953,84 @@ int CUserDB::GetGOtpKey(std::string& id, std::string& otp_key)
 int CUserDB::UpdateEmail(std::string& id, std::string& new_email)
 {
 #if DB_DEBUG
-        printf("+[%s]\n", __func__);
+    printf("+[%s]\n", __func__);
 #endif
-    
-        std::lock_guard<std::mutex> guard(mMutex);
-    
-        sql::PreparedStatement* pstmt;
-        sql::ResultSet* res;
-    
-        try
-        {
-            pstmt = con->prepareStatement(SQL_UPDATE_EMAIL);
-            pstmt->setString(1, new_email);
-            pstmt->setString(2, id);
-            res = pstmt->executeQuery();
-    
-            if (res->next()) {
-            }
+
+    std::lock_guard<std::mutex> guard(mMutex);
+
+    sql::PreparedStatement* pstmt;
+    sql::ResultSet* res;
+
+    try
+    {
+        pstmt = con->prepareStatement(SQL_UPDATE_EMAIL);
+        pstmt->setString(1, new_email);
+        pstmt->setString(2, id);
+        res = pstmt->executeQuery();
+
+        if (res->next()) {
         }
-        catch (sql::SQLException& e)
-        {
-            std::cout << "# ERR: SQLException in " << __FILE__;
-            std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
-            std::cout << "# ERR: " << e.what();
-            std::cout << " (MySQL error code: " << e.getErrorCode();
-            std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
-    
-            return -1;
-        }
-    
-        delete res;
-        delete pstmt;
-    
+    }
+    catch (sql::SQLException& e)
+    {
+        std::cout << "# ERR: SQLException in " << __FILE__;
+        std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+        std::cout << "# ERR: " << e.what();
+        std::cout << " (MySQL error code: " << e.getErrorCode();
+        std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
+        return -1;
+    }
+
+    delete res;
+    delete pstmt;
+
 #if DB_DEBUG
-        printf("-[%s]\n", __func__);
+    printf("-[%s]\n", __func__);
 #endif
-    
-        return 0;
+    return 0;
+}
+
+int CUserDB::UpdatePasswdAndTime(std::string& id, std::string& passwd, uint64_t utc_time)
+{
+#if DB_DEBUG
+    printf("+[%s]\n", __func__);
+#endif
+
+    std::lock_guard<std::mutex> guard(mMutex);
+
+    sql::PreparedStatement* pstmt;
+    sql::ResultSet* res;
+
+    try
+    {
+        pstmt = con->prepareStatement(SQL_UPDATE_PASSWD_AND_TIME);
+        pstmt->setString(1, passwd);
+		pstmt->setUInt64(2, utc_time);
+        pstmt->setString(3, id);
+        res = pstmt->executeQuery();
+
+        if (res->next()) {
+        }
+    }
+    catch (sql::SQLException& e)
+    {
+        std::cout << "# ERR: SQLException in " << __FILE__;
+        std::cout << "(" << __FUNCTION__ << ") on line " << __LINE__ << std::endl;
+        std::cout << "# ERR: " << e.what();
+        std::cout << " (MySQL error code: " << e.getErrorCode();
+        std::cout << ", SQLState: " << e.getSQLState() << " )" << std::endl;
+
+        return -1;
+    }
+
+    delete res;
+    delete pstmt;
+
+#if DB_DEBUG
+    printf("-[%s]\n", __func__);
+#endif
+
+    return 0;
 }
 
