@@ -16,6 +16,8 @@ x64/Release/TestWebRtc.lib
 x64/Release/TestWebRtc.pdb
 x64/Release/XmlParser.lib
 x64/Release/XmlParser.pdb
+x64/Release/JsonParser.lib
+x64/Release/JsonParser.pdb
 Http2Parser/x64/
 HttpParser/x64/
 HttpStack/x64/
