@@ -52,7 +52,7 @@ bool CWebRtcServer::RecvHttpRequest( CHttpMessage * pclsRequest, CHttpMessage * 
 
 #ifdef _DEBUG
 	// 메모리 누수 검사를 위해서 exit.html 을 수신하면 프로그램을 종료한다.
-	if( pclsRequest->m_strReqUri == std::string("/exit.html") )
+	if (!strcmp(pclsRequest->m_strReqUri.c_str(), "/exit.html"))
 	{
 		pclsResponse->m_iStatusCode = HTTP_NOT_FOUND;
 		m_bStop = true;
@@ -60,7 +60,7 @@ bool CWebRtcServer::RecvHttpRequest( CHttpMessage * pclsRequest, CHttpMessage * 
 	}
 #endif
 
-	if( pclsRequest->m_strReqUri == std::string("/") )
+	if (!strcmp(pclsRequest->m_strReqUri.c_str(), "/"))
 	{
 		CDirectory::AppendName( strPath, "index.html" );
 	}
@@ -81,26 +81,26 @@ bool CWebRtcServer::RecvHttpRequest( CHttpMessage * pclsRequest, CHttpMessage * 
 
 	// 파일별 Content-Type 을 설정한다.
 	GetFileExt( strPath.c_str(), strExt );
-	//const char * pszExt = strExt.c_str();
+	const char * pszExt = strExt.c_str();
 	
-	if(strExt == std::string("html") || strExt == std::string("htm") )
+	if (!strcmp(pszExt, "html") || !strcmp(pszExt, "htm"))
 	{
 		pclsResponse->m_strContentType = "text/html";
 	}
-	else if(strExt == std::string("css") )
+	else if (strExt == std::string("css"))
 	{
 		pclsResponse->m_strContentType = "text/css";
 	}
-	else if(strExt == std::string("js") )
+	else if (strExt == std::string("js"))
 	{
 		pclsResponse->m_strContentType = "text/javascript";
 	}
-	else if(strExt == std::string("png") || strExt == std::string("gif") )
+	else if (strExt == std::string("png") || strExt == std::string("gif"))
 	{
 		pclsResponse->m_strContentType = "image/";
 		pclsResponse->m_strContentType.append(strExt.c_str());
 	}
-	else if(strExt == std::string("jpg") || strExt == std::string("jpeg") )
+	else if (strExt == std::string("jpg") || strExt == std::string("jpeg"))
 	{
 		pclsResponse->m_strContentType = "image/jpeg";
 	}
@@ -170,9 +170,9 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 	}
 
 	bool bReq = true;
-	if( clsList[0] == std::string( "req" ) ) bReq = false;
+	if (strcmp(clsList[0].c_str(), "req")) bReq = false;
 
-	const std::string pszCommand = clsList[1];
+	const char* pszCommand = clsList[1].c_str();
 	std::string strUserId;
 
 	if (pszCommand == std::string("check"))
@@ -208,7 +208,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 			Send(pszClientIp, iClientPort, "res|check|400");
 		}
 	}
-	else if ( pszCommand == std::string("register"))
+	else if (!strcmp(pszCommand, "register"))
 	{
 		if (iCount < 8)
 		{
@@ -279,7 +279,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 			return true;
 		}
 	}
-	else if( pszCommand == std::string( "login" ) )
+	else if (!strcmp(pszCommand, "login"))
 	{
 		if( iCount < 5 )
 		{
@@ -310,7 +310,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 			{
 				std::string entered_passwd = m_clsUserDB->sha256(m_clsUserDB->saltStr(user_id, clsList[3]));
 
-				if ( entered_passwd == db_user_passwd )
+				if (!strcmp(entered_passwd.c_str(), db_user_passwd.c_str()))
 				{
 					// passwd OK
 					printf("password is correct\n");
@@ -474,7 +474,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 			Send( pszClientIp, iClientPort, "res|changepwd|200" );
 		}
 	}
-	else if( pszCommand == std::string( "invite" ) )
+	else if (!strcmp(pszCommand, "invite"))
 	{
 		if( bReq )
 		{
@@ -534,7 +534,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 			}
 		}
 	}
-	else if ( pszCommand == std::string("contact"))
+	else if (!strcmp(pszCommand, "contact"))
 	{
 		// send all contact list
 		std::string strUserAllId;
@@ -546,7 +546,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 
 		Send(pszClientIp, iClientPort, strContactList.c_str());
 	}
-	else if ( pszCommand == std::string("changeacc"))
+	else if (!strcmp(pszCommand, "changeacc"))
 	{
 		if (iCount < 4)
 		{
@@ -581,7 +581,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 			return true;
 		}
 	}
-	else if ( pszCommand == std::string("userinfo"))
+	else if (!strcmp(pszCommand, "userinfo"))
 	{
 		std::string strUserInfo;
 		std::string username; 
@@ -602,7 +602,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 
 		Send(pszClientIp, iClientPort, strUserInfo.c_str());
 	}
-	else if( pszCommand == std::string( "bye" ) )
+	else if (!strcmp(pszCommand, "bye"))
 	{
 		SendCall( pszClientIp, iClientPort, strData, strUserId );
 
