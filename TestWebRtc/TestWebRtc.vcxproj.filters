@@ -40,4 +40,11 @@
       <Filter>자료구조</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="html\index.html" />
+    <None Include="html\qrcode.js" />
+    <None Include="html\qrcode.min.js" />
+    <None Include="html\web_rtc.js" />
+    <None Include="html\web_rtc_signal.js" />
+  </ItemGroup>
 </Project>

@@ -22,6 +22,7 @@ public:
 	int DeleteUserId(std::string& unique_id);
 	int CountUserId(std::string& id);
 	int GetUserPasswd(std::string& id, std::string& passwd);
+    int GetEmail(std::string& id, std::string& email);
     int GetUserSalt(std::string& id, std::string& salt);
     std::string saltStr(std::string& id, const std::string pwd);
 	std::string sha256(const std::string str);
@@ -36,6 +37,7 @@ public:
 	int CountGOtp(std::string& otp_string);
 	int GetGOtpKey(std::string& id, std::string& otp_key);
     int UpdateEmail(std::string& id, std::string& new_email);
+    int UpdatePasswdAndTime(std::string& id, std::string& passwd, uint64_t utc_time);
 
 private:
 	sql::Driver* driver;

@@ -1,143 +1,174 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
-  <script src="qrcode.min.js"></script>
-  <title>LgVideoChat</title>
-  <style>
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%
-      overflow: auto;
-      background-color: rgb(0,0,0);
-      background-color: rgba(0,0,0,0.4);
-    }
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1" />
+    <script src="qrcode.min.js"></script>
+    <title>LgVideoChat</title>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100% overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
 
-    .modal-content {
-      background-color: #fefefe;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 50%;
-    }
-  </style>
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+        }
+    </style>
 </head>
 
 <body>
-  <h2>Sign Up </h2>
-  <table class="type1">
+    <h2>Sign Up </h2>
+    <table class="type1">
+        <tr>
+            <th>ID : </th>
+            <td>
+                <input id="userid_id" type="text" name="UserId_" placeholder="" required>
+                <button id="btnDuplicate" onclick="CheckDuplicateId()">check id</button>
+            </td>
+        </tr>
+        <tr>
+            <th>Password : </th>
+            <td>
+                <input id="password_id_1" type="password" name="password" minlength="10" placeholder="" required>
+                <input id="password_id_2" type="password" name="password" minlength="10" placeholder="re-type password" required>
+                At least 1 alphabet/special character/number and length 10 ~ 15
+            </td>
+        </tr>
+        <tr>
+            <th>Name : </th>
+            <td>
+                <input id="name_id" type="text" name="Name" placeholder="" required>
+            </td>
+        </tr>
+        <tr>
+            <th>E-mail : </th>
+            <td>
+                <input id="email_id" type="text" name="email" placeholder="ex)abc@naver.com" required>
+            </td>
+        </tr>
+        <tr>
+            <th>Phone : </th>
+            <td>
+                <input id="phone_id" type="text" name="phone" placeholder="ex)0123456789" required>
+            </td>
+        </tr>
+        <tr>
+            <th>Address : </th>
+            <td>
+                <input id="address_id" type="text" name="Address" placeholder="" required size="50">
+            </td>
+        </tr>
+    </table>
+    <p>
+        <button id="btnSubmit" onclick="SendUserInfo()">submit</button>
+    </p>
     <tr>
-      <th>ID : </th>
-      <td>
-        <input id="userid_id" type="text" name="UserId_" placeholder="" required>
-        <button id="btnDuplicate" onclick="CheckDuplicateId()" >check id</button>
-      </td>
-    </tr>
-    <tr>
-      <th>Password : </th>
-      <td>
-        <input id="password_id_1" type="password" name="password" minlength="10" placeholder="" required> 
-        <input id="password_id_2" type="password" name="password" minlength="10" placeholder="re-type password" required> 
-        At least 1 alphabet/special character/number and length 10 ~ 15
-      </td>
-    </tr>
-    <tr>
-      <th>Name : </th>
-      <td><input id="name_id" type="text" name="Name" placeholder="" required>
-      </td>
-    </tr>
-    <tr>
-      <th>E-mail : </th>
-      <td><input id="email_id" type="text" name="email" placeholder="ex)abc@naver.com" required>
-      </td>
-    </tr>
-    <tr>
-      <th>Phone : </th>
-      <td><input id="phone_id" type="text" name="phone" placeholder="ex)0123456789" required>
-      </td>
-    </tr>
-    <tr>
-      <th>Address : </th>
-      <td>
-        <input id="address_id" type="text" name="Address" placeholder="" required size="50">
-      </td>
-    </tr>
-  </table>
-  <p>
-    <button id="btnSubmit" onclick="SendUserInfo()" >submit</button>
-  </p>
-    <tr>
-      <th>Google OTP KEY : </th>
-      <td>
-        <input id="google_key" type="text" name="Google" placeholder="" required size="50" readonly>
-      </td>
+        <th>Google OTP KEY : </th>
+        <td>
+            <input id="google_key" type="text" name="Google" placeholder="" required size="50" readonly>
+        </td>
     </tr>
     <div id="qrcode"></div>
-	<td>
-      <span style="color: red; font-size: 30px;">You must register Google Authenticator with QR code or key NOW!</span>
+    <td>
+        <span style="color: red; font-size: 30px;">You must register Google Authenticator with QR code or key NOW!</span>
     </td>
 
-  <hr>
-  <h2>Video Chat </h2>
-  <div>
-    <p>user id : <input id="user_id" type="text" > password : <input id="user_passwd" type="password" > otp : <input id="otp_num" type="text" > 
-    <button id="btnLogin" onclick="StartSession()" >login</button>
-    <button id="btnRetreiveList" onclick="ContactList()" >Retrieve logined ID</button>
-    <button id="btnChangeEmail" onclick="ChangeEmail()" >Change Email</button>
-    </p>
-  </div>
-  <div>
-    <p>
-    peer id : <input id="peer_id" type="text" >
-    <button id="btnInvite" onclick="SendInvite()" >Call</button>
-    <button id="btnAccept" onclick="SendAccept()" >Accept</button>
-    <button id="btnDecline" onclick="SendDecline()" >Decline</button>
-    <button id="btnBye" onclick="SendBye()" >Bye</button>
-    </p>
-  </div>
-
-  <table border="1">
-    <tr>
-      <th>
-        Local
-      </th>
-      <th>
-        Remote
-      </th>
-    </tr>
-    <tr>
-      <td>
-        <video id="localVideo" autoplay width="540px" height="400px"></video>
-      </td>
-      <td>
-        <video id="remoteVideo" autoplay width="540px" height="400px"></video>
-      </td>
-    </tr>
-  </table>
-  <br>
-  <hr>
-
-  <div id="log">
-
-  </div>
-  <div id="accountModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <form id="infoForm">
-        New E-mail: <input type="email" id="new_email"><br>
-        <input type="submit" value="Submit">
-      </form>
+    <hr>
+    <h2>Video Chat </h2>
+    <div>
+        <p>
+            user id : <input id="user_id" type="text"> password : <input id="user_passwd" type="password"> otp : <input id="otp_num" type="text">
+            <button id="btnLogin" onclick="StartSession()">Login</button>
+            <button id="btnResetPassword" onclick="ResetPassword()">Reset Password</button>
+            <button id="btnRetreiveList" onclick="ContactList()">Retrieve Logined IDs</button>
+            <button id="btnChangeEmail" onclick="ChangeEmail()">Change Email</button>
+            <button id="btnChangePassword" onclick="ChangePassword()">Change Password</button>
+        </p>
     </div>
-  </div>
+    <div>
+        <p>
+            peer id : <input id="peer_id" type="text">
+            <button id="btnInvite" onclick="SendInvite()">Call</button>
+            <button id="btnAccept" onclick="SendAccept()">Accept</button>
+            <button id="btnDecline" onclick="SendDecline()">Decline</button>
+            <button id="btnBye" onclick="SendBye()">Bye</button>
+        </p>
+    </div>
+
+    <table border="1">
+        <tr>
+            <th>
+                Local
+            </th>
+            <th>
+                Remote
+            </th>
+        </tr>
+        <tr>
+            <td>
+                <video id="localVideo" autoplay width="540px" height="400px"></video>
+            </td>
+            <td>
+                <video id="remoteVideo" autoplay width="540px" height="400px"></video>
+            </td>
+        </tr>
+    </table>
+    <br>
+    <hr>
+
+    <div id="log">
+
+    </div>
+
+    <div id="emailModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="emailForm">
+                New E-mail: <input type="email" id="new_email"><br>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+
+    <div id="passwordModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="passwordForm">
+                New Password: <input type="password" id="new_password"><br>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+
+    <div id="resetModal" class="modal">
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="resetForm">
+                ID: <input type="text" id="reset_id"><br>
+                OTP: <input type="text" id="reset_otp"><br>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+
 </body>
 
-<script language="javascript" src="web_rtc.js" ></script>
-<script language="javascript" src="web_rtc_signal.js" ></script>
+<script language="javascript" src="web_rtc.js"></script>
+<script language="javascript" src="web_rtc_signal.js"></script>
 
 </html>

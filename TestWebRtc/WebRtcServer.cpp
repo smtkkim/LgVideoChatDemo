@@ -15,6 +15,14 @@
 #include <openssl/bio.h>
 #include <openssl/evp.h>
 
+#include <curl/curl.h>
+#include <iostream>
+
+/*
+    dbteam098@gmail.com
+    !LGElge1234
+    vhvrvdnmsnfshpca
+*/
 extern CHttpStack gclsStack;
 
 CWebRtcServer::CWebRtcServer() : m_bStop(false)
@@ -306,6 +314,7 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 				{
 					// passwd OK
 					printf("password is correct\n");
+                    CLog::Print(LOG_WEBRTC, "password is correct\n");
 					m_clsUserDB->ClearWrongPasswdCnt(user_id);
 					m_clsUserDB->UpdateWrongPasswdLockTime(user_id, 0);
 
@@ -379,6 +388,90 @@ bool CWebRtcServer::WebSocketData( const char * pszClientIp, int iClientPort, st
 		else
 		{
 			Send( pszClientIp, iClientPort, "res|login|200" );
+		}
+	}
+	else if( pszCommand == std::string( "resetpwd" ) )
+	{
+		if( iCount < 4 )
+		{
+			printf( "password reset request arg is not correct\n" );
+			CLog::Print(LOG_WEBRTC, "password reset request arg is not correct\n");
+			return false;
+		}
+
+		std::string user_id = clsList[2];
+        std::string entered_otp = clsList[3];
+		std::string otp_key;
+
+		if (m_clsUserDB->CountUserId(user_id) == 1)
+		{
+            m_clsUserDB->GetGOtpKey(user_id, otp_key);
+            int totp = generateTOTP(otp_key);
+            if (std::stoi(entered_otp) != totp)
+            {
+                printf("OTP num is wrong(%d)\n", std::stoi(entered_otp));
+                CLog::Print(LOG_WEBRTC, "OTP num is wrong(%d)\n", std::stoi(entered_otp));
+                Send(pszClientIp, iClientPort, "res|resetpwd|510");
+                return true;
+            }
+		}
+		else
+		{
+			printf("Unregisterd user\n");
+			CLog::Print(LOG_WEBRTC, "Unregisterd user\n");
+			Send(pszClientIp, iClientPort, "res|resetpwd|500");
+			return true;
+		}
+
+        std::string password = m_clsUserDB->RandomString();
+        std::string sha256_passwd = m_clsUserDB->sha256(m_clsUserDB->saltStr(user_id, password));
+
+        if (SendMail(user_id, password) != 0) {
+            printf("Failed to send mail to %s\n", user_id.c_str());
+			CLog::Print(LOG_WEBRTC, "Failed to send mail to %s\n", user_id.c_str());
+            Send(pszClientIp, iClientPort, "res|resetpwd|300");
+        }
+
+        uint64_t utc_time_now;
+        getTimeUtc(&utc_time_now);
+
+		if (0 != m_clsUserDB->UpdatePasswdAndTime(user_id, sha256_passwd, utc_time_now))
+		{
+			printf("Failed to save new password to DB\n");
+			CLog::Print(LOG_WEBRTC, "Failed to save new password to DB\n");
+			Send( pszClientIp, iClientPort, "res|resetpwd|400" );
+		}
+		else
+		{
+			Send( pszClientIp, iClientPort, "res|resetpwd|200" );
+		}
+	}
+	else if( pszCommand == std::string( "changepwd" ) )
+	{
+		if( iCount < 4 )
+		{
+			printf( "change password request arg is not correct\n" );
+			CLog::Print(LOG_WEBRTC, "change password request arg is not correct\n");
+			return false;
+		}
+
+		std::string user_id = clsList[2];
+		std::string db_user_passwd;
+
+		std::string entered_passwd = m_clsUserDB->sha256(m_clsUserDB->saltStr(user_id, clsList[3]));
+
+        uint64_t utc_time_now;
+        getTimeUtc(&utc_time_now);
+
+		if (0 != m_clsUserDB->UpdatePasswdAndTime(user_id, entered_passwd, utc_time_now))
+		{
+			printf("Failed to save new password to DB\n");
+			CLog::Print(LOG_WEBRTC, "Failed to save new password to DB\n");
+			Send( pszClientIp, iClientPort, "res|changepwd|300" );
+		}
+		else
+		{
+			Send( pszClientIp, iClientPort, "res|changepwd|200" );
 		}
 	}
 	else if( pszCommand == std::string( "invite" ) )
@@ -692,4 +785,85 @@ int CWebRtcServer::base32_decode_char(char c)
 		return c - '2' + 26;
 	else
 		return -1; // Invalid character
+}
+
+size_t CWebRtcServer::payload_source(void *ptr, size_t size, size_t nmemb, void *userp)
+{
+    struct upload_status *upload_ctx = (struct upload_status *)userp;
+    const char *data;
+
+    if((size == 0) || (nmemb == 0) || ((size*nmemb) < 1)) {
+        return 0;
+    }
+
+    data = upload_ctx->str.c_str();
+
+    if(data) {
+        size_t len = strlen(data);
+        memcpy(ptr, data, len);
+        upload_ctx->str = upload_ctx->str.substr(len);
+        return len;
+    }
+
+    return 0;
+}
+
+int CWebRtcServer::SendMail(std::string& userID, std::string& newPassword)
+{
+    /*
+        ID: dbteam098@gmail.com
+        PWD: !LGElge1234
+        APP PWD: vhvrvdnmsnfshpca
+    */
+    CURL *curl;
+    CURLcode res = CURLE_OK;
+    struct curl_slist *recipients = NULL;
+    struct upload_status upload_ctx;
+
+    std::string email;
+    if (0 != m_clsUserDB->GetEmail(userID, email))
+    {
+        printf( "[SendMail] reading email from DB failed(userid:%s)\n", userID.c_str() );
+        CLog::Print(LOG_WEBRTC, "reading email from DB failed(userid:%s)\n", userID.c_str());
+        return -1;
+    }
+	std::string email_with_form = "<" + email + ">";
+    curl = curl_easy_init();
+    upload_ctx.lines_read = 0;
+    upload_ctx.str = "Subject: Password Reset\r\n"
+                        "To: " + email + "\r\n"
+                        "From: dbteam098@gmail.com\r\n"
+                        "\r\n"
+                        "" + userID + ", this is your new password: " + newPassword;
+
+    if (curl)
+    {
+        curl_easy_setopt(curl, CURLOPT_USERNAME, "dbteam098@gmail.com");
+        curl_easy_setopt(curl, CURLOPT_PASSWORD, "vhvrvdnmsnfshpca");
+
+        curl_easy_setopt(curl, CURLOPT_URL, "smtp://smtp.gmail.com:587");
+        curl_easy_setopt(curl, CURLOPT_USE_SSL, (long)CURLUSESSL_ALL);
+
+        curl_easy_setopt(curl, CURLOPT_MAIL_FROM, "<dbteam098@gmail.com>");
+
+        recipients = curl_slist_append(recipients, email_with_form.c_str());
+        curl_easy_setopt(curl, CURLOPT_MAIL_RCPT, recipients);
+
+        curl_easy_setopt(curl, CURLOPT_READFUNCTION, CWebRtcServer::payload_source);
+        curl_easy_setopt(curl, CURLOPT_READDATA, &upload_ctx);
+        curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+
+        res = curl_easy_perform(curl);
+
+        if (res != CURLE_OK)    // 0
+        {
+            fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+            CLog::Print(LOG_WEBRTC, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+        }
+
+        curl_slist_free_all(recipients);
+        curl_easy_cleanup(curl);
+    }
+
+    return (int)res;
 }
