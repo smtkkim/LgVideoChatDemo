@@ -843,6 +843,7 @@ int CWebRtcServer::SendMail(std::string& userID, std::string& newPassword)
 
         curl_easy_setopt(curl, CURLOPT_URL, "smtp://smtp.gmail.com:587");
         curl_easy_setopt(curl, CURLOPT_USE_SSL, (long)CURLUSESSL_ALL);
+        curl_easy_setopt(curl, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1_2);
 
         curl_easy_setopt(curl, CURLOPT_MAIL_FROM, "<dbteam098@gmail.com>");
 
