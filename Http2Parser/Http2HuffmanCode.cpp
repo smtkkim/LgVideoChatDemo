@@ -11,7 +11,7 @@ int HuffmanCodeEncode( const uint8_t * pszInput, uint32_t iInputLen, uint8_t * p
 {
 	HuffmanEncode * psttCode;
 	uint32_t	iOutput = 0;
-	uint32_t	iBitPos = 0, iBitRemain, iOutputPos = 0;
+	uint32_t	iBitPos = 0, iBitRemain = 0, iOutputPos = 0;
 
 	for( uint32_t i = 0; i < iInputLen; ++i )
 	{
@@ -93,7 +93,7 @@ int HuffmanCodeDecode( const uint8_t * pszInput, uint32_t iInputLen, uint8_t * p
 
 			if( iInputBitRemain )
 			{
-				// ÀÔ·Â ¹®ÀÚ¿¡¼­ ³²Àº °ª¸¸ º¯¼ö¿¡ ÀúÀåÇÑ´Ù.
+				// ì…ë ¥ ë¬¸ìì—ì„œ ë‚¨ì€ ê°’ë§Œ ë³€ìˆ˜ì— ì €ì¥í•œë‹¤.
 				switch( iInputBitRemain )
 				{
 				case 1: iCodeInput = pszInput[iInputPos] & 0x01; break;
@@ -107,7 +107,7 @@ int HuffmanCodeDecode( const uint8_t * pszInput, uint32_t iInputLen, uint8_t * p
 
 				if( iBitRemain >= iInputBitRemain )
 				{
-					// ³²Àº °ªÀ» ¸ğµÎ ÀúÀåÇÑ´Ù.
+					// ë‚¨ì€ ê°’ì„ ëª¨ë‘ ì €ì¥í•œë‹¤.
 					iCode |= iCodeInput << ( iBitRemain - iInputBitRemain );
 					iBitPos += iInputBitRemain;
 					iBitRemain -= iInputBitRemain;
@@ -116,7 +116,7 @@ int HuffmanCodeDecode( const uint8_t * pszInput, uint32_t iInputLen, uint8_t * p
 				}
 				else
 				{
-					// ³²Àº °ªÀÇ ÀÏºÎ¸¸ ÀúÀåÇÑ´Ù.
+					// ë‚¨ì€ ê°’ì˜ ì¼ë¶€ë§Œ ì €ì¥í•œë‹¤.
 					iCode |= iCodeInput >> ( iInputBitRemain - iBitRemain );
 					iBitPos += iBitRemain;
 					iInputBitRemain -= iBitRemain;
@@ -128,13 +128,13 @@ int HuffmanCodeDecode( const uint8_t * pszInput, uint32_t iInputLen, uint8_t * p
 			{
 				if( iBitRemain >= 8 )
 				{
-					// 8bit ÀúÀåÇÑ´Ù.
+					// 8bit ì €ì¥í•œë‹¤.
 					iCode |= pszInput[iInputPos++] << ( iBitRemain - 8 );
 					iBitPos += 8;
 				}
 				else
 				{
-					// ÀÏºÎ¸¸ ÀúÀåÇÑ´Ù.
+					// ì¼ë¶€ë§Œ ì €ì¥í•œë‹¤.
 					iCode |= pszInput[iInputPos] >> ( 8 - iBitRemain );
 					iBitPos += iBitRemain;
 					iInputBitRemain = 8 - iBitRemain;
@@ -149,7 +149,7 @@ int HuffmanCodeDecode( const uint8_t * pszInput, uint32_t iInputLen, uint8_t * p
 
 		bFound = false;
 
-		// ÄÚµå Å×ÀÌºí¿¡¼­ °Ë»öÇÑ´Ù.
+		// ì½”ë“œ í…Œì´ë¸”ì—ì„œ ê²€ìƒ‰í•œë‹¤.
 		for( iDecode = 0; garrHuffmanDecodeInfo[iDecode].psttDecode; ++iDecode )
 		{
 			if( iBitPos < garrHuffmanDecodeInfo[iDecode].iBit ) break;
