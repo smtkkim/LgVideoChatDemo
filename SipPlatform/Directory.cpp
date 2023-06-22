@@ -68,7 +68,7 @@ bool CDirectory::Create( const char * szDirName, int iDirMode )
 
 	// 디렉토리 이름이 "c:\test\temp" 또는 "/test/temp" 일 경우, 위의 loop 에서 temp 디렉토리를 
 	// 생성하지 않으므로 이를 생성하기 위해서 아래의 코드가 필요하다.
-	if( szDirName[iLen-1] != DIR_SEP )
+	if(iLen > 0 && szDirName[iLen-1] != DIR_SEP )
 	{
 		n = CDirectory::IsDirectoryCheck( szDirName );
 		if( n == -1 )
