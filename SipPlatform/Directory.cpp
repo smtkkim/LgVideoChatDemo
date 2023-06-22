@@ -18,8 +18,8 @@ bool CDirectory::Create( const char * szDirName, int iDirMode )
 {
 	int		i, iLen, iCount, n;
 	char	* pszName;
-	char	fisNotDirectory = 0;	// µğ·ºÅä¸®°¡ ¾Æ´Ñ°¡?
-	char	fisError = 0;			// µğ·ºÅä¸® »ı¼º½Ã¿¡ ¿¡·¯°¡ ¹ß»ıÇÏ¿´´Â°¡?
+	char	fisNotDirectory = 0;	// ë””ë ‰í† ë¦¬ê°€ ì•„ë‹Œê°€?
+	char	fisError = 0;			// ë””ë ‰í† ë¦¬ ìƒì„±ì‹œì— ì—ëŸ¬ê°€ ë°œìƒí•˜ì˜€ëŠ”ê°€?
 
 	iLen = (int)strlen( szDirName );
 	pszName = new char[ iLen + 1 ];
@@ -31,20 +31,20 @@ bool CDirectory::Create( const char * szDirName, int iDirMode )
 		{
 			iCount++;
 
-			// µğ·ºÅä¸® ÀÌ¸§ÀÌ "c:\test\temp\" ¶Ç´Â "/test/temp/" ÀÌ¹Ç·Î µÎ¹øÂ° µğ·ºÅä¸®
-			// ±¸ºĞÀÚ ºÎÅÍ µğ·ºÅä¸®¸¦ »ı¼ºÇÏ¸é µÈ´Ù.
+			// ë””ë ‰í† ë¦¬ ì´ë¦„ì´ "c:\test\temp\" ë˜ëŠ” "/test/temp/" ì´ë¯€ë¡œ ë‘ë²ˆì§¸ ë””ë ‰í† ë¦¬
+			// êµ¬ë¶„ì ë¶€í„° ë””ë ‰í† ë¦¬ë¥¼ ìƒì„±í•˜ë©´ ëœë‹¤.
 			if( iCount >= 2 )
 			{
 				n = CDirectory::IsDirectoryCheck( pszName );
 				if( n == -1 )
 				{
-					// µğ·ºÅä¸®°¡ ¾Æ´Ñ °æ¿ì
+					// ë””ë ‰í† ë¦¬ê°€ ì•„ë‹Œ ê²½ìš°
 					fisNotDirectory = 1;
 					break;
 				}
 				else if( n == -2 )
 				{
-					// µğ·ºÅä¸®°¡ Á¸ÀçÇÏÁö ¾Ê´Â °æ¿ì
+					// ë””ë ‰í† ë¦¬ê°€ ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ê²½ìš°
 #ifdef WIN32
 					if( CreateDirectory( pszName, NULL ) == FALSE )
 #else
@@ -66,19 +66,19 @@ bool CDirectory::Create( const char * szDirName, int iDirMode )
 	if( fisNotDirectory == 1 ) return false;
 	if( fisError == 1 ) return false;
 
-	// µğ·ºÅä¸® ÀÌ¸§ÀÌ "c:\test\temp" ¶Ç´Â "/test/temp" ÀÏ °æ¿ì, À§ÀÇ loop ¿¡¼­ temp µğ·ºÅä¸®¸¦ 
-	// »ı¼ºÇÏÁö ¾ÊÀ¸¹Ç·Î ÀÌ¸¦ »ı¼ºÇÏ±â À§ÇØ¼­ ¾Æ·¡ÀÇ ÄÚµå°¡ ÇÊ¿äÇÏ´Ù.
+	// ë””ë ‰í† ë¦¬ ì´ë¦„ì´ "c:\test\temp" ë˜ëŠ” "/test/temp" ì¼ ê²½ìš°, ìœ„ì˜ loop ì—ì„œ temp ë””ë ‰í† ë¦¬ë¥¼ 
+	// ìƒì„±í•˜ì§€ ì•Šìœ¼ë¯€ë¡œ ì´ë¥¼ ìƒì„±í•˜ê¸° ìœ„í•´ì„œ ì•„ë˜ì˜ ì½”ë“œê°€ í•„ìš”í•˜ë‹¤.
 	if(iLen > 0 && szDirName[iLen-1] != DIR_SEP )
 	{
 		n = CDirectory::IsDirectoryCheck( szDirName );
 		if( n == -1 )
 		{
-			// µğ·ºÅä¸®°¡ ¾Æ´Ñ °æ¿ì
+			// ë””ë ‰í† ë¦¬ê°€ ì•„ë‹Œ ê²½ìš°
 			return false;
 		}
 		else if( n == -2 )
 		{
-			// µğ·ºÅä¸®°¡ Á¸ÀçÇÏÁö ¾Ê´Â °æ¿ì
+			// ë””ë ‰í† ë¦¬ê°€ ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ê²½ìš°
 #ifdef WIN32
 			if( CreateDirectory( szDirName, NULL ) == FALSE )
 #else
@@ -105,7 +105,7 @@ bool CDirectory::IsDirectory( const char * szDirName )
 int CDirectory::IsDirectoryCheck( const char * szDirName )
 {
 #ifdef WIN32
-	// ACE ¿¡¼­ S_ISDIR À» Áö¿øÇÏÁö ¾Ê±â ¶§¹®¿¡ À©µµ¿ìÀÇ °æ¿ì¸¦ À§ÇÏ¿© WINAPI ¸¦ »ç¿ëÇÏ¿´À½.
+	// ACE ì—ì„œ S_ISDIR ì„ ì§€ì›í•˜ì§€ ì•Šê¸° ë•Œë¬¸ì— ìœˆë„ìš°ì˜ ê²½ìš°ë¥¼ ìœ„í•˜ì—¬ WINAPI ë¥¼ ì‚¬ìš©í•˜ì˜€ìŒ.
 	DWORD iAttribute = GetFileAttributes( szDirName );
 
 	if( iAttribute != -1 ) 
@@ -121,7 +121,7 @@ int CDirectory::IsDirectoryCheck( const char * szDirName )
 	}
 	else
 	{
-		// ÆÄÀÏÀÌ Á¸ÀçÇÏÁö ¾Ê´Â °æ¿ì.
+		// íŒŒì¼ì´ ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ê²½ìš°.
 		return -2;	
 	}
 #else
@@ -140,12 +140,12 @@ int CDirectory::IsDirectoryCheck( const char * szDirName )
 	}
 	else
 	{
-		// ÆÄÀÏÀÌ Á¸ÀçÇÏÁö ¾Ê´Â °æ¿ì.
+		// íŒŒì¼ì´ ì¡´ì¬í•˜ì§€ ì•ŠëŠ” ê²½ìš°.
 		return -2;	
 	}
 #endif
 
-	return 0;
+//	return 0;
 }
 
 
