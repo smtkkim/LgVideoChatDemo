@@ -106,7 +106,7 @@ bool UdpRecv( Socket iFd, char * pszBuf, int * piLen, char * pszIp, int iIpSize,
 #ifndef WINXP
 	if( bIpv6 )
 	{
-		struct sockaddr_in6 sttAddr;
+		struct sockaddr_in6 sttAddr {};
 		int iAddrSize = sizeof(sttAddr);
 		
 		*piLen = recvfrom( iFd, pszBuf, iBufSize, 0, (struct sockaddr *)&sttAddr, (socklen_t*)&iAddrSize );
@@ -124,7 +124,7 @@ bool UdpRecv( Socket iFd, char * pszBuf, int * piLen, char * pszIp, int iIpSize,
 	else
 #endif
 	{
-		struct sockaddr_in sttAddr;
+		struct sockaddr_in sttAddr {};
 		int iAddrSize = sizeof(sttAddr);
 		
 		*piLen = recvfrom( iFd, pszBuf, iBufSize, 0, (struct sockaddr *)&sttAddr, (socklen_t*)&iAddrSize );
@@ -161,7 +161,7 @@ bool UdpRecv( Socket iFd, char * pszBuf, int * piLen, unsigned int * piIp, unsig
 	int iBufSize = *piLen;
 	if( iBufSize <= 0 ) return false;
 	
-	struct sockaddr_in sttAddr;
+	struct sockaddr_in sttAddr {};
 	int iAddrSize = sizeof(sttAddr);
 	
 	*piLen = recvfrom( iFd, pszBuf, iBufSize-1, 0, (struct sockaddr *)&sttAddr, (socklen_t*)&iAddrSize );
@@ -190,7 +190,7 @@ bool UdpRecv( Socket iFd, char * pszBuf, int * piLen, IN6_ADDR * psttIp, unsigne
 	int iBufSize = *piLen;
 	if( iBufSize <= 0 ) return false;
 	
-	struct sockaddr_in6 sttAddr;
+	struct sockaddr_in6 sttAddr {};
 	int iAddrSize = sizeof(sttAddr);
 	
 	*piLen = recvfrom( iFd, pszBuf, iBufSize-1, 0, (struct sockaddr *)&sttAddr, (socklen_t*)&iAddrSize );
@@ -447,7 +447,7 @@ bool GetLocalIp( std::string & strIp )
 		
 		unsigned int ai = ntohl( addr->sin_addr.s_addr );
 
-		// 127.0.0.1 �ּҴ� ������� �ʴ´�.
+		// 127.0.0.1 ÁÖ¼Ò´Â Ãâ·ÂÇÏÁö ¾Ê´Â´Ù.
 		if( int((ai>>24)&0xFF) == 127 ) continue;
 
 		snprintf( szIpAddr, sizeof(szIpAddr), "%d.%d.%d.%d", int((ai>>24)&0xFF)
