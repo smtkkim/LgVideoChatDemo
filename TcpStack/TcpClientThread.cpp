@@ -109,10 +109,10 @@ THREAD_API TcpClientThread( LPVOID lpParameter )
 
 	delete pclsArg;
 
-	if( pclsArg->m_pclsStack->m_clsSetup.m_bUseTls )
-	{
+	//if( pclsArg->m_pclsStack->m_clsSetup.m_bUseTls )
+	//{
 		//ERR_remove_thread_state( NULL );
-	}
+	//}
 
 	return 0;
 }
