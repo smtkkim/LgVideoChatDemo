@@ -87,7 +87,7 @@ bool CSipMutexSignal::wait()
 	}
 #endif
 
-	return true;
+//	return true;
 }
 
 
